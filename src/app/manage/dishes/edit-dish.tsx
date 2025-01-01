@@ -10,6 +10,8 @@ import { Upload } from 'lucide-react';
 import { DishStatus, DishStatusValues } from '@/constants/type';
 import { UpdateDishBody, UpdateDishBodyType } from '@/schemaValidations/dish';
 
+import { toast } from '@/hooks/useToast';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,7 +27,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/components/ui/use-toast';
 
 import { getVietnameseDishStatus, handleErrorApi } from '@/lib/utils';
 

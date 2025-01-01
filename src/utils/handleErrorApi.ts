@@ -1,6 +1,6 @@
 import { UseFormSetError } from 'react-hook-form';
 
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/useToast';
 
 import { EntityError } from '@/lib';
 

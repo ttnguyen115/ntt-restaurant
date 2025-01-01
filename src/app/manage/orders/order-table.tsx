@@ -22,13 +22,14 @@ import { OrderStatusValues } from '@/constants/type';
 import { GuestCreateOrdersResType } from '@/schemaValidations/guest';
 import { GetOrdersResType, PayGuestOrdersResType, UpdateOrderResType } from '@/schemaValidations/order';
 
+import { toast } from '@/hooks/useToast';
+
 import AutoPagination from '@/components/AutoPagination/AutoPagination';
 import { Button } from '@/components/ui/button';
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from '@/components/ui/use-toast';
 
 import { cn, getVietnameseOrderStatus, handleErrorApi } from '@/lib/utils';
 
