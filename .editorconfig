@@ -1,0 +1,18 @@
+root = true
+
+# Apply rule for all files
+[*]
+charset = utf-8
+
+# Apply rules for JavaScript and Java files
+[*.{js,jsx,ts,tsx,css,scss,json,mjs,java,conf.addon.txt}]
+# Use Unix-style newlines
+end_of_line = lf
+# End every file with a newline
+insert_final_newline = true
+# Remove trailing whitespace
+trim_trailing_whitespace = true
+# Use spaces instead of tabs
+indent_style = space
+# Indent size is 4 spaces
+indent_size = 4
