@@ -1,3 +1,5 @@
+import { http } from '@/lib';
+
 import {
     LoginBodyType,
     LoginResType,
@@ -5,8 +7,6 @@ import {
     RefreshTokenBodyType,
     RefreshTokenResType,
 } from '@/schemaValidations/auth';
-
-import http from '@/lib/http';
 
 const authApiRequest = {
     refreshTokenRequest: null as Promise<{

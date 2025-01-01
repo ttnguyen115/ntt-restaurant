@@ -1,3 +1,5 @@
+import { http } from '@/lib';
+
 import { LogoutBodyType, RefreshTokenBodyType, RefreshTokenResType } from '@/schemaValidations/auth';
 import {
     GuestCreateOrdersBodyType,
@@ -6,8 +8,6 @@ import {
     GuestLoginBodyType,
     GuestLoginResType,
 } from '@/schemaValidations/guest';
-
-import http from '@/lib/http';
 
 const guestApiRequest = {
     refreshTokenRequest: null as Promise<{
