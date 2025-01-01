@@ -2,12 +2,14 @@ import { Inter as FontSans } from 'next/font/google';
 
 import type { Metadata } from 'next';
 
-import './globals.css';
+import { cn } from '@/utilities';
 
-import { cn } from '@/lib/utils';
-
+import ThemeProvider from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
-import { ThemeProvider } from '@/components/ThemeProvider/ThemeProvider';
+
+import type { Children } from '@/types';
+
+import './globals.css';
 
 const fontSans = FontSans({
     subsets: ['latin'],
@@ -18,11 +20,7 @@ export const metadata: Metadata = {
     description: 'The best restaurant in the world',
 };
 
-export default function RootLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+function RootLayout({ children }: Readonly<Children>) {
     return (
         <html
             lang="en"
@@ -42,3 +40,5 @@ export default function RootLayout({
         </html>
     );
 }
+
+export default RootLayout;

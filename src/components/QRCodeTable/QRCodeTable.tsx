@@ -4,7 +4,7 @@ import { memo, useEffect, useRef } from 'react';
 
 import QRCode from 'qrcode';
 
-import { getTableLink } from '@/utils';
+import { getTableLink } from '@/utilities';
 
 interface QRCodeTableProps {
     token: string;

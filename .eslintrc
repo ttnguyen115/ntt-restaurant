@@ -220,22 +220,22 @@
                         "position": "after"
                     },
                     {
+                        "pattern": "@/constants**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/constants/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
                         "pattern": "@/hooks**",
                         "group": "internal",
                         "position": "after"
                     },
                     {
                         "pattern": "@/hooks/**",
-                        "group": "internal",
-                        "position": "after"
-                    },
-                    {
-                        "pattern": "@/mocks**",
-                        "group": "internal",
-                        "position": "after"
-                    },
-                    {
-                        "pattern": "@/mocks/**",
                         "group": "internal",
                         "position": "after"
                     },
@@ -291,6 +291,16 @@
                     },
                     {
                         "pattern": "@/prisma/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/schemaValidations**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/schemaValidations/**",
                         "group": "internal",
                         "position": "after"
                     },

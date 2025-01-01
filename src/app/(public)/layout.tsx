@@ -6,13 +6,11 @@ import DarkModeToggle from '@/components/DarkModeToggle/DarkModeToggle';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
-import NavItems from './nav-items';
+import { Children } from '@/types';
 
-export default function Layout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+import NavItems from './NavItems';
+
+function Layout({ children }: Readonly<Children>) {
     return (
         <div className="flex min-h-screen w-full flex-col relative">
             <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -63,3 +61,5 @@ export default function Layout({
         </div>
     );
 }
+
+export default Layout;

@@ -1,14 +1,12 @@
 import DarkModeToggle from '@/components/DarkModeToggle/DarkModeToggle';
 
-import DropdownAvatar from './dropdown-avatar';
-import MobileNavLinks from './mobile-nav-links';
-import NavLinks from './nav-links';
+import type { Children } from '@/types';
 
-export default function Layout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+import DropdownAvatar from './DropdownAvatar';
+import MobileNavLinks from './MobileNavLinks';
+import NavLinks from './NavLinks';
+
+function Layout({ children }: Readonly<Children>) {
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <NavLinks />
@@ -27,3 +25,5 @@ export default function Layout({
         </div>
     );
 }
+
+export default Layout;

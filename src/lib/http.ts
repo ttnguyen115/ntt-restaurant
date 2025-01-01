@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import envConfig from '@/config';
 import { LoginResType } from '@/schemaValidations/auth';
-import { isClient, normalizePath } from '@/utils';
+import { isClient, normalizePath } from '@/utilities';
 
 type CustomOptions = Omit<RequestInit, 'method'> & {
     baseUrl?: string | undefined;

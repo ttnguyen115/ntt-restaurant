@@ -12,3 +12,4 @@ export {
     ManagerRoom,
     OrderStatusIcon,
 } from './type';
+export { default as menuItems } from './menuItems';

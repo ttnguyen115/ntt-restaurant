@@ -1,9 +1,11 @@
-import LoginForm from '@/app/(public)/(auth)/login/login-form'
+import LoginForm from './LoginForm';
 
-export default function Login() {
-  return (
-    <div className='min-h-screen flex items-center justify-center'>
-      <LoginForm />
-    </div>
-  )
+function Login() {
+    return (
+        <div className="min-h-screen flex items-center justify-center">
+            <LoginForm />
+        </div>
+    );
 }
+
+export default Login;

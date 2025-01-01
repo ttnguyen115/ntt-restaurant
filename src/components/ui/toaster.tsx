@@ -4,7 +4,7 @@ import { useToast } from '@/hooks';
 
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from './toast';
 
-export function Toaster() {
+function Toaster() {
     const { toasts } = useToast();
 
     return (
@@ -28,3 +28,5 @@ export function Toaster() {
         </ToastProvider>
     );
 }
+
+export { Toaster };
