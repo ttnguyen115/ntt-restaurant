@@ -1,0 +1,319 @@
+{
+    "env": {
+        "jest": true
+    },
+    "extends": [
+        "next/core-web-vitals",
+        "next/typescript",
+        "eslint:recommended",
+        "airbnb-base",
+        "plugin:@dword-design/import-alias/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended" // Should place at last cause can be conflicted with some formatting-related rules
+    ],
+    "overrides": [
+        {
+            "files": ["*.js", "*.jsx", "*.ts", "*.tsx"]
+        },
+        {
+            "files": ["*.json"],
+            "rules": {
+                "comma-dangle": "off"
+            }
+        }
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["jsx-a11y", "react-hooks", "listeners", "github", "@typescript-eslint", "prettier"],
+    "rules": {
+        "array-callback-return": "off",
+        "class-methods-use-this": "off",
+        "comma-dangle": [
+            "error",
+            {
+                "arrays": "always-multiline",
+                "objects": "always-multiline",
+                "imports": "always-multiline",
+                "exports": "always-multiline",
+                "functions": "ignore"
+            }
+        ],
+        "id-length": "off",
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "max-len": "off",
+        "no-mixed-operators": "off",
+        "no-param-reassign": "off",
+        "no-plusplus": [
+            "error",
+            {
+                "allowForLoopAfterthoughts": true
+            }
+        ],
+        "no-undef": "off",
+        "no-underscore-dangle": "off",
+        "no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "args": "none"
+            }
+        ],
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_"
+            }
+        ],
+        "object-curly-newline": "off",
+        "prefer-destructuring": [
+            "error",
+            {
+                "VariableDeclarator": {
+                    "array": false,
+                    "object": true
+                },
+                "AssignmentExpression": {
+                    "array": false,
+                    "object": false
+                }
+            }
+        ],
+        "prefer-template": "off",
+        "padded-blocks": ["off"],
+        "spaced-comment": [
+            "warn",
+            "always",
+            {
+                "exceptions": ["-", "+"],
+                "markers": ["=", "!"]
+            }
+        ],
+
+        "import/no-anonymous-default-export": "off",
+        "import/no-named-as-default": "off",
+        "import/no-named-as-default-member": "off",
+
+        // TODO start here: Refactor these eslint rules below
+        "import/no-extraneous-dependencies": "off",
+        "global-require": "off",
+        "react/jsx-filename-extension": "off",
+        "no-await-in-loop": "off",
+        "import/no-unresolved": "error",
+        "import/no-cycle": "error",
+        "default-param-last": "off",
+        "no-continue": "off",
+        "react/jsx-props-no-spreading": "off",
+        "import/prefer-default-export": "off",
+        "no-restricted-exports": "off",
+        // suppress errors for missing 'import React' in files
+        "react/react-in-jsx-scope": "off",
+        "react/require-default-props": "off",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "js": "never",
+                "jsx": "never",
+                "ts": "never",
+                "tsx": "never"
+            }
+        ],
+        // TODO end here: Refactor these eslint rules above
+
+        // iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them.
+        // Separately, loops should be avoided in favor of array iterations
+        // for..in loops iterate over the entire prototype chain, which is virtually never what u want.
+        // Use Object.{keys,values,entries}, and iterate over the resulting array
+        "no-restricted-syntax": "off",
+
+        "no-return-assign": "warn",
+        "consistent-return": "warn",
+
+        "react/display-name": "off",
+        "@next/next/no-img-element": "off",
+        "@dword-design/import-alias/prefer-alias": [
+            "error",
+            {
+                "alias": {
+                    "@": "./src"
+                }
+            }
+        ],
+        "sort-imports": [
+            "error",
+            {
+                "ignoreCase": true,
+                "ignoreDeclarationSort": true,
+                "ignoreMemberSort": false,
+                "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+                "allowSeparatedGroups": false
+            }
+        ],
+        "import/order": [
+            "error",
+            {
+                "groups": ["builtin", "external", "unknown", "internal", "parent", "sibling", "index"],
+                "pathGroups": [
+                    // React & Redux
+                    {
+                        "pattern": "react",
+                        "group": "builtin",
+                        "position": "before"
+                    },
+                    {
+                        "pattern": "react-**",
+                        "group": "builtin",
+                        "position": "before"
+                    },
+                    {
+                        "pattern": "'@testing-library**",
+                        "group": "builtin",
+                        "position": "before"
+                    },
+                    {
+                        "pattern": "prop-types",
+                        "group": "builtin",
+                        "position": "before"
+                    },
+                    // Dynamic import from Next.js
+                    {
+                        "pattern": "next/**",
+                        "group": "builtin",
+                        "position": "before"
+                    },
+                    // externals recognized by the plugin
+                    // unknown recognized by the plugin
+                    // internal frameworks
+                    {
+                        "pattern": "@/testUtilities/**",
+                        "group": "internal",
+                        "position": "before"
+                    },
+                    // Other internal libraries
+                    // {},
+                    // alias references (@/subfolder/* like utilities, components, containers, hooks,...)
+                    {
+                        "pattern": "@/utilities/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/actions/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/configs**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/configs/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/hooks**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/hooks/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/mocks**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/mocks/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/theme/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/containers**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/containers/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/components/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/contexts/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/storybook**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/storybook/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/lib**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/lib/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/prisma**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/prisma/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/types**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/types/**",
+                        "group": "internal",
+                        "position": "after"
+                    }
+                ],
+                "pathGroupsExcludedImportTypes": [],
+                "alphabetize": {
+                    "order": "asc",
+                    "caseInsensitive": true
+                },
+                "newlines-between": "always",
+                "warnOnUnassignedImports": true
+            }
+        ]
+    },
+    "ignorePatterns": ["**/*.css"]
+}
