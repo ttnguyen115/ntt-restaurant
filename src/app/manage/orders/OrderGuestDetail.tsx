@@ -23,7 +23,9 @@ function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
     const ordersFilterToPurchase = guest
         ? orders.filter((order) => order.status !== OrderStatus.Paid && order.status !== OrderStatus.Rejected)
         : [];
+
     const purchasedOrderFilter = guest ? orders.filter((order) => order.status === OrderStatus.Paid) : [];
+
     return (
         <div className="space-y-2 text-sm">
             {guest && (

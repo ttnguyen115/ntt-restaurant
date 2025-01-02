@@ -1,4 +1,4 @@
-import DarkModeToggle from '@/components/DarkModeToggle/DarkModeToggle';
+import DarkModeToggle from '@/components/DarkModeToggle';
 
 import type { Children } from '@/types';
 

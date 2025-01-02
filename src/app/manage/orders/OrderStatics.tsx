@@ -14,7 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { TableListResType } from '@/schemaValidations';
 
 import OrderGuestDetail from './OrderGuestDetail';
-import { ServingGuestByTableNumber, Statics, StatusCountObject } from './types';
+import type { ServingGuestByTableNumber, Statics, StatusCountObject } from './types';
 
 // Ví dụ:
 // const statics: Statics = {

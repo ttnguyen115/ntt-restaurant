@@ -32,6 +32,8 @@ function EditTable({
     setId: (value: number | undefined) => void;
     onSubmitSuccess?: () => void;
 }) {
+    const tableNumber = 0;
+
     const form = useForm<UpdateTableBodyType>({
         resolver: zodResolver(UpdateTableBody),
         defaultValues: {
@@ -40,7 +42,6 @@ function EditTable({
             changeToken: false,
         },
     });
-    const tableNumber = 0;
 
     return (
         <Dialog

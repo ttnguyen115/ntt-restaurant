@@ -23,7 +23,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-import { TableListResType } from '@/schemaValidations/table';
+import { TableListResType } from '@/schemaValidations';
 
 type TableItem = TableListResType['data'][0];
 
@@ -52,15 +52,16 @@ export const columns: ColumnDef<TableItem>[] = [
 const PAGE_SIZE = 10;
 
 function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
-    const [open, setOpen] = useState(false);
     const data: TableListResType['data'] = [];
+
+    const [open, setOpen] = useState(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
-        pageIndex: 0, // Gía trị mặc định ban đầu, không có ý nghĩa khi data được fetch bất đồng bộ
-        pageSize: PAGE_SIZE, // default page size
+        pageIndex: 0,
+        pageSize: PAGE_SIZE,
     });
 
     const table = useReactTable({

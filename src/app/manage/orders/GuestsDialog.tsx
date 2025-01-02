@@ -68,7 +68,6 @@ function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
     const [open, setOpen] = useState(false);
     const [fromDate, setFromDate] = useState(initFromDate);
     const [toDate, setToDate] = useState(initToDate);
-    const data: GetListGuestsResType['data'] = [];
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -77,6 +76,8 @@ function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
         pageIndex: 0, // Gía trị mặc định ban đầu, không có ý nghĩa khi data được fetch bất đồng bộ
         pageSize: PAGE_SIZE, // default page size
     });
+
+    const data: GetListGuestsResType['data'] = [];
 
     const table = useReactTable({
         data,

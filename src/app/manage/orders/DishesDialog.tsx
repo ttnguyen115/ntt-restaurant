@@ -70,7 +70,6 @@ const PAGE_SIZE = 10;
 
 function DishesDialog({ onChoose }: DishesDialogProps) {
     const [open, setOpen] = useState(false);
-    const data = fakeDishes as DishItem[];
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -79,6 +78,8 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
         pageIndex: 0,
         pageSize: PAGE_SIZE,
     });
+
+    const data = fakeDishes as DishItem[];
 
     const table = useReactTable({
         data,

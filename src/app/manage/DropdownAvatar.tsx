@@ -43,7 +43,7 @@ function DropdownAvatar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Link
-                        href={'/manage/setting'}
+                        href="/manage/setting"
                         className="cursor-pointer"
                     >
                         Cài đặt

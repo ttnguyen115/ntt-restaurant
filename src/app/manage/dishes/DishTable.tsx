@@ -183,9 +183,9 @@ function DishTable() {
     const searchParam = useSearchParams();
     const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1;
     const pageIndex = page - 1;
+
     const [dishIdEdit, setDishIdEdit] = useState<number | undefined>();
     const [dishDelete, setDishDelete] = useState<DishItem | null>(null);
-    const data: any[] = [];
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -194,6 +194,8 @@ function DishTable() {
         pageIndex,
         pageSize: PAGE_SIZE,
     });
+
+    const data: any[] = [];
 
     const table = useReactTable({
         data,

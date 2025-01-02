@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { Menu, Package2 } from 'lucide-react';
 
-import DarkModeToggle from '@/components/DarkModeToggle/DarkModeToggle';
+import DarkModeToggle from '@/components/DarkModeToggle';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 

@@ -46,7 +46,7 @@ function AutoPagination({ page, pageSize, pathname }: AutoPaginationProps) {
         let dotAfter = false;
         let dotBefore = false;
 
-        const renderDotBefore = (index: number) => {
+        const renderDotBefore = (_: number) => {
             if (!dotBefore) {
                 dotBefore = true;
                 return (
@@ -58,7 +58,7 @@ function AutoPagination({ page, pageSize, pathname }: AutoPaginationProps) {
             return null;
         };
 
-        const renderDotAfter = (index: number) => {
+        const renderDotAfter = (_: number) => {
             if (!dotAfter) {
                 dotAfter = true;
                 return (
@@ -75,10 +75,10 @@ function AutoPagination({ page, pageSize, pathname }: AutoPaginationProps) {
             .map((_, index) => {
                 const pageNumber = index + 1;
 
-                // Điều kiện để return về ...
                 if (page <= RANGE * 2 + 1 && pageNumber > page + RANGE && pageNumber < pageSize - RANGE + 1) {
                     return renderDotAfter(index);
                 }
+
                 if (page > RANGE * 2 + 1 && page < pageSize - RANGE * 2) {
                     if (pageNumber < page - RANGE && pageNumber > RANGE) {
                         return renderDotBefore(index);
@@ -89,6 +89,7 @@ function AutoPagination({ page, pageSize, pathname }: AutoPaginationProps) {
                 } else if (page >= pageSize - RANGE * 2 && pageNumber > RANGE && pageNumber < page - RANGE) {
                     return renderDotBefore(index);
                 }
+
                 return (
                     <PaginationItem key={index}>
                         <PaginationLink

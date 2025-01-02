@@ -20,7 +20,7 @@ import {
 
 import { getVietnameseTableStatus } from '@/utilities';
 
-import AutoPagination from '@/components/AutoPagination/AutoPagination';
+import AutoPagination from '@/components/AutoPagination';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -43,7 +43,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-import { TableListResType } from '@/schemaValidations/table';
+import { TableListResType } from '@/schemaValidations';
 
 import AddTable from './AddTable';
 import EditTable from './EditTable';
@@ -92,6 +92,7 @@ export const columns: ColumnDef<TableItem>[] = [
         enableHiding: false,
         cell: function Actions({ row }) {
             const { setTableIdEdit, setTableDelete } = useContext(TableContext);
+
             const openEditTable = () => {
                 setTableIdEdit(row.original.number);
             };
@@ -99,6 +100,7 @@ export const columns: ColumnDef<TableItem>[] = [
             const openDeleteTable = () => {
                 setTableDelete(row.original);
             };
+
             return (
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>

@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -47,6 +47,8 @@ function AddDish() {
         }
         return image;
     }, [file, image]);
+
+    const handleUploadDishImage = useCallback(() => imageInputRef.current?.click(), []);
 
     return (
         <Dialog
@@ -101,7 +103,7 @@ function AddDish() {
                                             <button
                                                 className="flex aspect-square w-[100px] items-center justify-center rounded-md border border-dashed"
                                                 type="button"
-                                                onClick={() => imageInputRef.current?.click()}
+                                                onClick={handleUploadDishImage}
                                             >
                                                 <Upload className="h-4 w-4 text-muted-foreground" />
                                                 <span className="sr-only">Upload</span>

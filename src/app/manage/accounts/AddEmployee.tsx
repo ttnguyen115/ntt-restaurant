@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -50,6 +50,8 @@ function AddEmployee() {
         return avatar;
     }, [file, avatar]);
 
+    const handleUploadAvatar = useCallback(() => avatarInputRef.current?.click(), []);
+
     return (
         <Dialog
             onOpenChange={setOpen}
@@ -93,10 +95,10 @@ function AddEmployee() {
                                                 accept="image/*"
                                                 ref={avatarInputRef}
                                                 onChange={(e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (file) {
-                                                        setFile(file);
-                                                        field.onChange('http://localhost:3000/' + file.name);
+                                                    const selectedFile = e.target.files?.[0];
+                                                    if (selectedFile) {
+                                                        setFile(selectedFile);
+                                                        field.onChange('http://localhost:3000/' + selectedFile.name);
                                                     }
                                                 }}
                                                 className="hidden"
@@ -104,7 +106,7 @@ function AddEmployee() {
                                             <button
                                                 className="flex aspect-square w-[100px] items-center justify-center rounded-md border border-dashed"
                                                 type="button"
-                                                onClick={() => avatarInputRef.current?.click()}
+                                                onClick={handleUploadAvatar}
                                             >
                                                 <Upload className="h-4 w-4 text-muted-foreground" />
                                                 <span className="sr-only">Upload</span>

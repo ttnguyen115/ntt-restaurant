@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { Bar, BarChart, XAxis, YAxis } from 'recharts';
 
@@ -51,52 +51,57 @@ const chartData = [
 ];
 
 function DishBarChart() {
+    const renderBarChart = useMemo(
+        () => (
+            <ChartContainer config={chartConfig}>
+                <BarChart
+                    accessibilityLayer
+                    data={chartData}
+                    layout="vertical"
+                    margin={{
+                        left: 0,
+                    }}
+                >
+                    <YAxis
+                        dataKey="name"
+                        type="category"
+                        tickLine={false}
+                        tickMargin={2}
+                        axisLine={false}
+                        tickFormatter={(value) => {
+                            return value;
+
+                            // return chartConfig[value as keyof typeof chartConfig]?.label
+                        }}
+                    />
+                    <XAxis
+                        dataKey="successOrders"
+                        type="number"
+                        hide
+                    />
+                    <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent />}
+                    />
+                    <Bar
+                        dataKey="successOrders"
+                        name={'Đơn thanh toán'}
+                        layout="vertical"
+                        radius={5}
+                    />
+                </BarChart>
+            </ChartContainer>
+        ),
+        []
+    );
+
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Xếp hạng món ăn</CardTitle>
                 <CardDescription>Được gọi nhiều nhất</CardDescription>
             </CardHeader>
-            <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <BarChart
-                        accessibilityLayer
-                        data={chartData}
-                        layout="vertical"
-                        margin={{
-                            left: 0,
-                        }}
-                    >
-                        <YAxis
-                            dataKey="name"
-                            type="category"
-                            tickLine={false}
-                            tickMargin={2}
-                            axisLine={false}
-                            tickFormatter={(value) => {
-                                return value;
-
-                                // return chartConfig[value as keyof typeof chartConfig]?.label
-                            }}
-                        />
-                        <XAxis
-                            dataKey="successOrders"
-                            type="number"
-                            hide
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent />}
-                        />
-                        <Bar
-                            dataKey="successOrders"
-                            name={'Đơn thanh toán'}
-                            layout="vertical"
-                            radius={5}
-                        />
-                    </BarChart>
-                </ChartContainer>
-            </CardContent>
+            <CardContent>{renderBarChart}</CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
                 {/* <div className='flex gap-2 font-medium leading-none'>
                     Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />

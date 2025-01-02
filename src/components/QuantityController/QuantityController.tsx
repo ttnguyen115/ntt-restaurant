@@ -10,7 +10,7 @@ interface QuantityProps {
     value: number;
 }
 
-function Quantity({ onChange, value }: QuantityProps) {
+function QuantityController({ onChange, value }: QuantityProps) {
     return (
         <div className="flex gap-1 ">
             <Button
@@ -45,4 +45,4 @@ function Quantity({ onChange, value }: QuantityProps) {
     );
 }
 
-export default memo(Quantity);
+export default memo(QuantityController);

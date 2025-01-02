@@ -17,7 +17,6 @@ const QRCodeTable = ({ token, tableNumber, width = 250 }: QRCodeTableProps) => {
 
     useEffect(() => {
         const qrCanvas = document.createElement('canvas');
-        // const canvas = canvasRef.current!
         const canvas = canvasRef.current!;
         canvas.height = width + 70;
         canvas.width = width;
@@ -31,21 +30,21 @@ const QRCodeTable = ({ token, tableNumber, width = 250 }: QRCodeTableProps) => {
         canvasContext.fillStyle = '#000';
         canvasContext.fillText(`Bàn số ${tableNumber}`, width / 2, width + 20);
         canvasContext.fillText('Quét mã QR để gọi món', width / 2, width + 50);
-        QRCode.toCanvas(
-            qrCanvas,
-            getTableLink({
-                token,
-                tableNumber,
-            }),
-            {
-                width,
-                margin: 4,
-            },
-            function (error) {
-                if (error) console.error(error);
-                canvasContext.drawImage(qrCanvas, 0, 0, width, width);
-            }
-        );
+
+        const qrCanvasOptions = {
+            width,
+            margin: 4,
+        };
+        const qrCanvasLinkText = getTableLink({
+            token,
+            tableNumber,
+        });
+        const qrCanvasCallback = (error: Error | null | undefined) => {
+            if (error) console.error(error);
+            canvasContext.drawImage(qrCanvas, 0, 0, width, width);
+        };
+
+        QRCode.toCanvas(qrCanvas, qrCanvasLinkText, qrCanvasOptions, qrCanvasCallback);
     }, [token, tableNumber, width]);
 
     return <canvas ref={canvasRef} />;

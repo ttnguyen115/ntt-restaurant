@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -58,6 +58,8 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
         return avatar;
     }, [file, avatar]);
 
+    const handleUploadAvatar = useCallback(() => avatarInputRef.current?.click(), []);
+
     return (
         <Dialog
             open={Boolean(id)}
@@ -107,7 +109,7 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
                                             <button
                                                 className="flex aspect-square w-[100px] items-center justify-center rounded-md border border-dashed"
                                                 type="button"
-                                                onClick={() => avatarInputRef.current?.click()}
+                                                onClick={handleUploadAvatar}
                                             >
                                                 <Upload className="h-4 w-4 text-muted-foreground" />
                                                 <span className="sr-only">Upload</span>

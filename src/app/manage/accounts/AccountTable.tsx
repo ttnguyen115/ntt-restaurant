@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, memo, useContext, useEffect, useState } from 'react';
+import { createContext, memo, useCallback, useContext, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -90,10 +90,12 @@ export const columns: ColumnDef<AccountType>[] = [
     {
         accessorKey: 'email',
         header: ({ column }) => {
+            const handleEmailHeaderClick = () => column.toggleSorting(column.getIsSorted() === 'asc');
+
             return (
                 <Button
                     variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    onClick={handleEmailHeaderClick}
                 >
                     Email
                     <CaretSortIcon className="ml-2 h-4 w-4" />
@@ -107,6 +109,7 @@ export const columns: ColumnDef<AccountType>[] = [
         enableHiding: false,
         cell: function Actions({ row }) {
             const { setEmployeeIdEdit, setEmployeeDelete } = useContext(AccountTableContext);
+
             const openEditEmployee = () => {
                 setEmployeeIdEdit(row.original.id);
             };
@@ -142,15 +145,20 @@ interface AlertDialogDeleteAccount {
     setEmployeeDelete: (value: AccountItem | null) => void;
 }
 
-function AlertDialogDeleteAccount({ employeeDelete, setEmployeeDelete }: AlertDialogDeleteAccount) {
+const AlertDialogDeleteAccount = memo(({ employeeDelete, setEmployeeDelete }: AlertDialogDeleteAccount) => {
+    const handleOpenAlertDialog = useCallback(
+        (value: boolean) => {
+            if (!value) {
+                setEmployeeDelete(null);
+            }
+        },
+        [setEmployeeDelete]
+    );
+
     return (
         <AlertDialog
             open={Boolean(employeeDelete)}
-            onOpenChange={(value) => {
-                if (!value) {
-                    setEmployeeDelete(null);
-                }
-            }}
+            onOpenChange={handleOpenAlertDialog}
         >
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -170,7 +178,7 @@ function AlertDialogDeleteAccount({ employeeDelete, setEmployeeDelete }: AlertDi
             </AlertDialogContent>
         </AlertDialog>
     );
-}
+});
 
 const PAGE_SIZE = 10;
 

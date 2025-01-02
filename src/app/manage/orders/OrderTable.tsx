@@ -41,23 +41,25 @@ const initFromDate = startOfDay(new Date());
 const initToDate = endOfDay(new Date());
 
 function OrderTable() {
-    const searchParam = useSearchParams();
-    const [openStatusFilter, setOpenStatusFilter] = useState(false);
-    const [fromDate, setFromDate] = useState(initFromDate);
-    const [toDate, setToDate] = useState(initToDate);
-    const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1;
-    const pageIndex = page - 1;
-    const [orderIdEdit, setOrderIdEdit] = useState<number | undefined>();
     const orderList: any = [];
     const tableList: any = [];
     const tableListSortedByNumber = tableList.sort((a: any, b: any) => a.number - b.number);
+
+    const searchParam = useSearchParams();
+    const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1;
+    const pageIndex = page - 1;
+
+    const [openStatusFilter, setOpenStatusFilter] = useState(false);
+    const [fromDate, setFromDate] = useState(initFromDate);
+    const [toDate, setToDate] = useState(initToDate);
+    const [orderIdEdit, setOrderIdEdit] = useState<number | undefined>();
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
-        pageIndex, // Gía trị mặc định ban đầu, không có ý nghĩa khi data được fetch bất đồng bộ
-        pageSize: PAGE_SIZE, // default page size
+        pageIndex,
+        pageSize: PAGE_SIZE,
     });
 
     const { statics, orderObjectByGuestId, servingGuestByTableNumber } = useOrderService(orderList);

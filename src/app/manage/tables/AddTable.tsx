@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { CreateTableBody, CreateTableBodyType } from '@/schemaValidations/table';
+import { CreateTableBody, type CreateTableBodyType } from '@/schemaValidations';
 
 function AddTable() {
     const [open, setOpen] = useState(false);
