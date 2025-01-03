@@ -20,6 +20,8 @@ import {
 
 import { getVietnameseTableStatus } from '@/utilities';
 
+import { AppNavigationRoutes } from '@/constants';
+
 import AutoPagination from '@/components/AutoPagination';
 import {
     AlertDialog,
@@ -285,7 +287,7 @@ function DishTable() {
                         <AutoPagination
                             page={table.getState().pagination.pageIndex + 1}
                             pageSize={table.getPageCount()}
-                            pathname="/manage/tables"
+                            pathname={AppNavigationRoutes.MANAGE_TABLES}
                         />
                     </div>
                 </div>

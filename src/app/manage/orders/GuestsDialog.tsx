@@ -16,7 +16,9 @@ import { endOfDay, format, startOfDay } from 'date-fns';
 
 import { formatDateTimeToLocaleString, simpleMatchText } from '@/utilities';
 
-import AutoPagination from '@/components/AutoPagination/AutoPagination';
+import { AppNavigationRoutes } from '@/constants';
+
+import AutoPagination from '@/components/AutoPagination';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -234,7 +236,7 @@ function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
                                 <AutoPagination
                                     page={table.getState().pagination.pageIndex + 1}
                                     pageSize={table.getPageCount()}
-                                    pathname="/manage/Guests"
+                                    pathname={AppNavigationRoutes.MANAGE_GUESTS}
                                 />
                             </div>
                         </div>

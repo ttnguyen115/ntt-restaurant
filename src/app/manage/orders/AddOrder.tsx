@@ -21,10 +21,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
-import { GetListGuestsResType } from '@/schemaValidations/account';
-import { DishListResType } from '@/schemaValidations/dish';
-import { GuestLoginBody, GuestLoginBodyType } from '@/schemaValidations/guest';
-import { CreateOrdersBodyType } from '@/schemaValidations/order';
+import {
+    CreateOrdersBodyType,
+    DishListResType,
+    GetListGuestsResType,
+    GuestLoginBody,
+    GuestLoginBodyType,
+} from '@/schemaValidations';
 
 import GuestsDialog from './GuestsDialog';
 import TablesDialog from './TablesDialog';

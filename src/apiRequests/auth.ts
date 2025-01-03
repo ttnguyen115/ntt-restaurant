@@ -1,3 +1,6 @@
+import { ApiRoutes } from '@/constants';
+
+// eslint-disable-next-line import/no-cycle
 import { http } from '@/lib';
 
 import {
@@ -6,25 +9,23 @@ import {
     LogoutBodyType,
     RefreshTokenBodyType,
     RefreshTokenResType,
-} from '@/schemaValidations/auth';
+} from '@/schemaValidations';
 
 const authApiRequest = {
     refreshTokenRequest: null as Promise<{
         status: number;
         payload: RefreshTokenResType;
     }> | null,
-    sLogin: (body: LoginBodyType) => http.post<LoginResType>('/auth/login', body),
+    sLogin: (body: LoginBodyType) => http.post<LoginResType>(ApiRoutes.SERVER_API_LOGIN, body),
+
     login: (body: LoginBodyType) =>
-        http.post<LoginResType>('/api/auth/login', body, {
+        http.post<LoginResType>(ApiRoutes.CLIENT_API_LOGIN, body, {
             baseUrl: '',
         }),
-    sLogout: (
-        body: LogoutBodyType & {
-            accessToken: string;
-        }
-    ) =>
+
+    sLogout: (body: LogoutBodyType & { accessToken: string }) =>
         http.post(
-            '/auth/logout',
+            ApiRoutes.SERVER_API_LOGOUT,
             {
                 refreshToken: body.refreshToken,
             },
@@ -34,13 +35,17 @@ const authApiRequest = {
                 },
             }
         ),
-    logout: () => http.post('/api/auth/logout', null, { baseUrl: '' }), // client gọi đến route handler, không cần truyền AT và RT vào body vì AT và RT tự  động gửi thông qua cookie rồi
-    sRefreshToken: (body: RefreshTokenBodyType) => http.post<RefreshTokenResType>('/auth/refresh-token', body),
+
+    logout: () => http.post(ApiRoutes.CLIENT_API_LOGOUT, null, { baseUrl: '' }),
+
+    sRefreshToken: (body: RefreshTokenBodyType) =>
+        http.post<RefreshTokenResType>(ApiRoutes.SERVER_API_REFRESH_TOKEN, body),
+
     async refreshToken() {
         if (this.refreshTokenRequest) {
             return this.refreshTokenRequest;
         }
-        this.refreshTokenRequest = http.post<RefreshTokenResType>('/api/auth/refresh-token', null, {
+        this.refreshTokenRequest = http.post<RefreshTokenResType>(ApiRoutes.CLIENT_API_REFRESH_TOKEN, null, {
             baseUrl: '',
         });
         const result = await this.refreshTokenRequest;

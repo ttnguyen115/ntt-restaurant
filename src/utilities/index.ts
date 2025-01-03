@@ -2,8 +2,6 @@ export { default as isClient } from './isClient';
 export { default as normalizePath } from './normalizePath';
 export { default as decodeToken } from './decodeToken';
 export { default as formatCurrency } from './formatCurrency';
-export { default as handleErrorApi } from './handleErrorApi';
-export { default as checkAndRefreshToken } from './checkAndRefreshToken';
 export { default as getVietnameseDishStatus } from './getVietnameseDishStatus';
 export { default as getVietnameseOrderStatus } from './getVietnameseOrderStatus';
 export { default as getVietnameseTableStatus } from './getVietnameseTableStatus';

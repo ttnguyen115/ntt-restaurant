@@ -4,6 +4,8 @@ import { memo } from 'react';
 
 import Link from 'next/link';
 
+import { AppNavigationRoutes } from '@/constants';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,7 +45,7 @@ function DropdownAvatar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Link
-                        href="/manage/setting"
+                        href={AppNavigationRoutes.MANAGE_SETTING}
                         className="cursor-pointer"
                     >
                         Cài đặt

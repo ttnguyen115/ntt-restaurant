@@ -4,23 +4,25 @@ import { memo } from 'react';
 
 import Link from 'next/link';
 
+import { AppNavigationRoutes } from '@/constants';
+
 const menuItems = [
     {
         title: 'Món ăn',
-        href: '/menu',
+        href: AppNavigationRoutes.MENU,
     },
     {
         title: 'Đơn hàng',
-        href: '/orders',
+        href: AppNavigationRoutes.ORDERS,
     },
     {
         title: 'Đăng nhập',
-        href: '/login',
+        href: AppNavigationRoutes.LOGIN,
         authRequired: false,
     },
     {
         title: 'Quản lý',
-        href: '/manage/dashboard',
+        href: AppNavigationRoutes.MANAGE_DASHBOARD,
         authRequired: true,
     },
 ];

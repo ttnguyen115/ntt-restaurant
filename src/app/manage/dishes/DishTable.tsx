@@ -20,6 +20,8 @@ import {
 
 import { formatCurrency, getVietnameseDishStatus } from '@/utilities';
 
+import { AppNavigationRoutes } from '@/constants';
+
 import AutoPagination from '@/components/AutoPagination';
 import {
     AlertDialog,
@@ -301,7 +303,7 @@ function DishTable() {
                         <AutoPagination
                             page={table.getState().pagination.pageIndex + 1}
                             pageSize={table.getPageCount()}
-                            pathname="/manage/dishes"
+                            pathname={AppNavigationRoutes.MANAGE_DISHES}
                         />
                     </div>
                 </div>

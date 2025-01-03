@@ -15,7 +15,7 @@ import {
 
 import { cn, getVietnameseTableStatus, simpleMatchText } from '@/utilities';
 
-import { TableStatus } from '@/constants';
+import { AppNavigationRoutes, TableStatus } from '@/constants';
 
 import AutoPagination from '@/components/AutoPagination';
 import { Button } from '@/components/ui/button';
@@ -190,7 +190,7 @@ function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
                                 <AutoPagination
                                     page={table.getState().pagination.pageIndex + 1}
                                     pageSize={table.getPageCount()}
-                                    pathname="/manage/Tables"
+                                    pathname={AppNavigationRoutes.MANAGE_TABLES}
                                 />
                             </div>
                         </div>

@@ -20,9 +20,9 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn, getVietnameseOrderStatus } from '@/utilities';
 
-import { OrderStatusValues } from '@/constants';
+import { AppNavigationRoutes, OrderStatusValues } from '@/constants';
 
-import AutoPagination from '@/components/AutoPagination/AutoPagination';
+import AutoPagination from '@/components/AutoPagination';
 import { Button } from '@/components/ui/button';
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
@@ -285,7 +285,7 @@ function OrderTable() {
                         <AutoPagination
                             page={table.getState().pagination.pageIndex + 1}
                             pageSize={table.getPageCount()}
-                            pathname="/manage/orders"
+                            pathname={AppNavigationRoutes.MANAGE_ORDERS}
                         />
                     </div>
                 </div>

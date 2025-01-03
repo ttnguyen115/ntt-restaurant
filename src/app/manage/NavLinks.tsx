@@ -9,12 +9,20 @@ import { Package2, Settings } from 'lucide-react';
 
 import { cn } from '@/utilities';
 
-import { menuItems } from '@/constants';
+import { AppNavigationRoutes, menuItems } from '@/constants';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 function NavLinks() {
     const pathname = usePathname();
+
+    const settingLinkClassnames = cn(
+        'flex h-9 w-9 items-center justify-center rounded-lg  transition-colors hover:text-foreground md:h-8 md:w-8',
+        {
+            'bg-accent text-accent-foreground': pathname === AppNavigationRoutes.MANAGE_SETTING,
+            'text-muted-foreground': pathname !== AppNavigationRoutes.MANAGE_SETTING,
+        }
+    );
 
     return (
         <TooltipProvider>
@@ -56,14 +64,8 @@ function NavLinks() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href="/manage/setting"
-                                className={cn(
-                                    'flex h-9 w-9 items-center justify-center rounded-lg  transition-colors hover:text-foreground md:h-8 md:w-8',
-                                    {
-                                        'bg-accent text-accent-foreground': pathname === '/manage/setting',
-                                        'text-muted-foreground': pathname !== '/manage/setting',
-                                    }
-                                )}
+                                href={AppNavigationRoutes.MANAGE_SETTING}
+                                className={settingLinkClassnames}
                             >
                                 <Settings className="h-5 w-5" />
                                 <span className="sr-only">Cài đặt</span>

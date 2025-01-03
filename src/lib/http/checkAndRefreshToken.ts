@@ -1,14 +1,16 @@
-import { authApiRequest, guestApiRequest } from '@/apiRequests';
-import { Role } from '@/constants';
-
-import { getAccessTokenFromLocalStorage, getRefreshTokenFromLocalStorage } from './localStorage';
-
 import {
     decodeToken,
     removeTokensFromLocalStorage,
     setAccessTokenToLocalStorage,
     setRefreshTokenToLocalStorage,
-} from './index';
+} from '@/utilities';
+
+import { getAccessTokenFromLocalStorage, getRefreshTokenFromLocalStorage } from '@/utilities/localStorage';
+
+// eslint-disable-next-line import/no-cycle
+import { authApiRequest, guestApiRequest } from '@/apiRequests';
+
+import { Role } from '@/constants';
 
 const checkAndRefreshToken = async (param?: { onError?: () => void; onSuccess?: () => void }) => {
     // Whenever `checkAndRefreshToken` is called, `accessToken` and `refreshToken` are brand new

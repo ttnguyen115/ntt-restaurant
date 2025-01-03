@@ -1,8 +1,8 @@
 import { UseFormSetError } from 'react-hook-form';
 
-import { toast } from '@/hooks/useToast';
+import { toast } from '@/hooks';
 
-import { EntityError } from '@/lib';
+import { EntityError } from './EntityError';
 
 const handleErrorApi = ({
     error,

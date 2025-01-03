@@ -18,7 +18,9 @@ import {
     VisibilityState,
 } from '@tanstack/react-table';
 
-import AutoPagination from '@/components/AutoPagination/AutoPagination';
+import { AppNavigationRoutes } from '@/constants';
+
+import AutoPagination from '@/components/AutoPagination';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -305,7 +307,7 @@ function AccountTable() {
                         <AutoPagination
                             page={table.getState().pagination.pageIndex + 1}
                             pageSize={table.getPageCount()}
-                            pathname="/manage/accounts"
+                            pathname={AppNavigationRoutes.MANAGE_ACCOUNTS}
                         />
                     </div>
                 </div>

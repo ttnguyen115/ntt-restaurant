@@ -1,31 +1,34 @@
+// eslint-disable-next-line import/no-cycle
+import { ApiRoutes } from '@/constants';
+
 import { http } from '@/lib';
 
-import { LogoutBodyType, RefreshTokenBodyType, RefreshTokenResType } from '@/schemaValidations/auth';
 import {
     GuestCreateOrdersBodyType,
     GuestCreateOrdersResType,
     GuestGetOrdersResType,
     GuestLoginBodyType,
     GuestLoginResType,
-} from '@/schemaValidations/guest';
+    LogoutBodyType,
+    RefreshTokenBodyType,
+    RefreshTokenResType,
+} from '@/schemaValidations';
 
 const guestApiRequest = {
     refreshTokenRequest: null as Promise<{
         status: number;
         payload: RefreshTokenResType;
     }> | null,
-    sLogin: (body: GuestLoginBodyType) => http.post<GuestLoginResType>('/guest/auth/login', body),
+    sLogin: (body: GuestLoginBodyType) => http.post<GuestLoginResType>(ApiRoutes.SERVER_API_GUEST_LOGIN, body),
+
     login: (body: GuestLoginBodyType) =>
-        http.post<GuestLoginResType>('/api/guest/auth/login', body, {
+        http.post<GuestLoginResType>(ApiRoutes.CLIENT_API_GUEST_LOGIN, body, {
             baseUrl: '',
         }),
-    sLogout: (
-        body: LogoutBodyType & {
-            accessToken: string;
-        }
-    ) =>
+
+    sLogout: (body: LogoutBodyType & { accessToken: string }) =>
         http.post(
-            '/guest/auth/logout',
+            ApiRoutes.SERVER_API_GUEST_LOGOUT,
             {
                 refreshToken: body.refreshToken,
             },
@@ -35,21 +38,28 @@ const guestApiRequest = {
                 },
             }
         ),
-    logout: () => http.post('/api/guest/auth/logout', null, { baseUrl: '' }), // client gọi đến route handler, không cần truyền AT và RT vào body vì AT và RT tự  động gửi thông qua cookie rồi
-    sRefreshToken: (body: RefreshTokenBodyType) => http.post<RefreshTokenResType>('/guest/auth/refresh-token', body),
+
+    logout: () => http.post(ApiRoutes.CLIENT_API_GUEST_LOGOUT, null, { baseUrl: '' }),
+
+    sRefreshToken: (body: RefreshTokenBodyType) =>
+        http.post<RefreshTokenResType>(ApiRoutes.SERVER_API_GUEST_REFRESH_TOKEN, body),
+
     async refreshToken() {
         if (this.refreshTokenRequest) {
             return this.refreshTokenRequest;
         }
-        this.refreshTokenRequest = http.post<RefreshTokenResType>('/api/guest/auth/refresh-token', null, {
+        this.refreshTokenRequest = http.post<RefreshTokenResType>(ApiRoutes.CLIENT_API_GUEST_REFRESH_TOKEN, null, {
             baseUrl: '',
         });
         const result = await this.refreshTokenRequest;
         this.refreshTokenRequest = null;
         return result;
     },
-    order: (body: GuestCreateOrdersBodyType) => http.post<GuestCreateOrdersResType>('/guest/orders', body),
-    getOrderList: () => http.get<GuestGetOrdersResType>('/guest/orders'),
+
+    order: (body: GuestCreateOrdersBodyType) =>
+        http.post<GuestCreateOrdersResType>(ApiRoutes.SERVER_API_GUEST_ORDERS, body),
+
+    getOrderList: () => http.get<GuestGetOrdersResType>(ApiRoutes.SERVER_API_GUEST_ORDERS),
 };
 
 export default guestApiRequest;

@@ -1,36 +1,38 @@
 import { Home, LineChart, Salad, ShoppingCart, Table, Users2 } from 'lucide-react';
 
+import { AppNavigationRoutes } from '.';
+
 const menuItems = [
     {
         title: 'Dashboard',
         Icon: Home,
-        href: '/manage/dashboard',
+        href: AppNavigationRoutes.MANAGE_DASHBOARD,
     },
     {
         title: 'Đơn hàng',
         Icon: ShoppingCart,
-        href: '/manage/orders',
+        href: AppNavigationRoutes.MANAGE_ORDERS,
     },
     {
         title: 'Bàn ăn',
         Icon: Table,
-        href: '/manage/tables',
+        href: AppNavigationRoutes.MANAGE_TABLES,
     },
     {
         title: 'Món ăn',
         Icon: Salad,
-        href: '/manage/dishes',
+        href: AppNavigationRoutes.MANAGE_DISHES,
     },
 
     {
         title: 'Phân tích',
         Icon: LineChart,
-        href: '/manage/analytics',
+        href: AppNavigationRoutes.MANAGE_ANALYTICS,
     },
     {
         title: 'Nhân viên',
         Icon: Users2,
-        href: '/manage/accounts',
+        href: AppNavigationRoutes.MANAGE_ACCOUNTS,
     },
 ];
 

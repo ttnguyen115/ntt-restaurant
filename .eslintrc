@@ -205,6 +205,16 @@
                         "position": "after"
                     },
                     {
+                        "pattern": "@/apiRequests/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/apiRequests**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
                         "pattern": "@/actions/**",
                         "group": "internal",
                         "position": "after"

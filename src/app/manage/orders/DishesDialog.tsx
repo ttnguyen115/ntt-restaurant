@@ -17,7 +17,9 @@ import {
 
 import { formatCurrency, getVietnameseDishStatus, simpleMatchText } from '@/utilities';
 
-import AutoPagination from '@/components/AutoPagination/AutoPagination';
+import { AppNavigationRoutes } from '@/constants';
+
+import AutoPagination from '@/components/AutoPagination';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -195,7 +197,7 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
                                 <AutoPagination
                                     page={table.getState().pagination.pageIndex + 1}
                                     pageSize={table.getPageCount()}
-                                    pathname="/manage/dishes"
+                                    pathname={AppNavigationRoutes.MANAGE_DISHES}
                                 />
                             </div>
                         </div>
