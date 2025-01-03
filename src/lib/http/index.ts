@@ -15,7 +15,7 @@ type CustomOptions = Omit<RequestInit, 'method'> & {
     baseUrl?: string | undefined;
 };
 
-let clientLogoutRequest: null | Promise<any> = null;
+let clientLogoutRequest: null | Promise<unknown> = null;
 
 const request = async <Response>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -60,6 +60,7 @@ const request = async <Response>(
         payload,
     };
 
+    // Interceptors
     if (!res.ok) {
         if (res.status === ENTITY_ERROR_STATUS) {
             throw new EntityError(
@@ -73,19 +74,25 @@ const request = async <Response>(
                 if (!clientLogoutRequest) {
                     clientLogoutRequest = fetch(ApiRoutes.CLIENT_API_LOGOUT, {
                         method: 'POST',
-                        body: null,
+                        body: null, // temporarily always be success (ex: session is expired...)
                         headers: {
                             ...baseHeaders,
                         },
                     });
+
                     try {
                         await clientLogoutRequest;
                     } finally {
                         localStorage.removeItem('accessToken');
                         localStorage.removeItem('refreshToken');
                         clientLogoutRequest = null;
-                        // eslint-disable-next-line no-restricted-globals
-                        location.href = AppNavigationRoutes.LOGIN;
+
+                        /* IMPORTANT:
+                         * Redirect to /login could be lead to infinite loops
+                         * In login page, there are APIs relating to accessToken
+                         * If accessToken is missed, the request can reach here
+                         */
+                        window.location.href = AppNavigationRoutes.LOGIN;
                     }
                 }
             } else {
@@ -97,6 +104,7 @@ const request = async <Response>(
         }
     }
 
+    // LocalStorage handling
     if (isClient) {
         if (url === ApiRoutes.CLIENT_API_LOGIN) {
             const { accessToken, refreshToken } = (payload as LoginResType).data;
