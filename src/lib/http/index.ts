@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import envConfig from '@/config';
-import { isClient, normalizePath } from '@/utilities';
+import { isClient } from '@/utilities';
 
 import { ApiRoutes, AppNavigationRoutes } from '@/constants';
 

@@ -1,5 +1,6 @@
 import { Home, LineChart, Salad, ShoppingCart, Table, Users2 } from 'lucide-react';
 
+// eslint-disable-next-line import/no-cycle
 import { AppNavigationRoutes } from '.';
 
 const menuItems = [

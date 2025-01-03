@@ -9,7 +9,7 @@ function Toaster() {
 
     return (
         <ToastProvider>
-            {toasts.map(function ({ id, title, description, action, ...props }) {
+            {toasts.map(({ id, title, description, action, ...props }) => {
                 return (
                     <Toast
                         key={id}
