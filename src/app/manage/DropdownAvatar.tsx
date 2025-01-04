@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { useLogoutMutation } from '@/hooks';
+import { useAccountProfile, useLogoutMutation } from '@/hooks';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -22,15 +22,13 @@ import {
 
 import { handleErrorApi } from '@/lib';
 
-const account = {
-    name: 'Nguyễn Văn A',
-    avatar: 'https://i.pravatar.cc/150',
-};
-
 function DropdownAvatar() {
     const router = useRouter();
 
     const { isPending, mutateAsync: logout } = useLogoutMutation();
+
+    const { data } = useAccountProfile();
+    const account = data?.payload.data;
 
     const handleLogout = useCallback(async () => {
         if (isPending) return;
@@ -42,7 +40,7 @@ function DropdownAvatar() {
                 error,
             });
         }
-    }, [isPending, logout]);
+    }, [router, isPending, logout]);
 
     return (
         <DropdownMenu>
@@ -54,15 +52,15 @@ function DropdownAvatar() {
                 >
                     <Avatar>
                         <AvatarImage
-                            src={account.avatar ?? undefined}
-                            alt={account.name}
+                            src={account?.avatar ?? undefined}
+                            alt={account?.name}
                         />
-                        <AvatarFallback>{account.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                        <AvatarFallback>{account?.name.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{account.name}</DropdownMenuLabel>
+                <DropdownMenuLabel>{account?.name}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Link

@@ -1,10 +1,12 @@
 const PREFIX_API = '/api';
+const PREFIX_ACCOUNTS = '/accounts';
 const PREFIX_AUTH = '/auth';
 const PREFIX_GUEST = '/guest';
 
 const SUFFIX_LOGIN = '/login';
 const SUFFIX_LOGOUT = '/logout';
 const SUFFIX_REFRESH_TOKEN = '/refresh-token';
+const SUFFIX_ME = '/me';
 
 const ApiRoutes = {
     // server API employees
@@ -27,6 +29,9 @@ const ApiRoutes = {
     CLIENT_API_GUEST_LOGIN: `${PREFIX_API}${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_LOGIN}`,
     CLIENT_API_GUEST_LOGOUT: `${PREFIX_API}${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_LOGOUT}`,
     CLIENT_API_GUEST_REFRESH_TOKEN: `${PREFIX_API}${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_REFRESH_TOKEN}`,
+
+    // Others
+    ME: `${PREFIX_ACCOUNTS}${SUFFIX_ME}`,
 };
 
 export default ApiRoutes;
