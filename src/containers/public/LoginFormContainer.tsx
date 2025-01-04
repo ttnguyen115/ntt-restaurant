@@ -4,7 +4,11 @@ import { memo, useCallback } from 'react';
 
 import { useForm } from 'react-hook-form';
 
+import { useRouter } from 'next/navigation';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import { AppNavigationRoutes } from '@/constants';
 
 import { toast, useLoginMutation } from '@/hooks';
 
@@ -21,6 +25,8 @@ import { handleErrorApi } from '@/lib';
 import { LoginBody, type LoginBodyType } from '@/schemaValidations';
 
 function LoginFormContainer() {
+    const router = useRouter();
+
     const { isPending, mutateAsync: login } = useLoginMutation();
 
     const form = useForm<LoginBodyType>({
@@ -39,6 +45,7 @@ function LoginFormContainer() {
                 toast({
                     description: result.payload.message,
                 });
+                router.push(AppNavigationRoutes.MANAGE_DASHBOARD);
             } catch (error: unknown) {
                 handleErrorApi({ error, setError: form.setError });
             }

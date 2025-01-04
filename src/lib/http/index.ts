@@ -1,7 +1,12 @@
 import { redirect } from 'next/navigation';
 
 import envConfig from '@/config';
-import { isClient } from '@/utilities';
+import {
+    isClient,
+    removeTokensFromLocalStorage,
+    setAccessTokenToLocalStorage,
+    setRefreshTokenToLocalStorage,
+} from '@/utilities';
 
 import { ApiRoutes, AppNavigationRoutes } from '@/constants';
 
@@ -108,11 +113,10 @@ const request = async <Response>(
     if (isClient) {
         if (url === ApiRoutes.CLIENT_API_LOGIN) {
             const { accessToken, refreshToken } = (payload as LoginResType).data;
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            setAccessTokenToLocalStorage(accessToken);
+            setRefreshTokenToLocalStorage(refreshToken);
         } else if (url === ApiRoutes.CLIENT_API_LOGOUT) {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+            removeTokensFromLocalStorage();
         }
     }
 

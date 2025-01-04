@@ -1,10 +1,13 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { AppNavigationRoutes } from '@/constants';
+
+import { useLogoutMutation } from '@/hooks';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -17,12 +20,30 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { handleErrorApi } from '@/lib';
+
 const account = {
     name: 'Nguyễn Văn A',
     avatar: 'https://i.pravatar.cc/150',
 };
 
 function DropdownAvatar() {
+    const router = useRouter();
+
+    const { isPending, mutateAsync: logout } = useLogoutMutation();
+
+    const handleLogout = useCallback(async () => {
+        if (isPending) return;
+        try {
+            await logout();
+            router.push(AppNavigationRoutes.DEFAULT);
+        } catch (error: unknown) {
+            handleErrorApi({
+                error,
+            });
+        }
+    }, [isPending, logout]);
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -53,7 +74,7 @@ function DropdownAvatar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem>Hỗ trợ</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
