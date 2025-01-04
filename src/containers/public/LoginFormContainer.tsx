@@ -7,14 +7,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import { LoginBody, LoginBodyType } from '@/schemaValidations';
+import { LoginBody, type LoginBodyType } from '@/schemaValidations';
 
-function LoginForm() {
+import { CardContainer } from '..';
+
+function LoginFormContainer() {
     const form = useForm<LoginBodyType>({
         resolver: zodResolver(LoginBody),
         defaultValues: {
@@ -24,11 +26,12 @@ function LoginForm() {
     });
 
     return (
-        <Card className="mx-auto max-w-sm">
-            <CardHeader>
-                <CardTitle className="text-2xl">Đăng nhập</CardTitle>
-                <CardDescription>Nhập email và mật khẩu của bạn để đăng nhập vào hệ thống</CardDescription>
-            </CardHeader>
+        <CardContainer
+            containerClassName="mx-auto max-w-sm"
+            title="Sign In"
+            description="Please provide email and password to login"
+            titleClassName="text-2xl"
+        >
             <CardContent>
                 <Form {...form}>
                     <form
@@ -79,21 +82,21 @@ function LoginForm() {
                                 type="submit"
                                 className="w-full"
                             >
-                                Đăng nhập
+                                Log In
                             </Button>
                             <Button
                                 variant="outline"
                                 className="w-full"
                                 type="button"
                             >
-                                Đăng nhập bằng Google
+                                Login by Google SSO
                             </Button>
                         </div>
                     </form>
                 </Form>
             </CardContent>
-        </Card>
+        </CardContainer>
     );
 }
 
-export default memo(LoginForm);
+export default memo(LoginFormContainer);

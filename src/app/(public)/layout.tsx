@@ -6,11 +6,11 @@ import DarkModeToggle from '@/components/DarkModeToggle';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
-import { Children } from '@/types';
+import { ChildrenObject } from '@/types';
 
 import NavItems from './NavItems';
 
-function Layout({ children }: Readonly<Children>) {
+function Layout({ children }: Readonly<ChildrenObject>) {
     return (
         <div className="flex min-h-screen w-full flex-col relative">
             <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">

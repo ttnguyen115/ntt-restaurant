@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
 
-type Children = { children: ReactNode };
+export type Children = ReactNode;
 
-export default Children;
+export type ChildrenObject = { children: ReactNode };

@@ -1,12 +1,12 @@
 import DarkModeToggle from '@/components/DarkModeToggle';
 
-import type { Children } from '@/types';
+import type { ChildrenObject } from '@/types';
 
 import DropdownAvatar from './DropdownAvatar';
 import MobileNavLinks from './MobileNavLinks';
 import NavLinks from './NavLinks';
 
-function Layout({ children }: Readonly<Children>) {
+function Layout({ children }: Readonly<ChildrenObject>) {
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <NavLinks />

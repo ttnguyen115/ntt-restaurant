@@ -7,7 +7,7 @@ import { cn } from '@/utilities';
 import ThemeProvider from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 
-import type { Children } from '@/types';
+import type { ChildrenObject } from '@/types';
 
 import './globals.css';
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description: 'The best restaurant in the world',
 };
 
-function RootLayout({ children }: Readonly<Children>) {
+function RootLayout({ children }: Readonly<ChildrenObject>) {
     return (
         <html
             lang="en"
