@@ -1,10 +1,12 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import { toast, useLoginMutation } from '@/hooks';
 
 import CardContainer from '@/containers/CardContainer';
 
@@ -14,9 +16,13 @@ import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { handleErrorApi } from '@/lib';
+
 import { LoginBody, type LoginBodyType } from '@/schemaValidations';
 
 function LoginFormContainer() {
+    const { isPending, mutateAsync: login } = useLoginMutation();
+
     const form = useForm<LoginBodyType>({
         resolver: zodResolver(LoginBody),
         defaultValues: {
@@ -24,6 +30,22 @@ function LoginFormContainer() {
             password: '',
         },
     });
+
+    const onSubmit = useCallback(
+        async (data: LoginBodyType) => {
+            if (isPending) return;
+
+            try {
+                const result = await login(data);
+                toast({
+                    description: result.payload.message,
+                });
+            } catch (error: unknown) {
+                handleErrorApi({ error, setError: form.setError });
+            }
+        },
+        [isPending, login]
+    );
 
     return (
         <CardContainer
@@ -37,6 +59,9 @@ function LoginFormContainer() {
                     <form
                         className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
                         noValidate
+                        onSubmit={form.handleSubmit(onSubmit, (error) => {
+                            console.error(error);
+                        })}
                     >
                         <div className="grid gap-4">
                             <FormField

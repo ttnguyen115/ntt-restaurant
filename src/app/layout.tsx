@@ -4,7 +4,10 @@ import type { Metadata } from 'next';
 
 import { cn } from '@/utilities';
 
+// providers
+import ReactQueryProvider from '@/components/ReactQueryProvider';
 import ThemeProvider from '@/components/ThemeProvider';
+// components
 import { Toaster } from '@/components/ui/toaster';
 
 import type { ChildrenObject } from '@/types';
@@ -27,15 +30,17 @@ function RootLayout({ children }: Readonly<ChildrenObject>) {
             suppressHydrationWarning
         >
             <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    {children}
-                    <Toaster />
-                </ThemeProvider>
+                <ReactQueryProvider>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        {children}
+                        <Toaster />
+                    </ThemeProvider>
+                </ReactQueryProvider>
             </body>
         </html>
     );
