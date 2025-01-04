@@ -1,8 +1,10 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import Link from 'next/link';
+
+import { getAccessTokenFromLocalStorage } from '@/utilities';
 
 import { AppNavigationRoutes } from '@/constants';
 
@@ -14,6 +16,7 @@ const menuItems = [
     {
         title: 'Đơn hàng',
         href: AppNavigationRoutes.ORDERS,
+        authRequired: true,
     },
     {
         title: 'Đăng nhập',
@@ -28,7 +31,15 @@ const menuItems = [
 ];
 
 function NavItems({ className }: { className?: string }) {
+    const [isAuth, setIsAuth] = useState(false);
+
+    useEffect(() => {
+        setIsAuth(Boolean(getAccessTokenFromLocalStorage()));
+    }, []);
+
     return menuItems.map((item) => {
+        if ((!item.authRequired && isAuth) || (item.authRequired && !isAuth)) return null;
+
         return (
             <Link
                 href={item.href}

@@ -4,7 +4,7 @@ import AppNavigationRoutes from './AppNavigationRoutes';
 
 const menuItems = [
     {
-        title: 'Dashboard',
+        title: 'Trang chủ',
         Icon: Home,
         href: AppNavigationRoutes.MANAGE_DASHBOARD,
     },
