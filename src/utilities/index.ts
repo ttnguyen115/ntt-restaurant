@@ -10,6 +10,7 @@ export { default as removeAccents } from './removeAccents';
 export { default as simpleMatchText } from './simpleMatchText';
 export { default as formatDateTimeToLocaleString } from './formatDateTimeToLocaleString';
 export { default as formatDateTimeToTimeString } from './formatDateTimeToTimeString';
+export { default as decodeAndGetExpirationFromToken } from './decodeAndGetExpirationFromToken';
 export { default as cn } from './cn';
 export {
     getRefreshTokenFromLocalStorage,

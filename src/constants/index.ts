@@ -14,5 +14,7 @@ export {
 } from './type';
 // eslint-disable-next-line import/no-cycle
 export { default as menuItems } from './menuItems';
-export { default as AppNavigationRoutes } from './AppNavigationRoutes';
 export { default as ApiRoutes } from './ApiRoutes';
+export { default as AppNavigationRoutes } from './AppNavigationRoutes';
+
+export const DEFAULT_PATH = '/';
