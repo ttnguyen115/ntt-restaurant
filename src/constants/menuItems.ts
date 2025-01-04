@@ -2,7 +2,7 @@ import { Home, LineChart, Salad, ShoppingCart, Table, Users2 } from 'lucide-reac
 
 import AppNavigationRoutes from './AppNavigationRoutes';
 
-const menuItems = [
+export const manageMenuItems = [
     {
         title: 'Trang chủ',
         Icon: Home,
@@ -36,4 +36,24 @@ const menuItems = [
     },
 ];
 
-export default menuItems;
+export const homeMenuItems = [
+    {
+        title: 'Món ăn',
+        href: AppNavigationRoutes.MENU,
+    },
+    {
+        title: 'Đơn hàng',
+        href: AppNavigationRoutes.ORDERS,
+        authRequired: true,
+    },
+    {
+        title: 'Đăng nhập',
+        href: AppNavigationRoutes.LOGIN,
+        authRequired: false,
+    },
+    {
+        title: 'Quản lý',
+        href: AppNavigationRoutes.MANAGE_DASHBOARD,
+        authRequired: true,
+    },
+];

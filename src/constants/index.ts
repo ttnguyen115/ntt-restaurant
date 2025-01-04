@@ -12,8 +12,8 @@ export {
     ManagerRoom,
     OrderStatusIcon,
 } from './type';
-export { default as menuItems } from './menuItems';
 export { default as ApiRoutes } from './ApiRoutes';
 export { default as AppNavigationRoutes } from './AppNavigationRoutes';
+export { manageMenuItems, homeMenuItems } from './menuItems';
 
 export const DEFAULT_PATH = '/';

@@ -9,7 +9,7 @@ import { Package2, Settings } from 'lucide-react';
 
 import { cn } from '@/utilities';
 
-import { AppNavigationRoutes, menuItems } from '@/constants';
+import { AppNavigationRoutes, manageMenuItems } from '@/constants';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -36,8 +36,9 @@ function NavLinks() {
                         <span className="sr-only">Acme Inc</span>
                     </Link>
 
-                    {menuItems.map((Item, index) => {
+                    {manageMenuItems.map((Item, index) => {
                         const isActive = pathname === Item.href;
+
                         return (
                             <Tooltip key={index}>
                                 <TooltipTrigger asChild>

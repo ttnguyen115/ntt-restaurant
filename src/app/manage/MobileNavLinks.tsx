@@ -9,7 +9,7 @@ import { Package2, PanelLeft } from 'lucide-react';
 
 import { cn } from '@/utilities';
 
-import { menuItems } from '@/constants';
+import { manageMenuItems } from '@/constants';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -45,7 +45,7 @@ function MobileNavLinks() {
                         <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
                         <span className="sr-only">Acme Inc</span>
                     </Link>
-                    {menuItems.map((Item, index) => {
+                    {manageMenuItems.map((Item, index) => {
                         const isActive = pathname === Item.href;
                         return (
                             <Link
