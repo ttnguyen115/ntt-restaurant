@@ -30,7 +30,7 @@ function CardContainer({
         >
             <CardHeader className={headerClassName}>
                 <CardTitle className={titleClassName}>{title}</CardTitle>
-                {description && <CardDescription>${description}</CardDescription>}
+                {description && <CardDescription>{description}</CardDescription>}
             </CardHeader>
             <CardContent>{children}</CardContent>
         </Card>

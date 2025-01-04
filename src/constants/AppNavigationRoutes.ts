@@ -5,8 +5,10 @@ const AppNavigationRoutes = {
     LOGOUT: '/logout',
 
     // main page navigations
+    DEFAULT: '/',
     MENU: '/menu',
     ORDERS: '/orders',
+    MANAGE: '/manage',
 
     // manage pages
     MANAGE_DASHBOARD: `${PREFIX_MANAGE}/dashboard`,
