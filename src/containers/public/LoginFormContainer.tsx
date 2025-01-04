@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import CardContainer from '@/containers/CardContainer';
+
 import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -13,8 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { LoginBody, type LoginBodyType } from '@/schemaValidations';
-
-import { CardContainer } from '..';
 
 function LoginFormContainer() {
     const form = useForm<LoginBodyType>({
