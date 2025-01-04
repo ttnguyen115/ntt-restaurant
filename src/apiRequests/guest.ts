@@ -1,7 +1,5 @@
-// eslint-disable-next-line import/no-cycle
 import { ApiRoutes } from '@/constants';
 
-// eslint-disable-next-line import/no-cycle
 import { http } from '@/lib';
 
 import {

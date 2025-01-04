@@ -7,7 +7,6 @@ import {
 
 import { getAccessTokenFromLocalStorage, getRefreshTokenFromLocalStorage } from '@/utilities/localStorage';
 
-// eslint-disable-next-line import/no-cycle
 import { authApiRequest, guestApiRequest } from '@/apiRequests';
 
 import { Role } from '@/constants';

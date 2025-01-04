@@ -34,7 +34,6 @@ function LoginFormContainer() {
     const onSubmit = useCallback(
         async (data: LoginBodyType) => {
             if (isPending) return;
-
             try {
                 const result = await login(data);
                 toast({
@@ -44,7 +43,7 @@ function LoginFormContainer() {
                 handleErrorApi({ error, setError: form.setError });
             }
         },
-        [isPending, login]
+        [isPending, login, form.setError]
     );
 
     return (
