@@ -32,6 +32,7 @@ const ApiRoutes = {
 
     // Others
     ME: `${PREFIX_ACCOUNTS}${SUFFIX_ME}`,
+    MEDIA_UPLOAD: '/media/upload',
 };
 
 export default ApiRoutes;

@@ -3,3 +3,4 @@ export { default as useClientOnly } from './useClientOnly';
 
 export { useLoginMutation, useLogoutMutation } from './queries/useAuth';
 export { useAccountProfile } from './queries/useAccount';
+export { useMediaMutation } from './queries/useMedia';
