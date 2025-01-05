@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 
 import { Bar, BarChart, XAxis, YAxis } from 'recharts';
 
@@ -51,48 +51,45 @@ const chartData = [
 ];
 
 function DishBarChart() {
-    const renderBarChart = useMemo(
-        () => (
-            <ChartContainer config={chartConfig}>
-                <BarChart
-                    accessibilityLayer
-                    data={chartData}
-                    layout="vertical"
-                    margin={{
-                        left: 0,
-                    }}
-                >
-                    <YAxis
-                        dataKey="name"
-                        type="category"
-                        tickLine={false}
-                        tickMargin={2}
-                        axisLine={false}
-                        tickFormatter={(value) => {
-                            return value;
+    const renderBarChart = (
+        <ChartContainer config={chartConfig}>
+            <BarChart
+                accessibilityLayer
+                data={chartData}
+                layout="vertical"
+                margin={{
+                    left: 0,
+                }}
+            >
+                <YAxis
+                    dataKey="name"
+                    type="category"
+                    tickLine={false}
+                    tickMargin={2}
+                    axisLine={false}
+                    tickFormatter={(value) => {
+                        return value;
 
-                            // return chartConfig[value as keyof typeof chartConfig]?.label
-                        }}
-                    />
-                    <XAxis
-                        dataKey="successOrders"
-                        type="number"
-                        hide
-                    />
-                    <ChartTooltip
-                        cursor={false}
-                        content={<ChartTooltipContent />}
-                    />
-                    <Bar
-                        dataKey="successOrders"
-                        name={'Đơn thanh toán'}
-                        layout="vertical"
-                        radius={5}
-                    />
-                </BarChart>
-            </ChartContainer>
-        ),
-        []
+                        // return chartConfig[value as keyof typeof chartConfig]?.label
+                    }}
+                />
+                <XAxis
+                    dataKey="successOrders"
+                    type="number"
+                    hide
+                />
+                <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent />}
+                />
+                <Bar
+                    dataKey="successOrders"
+                    name={'Đơn thanh toán'}
+                    layout="vertical"
+                    radius={5}
+                />
+            </BarChart>
+        </ChartContainer>
     );
 
     return (

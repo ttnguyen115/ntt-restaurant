@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -41,14 +41,9 @@ function AddDish() {
     const image = form.watch('image');
     const name = form.watch('name');
 
-    const previewAvatarFromFile = useMemo(() => {
-        if (file) {
-            return URL.createObjectURL(file);
-        }
-        return image;
-    }, [file, image]);
+    const previewAvatarFromFile = file ? URL.createObjectURL(file) : image;
 
-    const handleUploadDishImage = useCallback(() => imageInputRef.current?.click(), []);
+    const handleUploadDishImage = () => imageInputRef.current?.click();
 
     return (
         <Dialog

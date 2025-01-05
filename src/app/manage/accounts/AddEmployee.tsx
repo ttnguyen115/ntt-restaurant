@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -43,14 +43,9 @@ function AddEmployee() {
     const avatar = form.watch('avatar');
     const name = form.watch('name');
 
-    const previewAvatarFromFile = useMemo(() => {
-        if (file) {
-            return URL.createObjectURL(file);
-        }
-        return avatar;
-    }, [file, avatar]);
+    const previewAvatarFromFile = file ? URL.createObjectURL(file) : avatar;
 
-    const handleUploadAvatar = useCallback(() => avatarInputRef.current?.click(), []);
+    const handleUploadAvatar = () => avatarInputRef.current?.click();
 
     return (
         <Dialog

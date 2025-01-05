@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -30,7 +30,7 @@ function DropdownAvatar() {
     const { data } = useAccountProfile();
     const account = data?.payload.data;
 
-    const handleLogout = useCallback(async () => {
+    const handleLogout = async () => {
         if (isPending) return;
         try {
             await logout();
@@ -40,7 +40,7 @@ function DropdownAvatar() {
                 error,
             });
         }
-    }, [router, isPending, logout]);
+    };
 
     return (
         <DropdownMenu>

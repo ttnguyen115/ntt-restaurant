@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo, useState } from 'react';
+import { memo, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -22,11 +22,11 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
 import {
-    CreateOrdersBodyType,
-    DishListResType,
-    GetListGuestsResType,
+    type CreateOrdersBodyType,
+    type DishListResType,
+    type GetListGuestsResType,
     GuestLoginBody,
-    GuestLoginBodyType,
+    type GuestLoginBodyType,
 } from '@/schemaValidations';
 
 import GuestsDialog from './GuestsDialog';
@@ -38,15 +38,13 @@ function AddOrder() {
     const [isNewGuest, setIsNewGuest] = useState(true);
     const [orders, setOrders] = useState<CreateOrdersBodyType['orders']>([]);
 
-    const dishes: DishListResType['data'] = useMemo(() => [], []);
+    const dishes: DishListResType['data'] = [];
 
-    const totalPrice = useMemo(() => {
-        return dishes.reduce((result, dish) => {
-            const order = orders.find((o) => o.dishId === dish.id);
-            if (!order) return result;
-            return result + order.quantity * dish.price;
-        }, 0);
-    }, [dishes, orders]);
+    const totalPrice = dishes.reduce((result, dish) => {
+        const order = orders.find((o) => o.dishId === dish.id);
+        if (!order) return result;
+        return result + order.quantity * dish.price;
+    }, 0);
 
     const form = useForm<GuestLoginBodyType>({
         resolver: zodResolver(GuestLoginBody),

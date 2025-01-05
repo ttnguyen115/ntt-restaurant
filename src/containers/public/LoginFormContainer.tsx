@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -37,21 +37,18 @@ function LoginFormContainer() {
         },
     });
 
-    const onSubmit = useCallback(
-        async (data: LoginBodyType) => {
-            if (isPending) return;
-            try {
-                const result = await login(data);
-                toast({
-                    description: result.payload.message,
-                });
-                router.push(AppNavigationRoutes.MANAGE_DASHBOARD);
-            } catch (error: unknown) {
-                handleErrorApi({ error, setError: form.setError });
-            }
-        },
-        [isPending, login, form.setError]
-    );
+    const onSubmit = async (data: LoginBodyType) => {
+        if (isPending) return;
+        try {
+            const result = await login(data);
+            toast({
+                description: result.payload.message,
+            });
+            router.push(AppNavigationRoutes.MANAGE_DASHBOARD);
+        } catch (error: unknown) {
+            handleErrorApi({ error, setError: form.setError });
+        }
+    };
 
     return (
         <CardContainer

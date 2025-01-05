@@ -1,21 +1,21 @@
 'use client';
 
-import { createContext, memo, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, memo, useContext, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import {
-    ColumnDef,
-    ColumnFiltersState,
+    type ColumnDef,
+    type ColumnFiltersState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    SortingState,
+    type SortingState,
     useReactTable,
-    VisibilityState,
+    type VisibilityState,
 } from '@tanstack/react-table';
 
 import { AppNavigationRoutes } from '@/constants';
@@ -148,14 +148,11 @@ interface AlertDialogDeleteAccount {
 }
 
 const AlertDialogDeleteAccount = memo(({ employeeDelete, setEmployeeDelete }: AlertDialogDeleteAccount) => {
-    const handleOpenAlertDialog = useCallback(
-        (value: boolean) => {
-            if (!value) {
-                setEmployeeDelete(null);
-            }
-        },
-        [setEmployeeDelete]
-    );
+    const handleOpenAlertDialog = (value: boolean) => {
+        if (!value) {
+            setEmployeeDelete(null);
+        }
+    };
 
     return (
         <AlertDialog

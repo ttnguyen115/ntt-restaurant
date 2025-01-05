@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -51,14 +51,9 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
     const name = form.watch('name');
     const changePassword = form.watch('changePassword');
 
-    const previewAvatarFromFile = useMemo(() => {
-        if (file) {
-            return URL.createObjectURL(file);
-        }
-        return avatar;
-    }, [file, avatar]);
+    const previewAvatarFromFile = file ? URL.createObjectURL(file) : avatar;
 
-    const handleUploadAvatar = useCallback(() => avatarInputRef.current?.click(), []);
+    const handleUploadAvatar = () => avatarInputRef.current?.click();
 
     return (
         <Dialog
