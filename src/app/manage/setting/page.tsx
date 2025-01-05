@@ -1,7 +1,6 @@
-import { Badge } from '@/components/ui/badge';
+import { ChangePasswordFormContainer, UpdateProfileFormContainer } from '@/containers';
 
-import ChangePasswordForm from './ChangePasswordForm';
-import UpdateProfileForm from './UpdateProfileForm';
+import { Badge } from '@/components/ui/badge';
 
 function Setting() {
     return (
@@ -19,8 +18,8 @@ function Setting() {
                     </Badge>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2 md:gap-8">
-                    <UpdateProfileForm />
-                    <ChangePasswordForm />
+                    <UpdateProfileFormContainer />
+                    <ChangePasswordFormContainer />
                 </div>
             </div>
         </main>

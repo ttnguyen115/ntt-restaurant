@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload } from 'lucide-react';
 
-import { useAccountProfile } from '@/hooks';
+import { toast, useMediaMutation, useMyAccount, useMyAccountMutation } from '@/hooks';
 
 import CardContainer from '@/containers/CardContainer';
 
@@ -17,12 +17,18 @@ import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { handleErrorApi } from '@/lib';
+
 import { UpdateMeBody, UpdateMeBodyType } from '@/schemaValidations';
 
-function UpdateProfileForm() {
+function UpdateProfileFormContainer() {
     const [file, setFile] = useState<File | null>(null);
 
     const avatarInputRef = useRef<HTMLInputElement>(null);
+
+    const { data: myAccountProfile, refetch } = useMyAccount();
+    const { mutateAsync: updateMyAccount, isPending } = useMyAccountMutation();
+    const { mutateAsync: uploadMedia } = useMediaMutation();
 
     const form = useForm<UpdateMeBodyType>({
         resolver: zodResolver(UpdateMeBody),
@@ -34,16 +40,44 @@ function UpdateProfileForm() {
     const avatar = form.watch('avatar');
     const name = form.watch('name');
 
-    const handleUploadAvatar = () => avatarInputRef.current?.click();
-
-    const handleChangeAvatarInput = (e: ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = e.target.files?.[0];
-        setFile(selectedFile as File);
-    };
-
     const previewAvatar = file ? URL.createObjectURL(file) : avatar;
 
-    const { data: myAccountProfile } = useAccountProfile();
+    const handleUploadAvatar = () => avatarInputRef.current?.click();
+
+    const resetForm = () => {
+        form.reset();
+        setFile(null);
+    };
+
+    const submitForm = async (values: UpdateMeBodyType) => {
+        if (isPending) return;
+        try {
+            let body = values;
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                const { payload } = await uploadMedia(formData);
+                const imageUrl = payload.data;
+                body = {
+                    ...values,
+                    avatar: imageUrl,
+                };
+            }
+            const result = await updateMyAccount(body);
+
+            toast({
+                description: result.payload.message,
+            });
+
+            // refetch to update new avatar for top navbar
+            await refetch();
+        } catch (error) {
+            handleErrorApi({
+                error,
+                setError: form.setError,
+            });
+        }
+    };
 
     useEffect(() => {
         if (myAccountProfile) {
@@ -60,6 +94,8 @@ function UpdateProfileForm() {
             <form
                 noValidate
                 className="grid auto-rows-max items-start gap-4 md:gap-8"
+                onReset={resetForm}
+                onSubmit={form.handleSubmit(submitForm)}
             >
                 <CardContainer
                     title="Thông tin cá nhân"
@@ -81,7 +117,14 @@ function UpdateProfileForm() {
                                             type="file"
                                             accept="image/*"
                                             className="hidden"
-                                            onChange={handleChangeAvatarInput}
+                                            onChange={(e) => {
+                                                const selectedFile = e.target.files?.[0];
+                                                if (selectedFile) {
+                                                    setFile(selectedFile);
+                                                    field.onChange(`http://localhost:3000/${field.name}`);
+                                                }
+                                            }}
+                                            value=""
                                             ref={avatarInputRef}
                                         />
                                         <button
@@ -136,4 +179,4 @@ function UpdateProfileForm() {
     );
 }
 
-export default memo(UpdateProfileForm);
+export default memo(UpdateProfileFormContainer);

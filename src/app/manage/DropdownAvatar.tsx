@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { useAccountProfile, useLogoutMutation } from '@/hooks';
+import { useLogoutMutation, useMyAccount } from '@/hooks';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,7 @@ function DropdownAvatar() {
 
     const { isPending, mutateAsync: logout } = useLogoutMutation();
 
-    const { data } = useAccountProfile();
+    const { data } = useMyAccount();
     const account = data?.payload.data;
 
     const handleLogout = async () => {

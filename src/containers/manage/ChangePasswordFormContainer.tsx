@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 
 import { ChangePasswordBody, ChangePasswordBodyType } from '@/schemaValidations';
 
-function ChangePasswordForm() {
+function ChangePasswordFormContainer() {
     const form = useForm<ChangePasswordBodyType>({
         resolver: zodResolver(ChangePasswordBody),
         defaultValues: {
@@ -107,4 +107,4 @@ function ChangePasswordForm() {
     );
 }
 
-export default memo(ChangePasswordForm);
+export default memo(ChangePasswordFormContainer);
