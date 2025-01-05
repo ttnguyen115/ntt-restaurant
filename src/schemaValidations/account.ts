@@ -2,6 +2,8 @@ import z from 'zod';
 
 import { Role } from '@/constants';
 
+import { LoginRes } from './auth';
+
 export const Account = z.object({
     id: z.number(),
     name: z.string(),
@@ -107,6 +109,10 @@ export const ChangePasswordBody = z
     });
 
 export type ChangePasswordBodyType = z.TypeOf<typeof ChangePasswordBody>;
+
+export const ChangePasswordRes = LoginRes;
+
+export type ChangePasswordResType = z.TypeOf<typeof ChangePasswordRes>;
 
 export const AccountIdParam = z.object({
     id: z.coerce.number(),

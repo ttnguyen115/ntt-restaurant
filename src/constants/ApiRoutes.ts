@@ -7,6 +7,7 @@ const SUFFIX_LOGIN = '/login';
 const SUFFIX_LOGOUT = '/logout';
 const SUFFIX_REFRESH_TOKEN = '/refresh-token';
 const SUFFIX_ME = '/me';
+const SUFFIX_CHANGE_PASSWORD = '/change-password';
 
 const ApiRoutes = {
     // server API employees
@@ -33,6 +34,9 @@ const ApiRoutes = {
     // Others
     ME: `${PREFIX_ACCOUNTS}${SUFFIX_ME}`,
     MEDIA_UPLOAD: '/media/upload',
+
+    SERVER_CHANGE_PASSWORD: `${PREFIX_ACCOUNTS}${SUFFIX_CHANGE_PASSWORD}`,
+    CLIENT_CHANGE_PASSWORD: `${PREFIX_API}${PREFIX_ACCOUNTS}${SUFFIX_CHANGE_PASSWORD}`,
 };
 
 export default ApiRoutes;

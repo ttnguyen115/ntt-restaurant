@@ -6,6 +6,10 @@ import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { setAccessTokenToLocalStorage, setRefreshTokenToLocalStorage } from '@/utilities';
+
+import { toast, useMyPasswordMutation } from '@/hooks';
+
 import CardContainer from '@/containers/CardContainer';
 
 import { Button } from '@/components/ui/button';
@@ -13,9 +17,13 @@ import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { handleErrorApi } from '@/lib';
+
 import { ChangePasswordBody, ChangePasswordBodyType } from '@/schemaValidations';
 
 function ChangePasswordFormContainer() {
+    const { mutateAsync: changePassword, isPending } = useMyPasswordMutation();
+
     const form = useForm<ChangePasswordBodyType>({
         resolver: zodResolver(ChangePasswordBody),
         defaultValues: {
@@ -25,11 +33,41 @@ function ChangePasswordFormContainer() {
         },
     });
 
+    const onReset = () => {
+        form.reset();
+    };
+
+    const onSubmit = async (values: ChangePasswordBodyType) => {
+        if (isPending) return;
+        try {
+            const { payload } = await changePassword(values);
+            const {
+                data: { accessToken, refreshToken },
+                message,
+            } = payload;
+
+            setAccessTokenToLocalStorage(accessToken);
+            setRefreshTokenToLocalStorage(refreshToken);
+
+            toast({
+                description: message,
+            });
+            form.reset();
+        } catch (error) {
+            handleErrorApi({
+                error,
+                setError: form.setError,
+            });
+        }
+    };
+
     return (
         <Form {...form}>
             <form
                 noValidate
                 className="grid auto-rows-max items-start gap-4 md:gap-8"
+                onSubmit={form.handleSubmit(onSubmit)}
+                onReset={onReset}
             >
                 <CardContainer
                     containerClassName="overflow-hidden"
@@ -95,10 +133,16 @@ function ChangePasswordFormContainer() {
                             <Button
                                 variant="outline"
                                 size="sm"
+                                type="reset"
                             >
                                 Hủy
                             </Button>
-                            <Button size="sm">Lưu thông tin</Button>
+                            <Button
+                                size="sm"
+                                type="submit"
+                            >
+                                Lưu thông tin
+                            </Button>
                         </div>
                     </div>
                 </CardContainer>
