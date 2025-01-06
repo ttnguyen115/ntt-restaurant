@@ -16,7 +16,7 @@ function NavItems({ className }: { className?: string }) {
     }, []);
 
     return homeMenuItems.map((item) => {
-        if ((item.authRequired === false && isAuth) || (item.authRequired && !isAuth)) return null;
+        if ((item.authRequired === false && isAuth) || (item.authRequired === true && !isAuth)) return null;
 
         return (
             <Link

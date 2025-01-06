@@ -8,16 +8,28 @@ const publicPaths = [AppNavigationRoutes.LOGIN];
 
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const isAuth = Boolean(request.cookies.get('accessToken')?.value);
+
+    const accessToken = request.cookies.get('accessToken')?.value;
+    const refreshToken = request.cookies.get('refreshToken')?.value;
 
     const isInPrivatePaths = privatePaths.some((path) => pathname.startsWith(path));
-    if (isInPrivatePaths && !isAuth) {
+    const isInPublicPaths = publicPaths.some((path) => pathname.startsWith(path));
+
+    // If indeed user has not logged in yet
+    if (isInPrivatePaths && !refreshToken) {
         return NextResponse.redirect(new URL(AppNavigationRoutes.LOGIN, request.url));
     }
 
-    const isInPublicPaths = publicPaths.some((path) => pathname.startsWith(path));
-    if (isInPublicPaths && isAuth) {
+    // If user has logged in already, do NOT allow to access login page
+    if (isInPublicPaths && refreshToken) {
         return NextResponse.redirect(new URL(AppNavigationRoutes.DEFAULT, request.url));
+    }
+
+    // Logged-in user but access token is expired, while refresh token is still
+    if (isInPrivatePaths && !accessToken && refreshToken) {
+        const url = new URL(AppNavigationRoutes.LOGOUT, request.url);
+        url.searchParams.set('refreshToken', refreshToken);
+        return NextResponse.redirect(url);
     }
 
     return NextResponse.next();

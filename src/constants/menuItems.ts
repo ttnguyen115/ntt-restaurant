@@ -44,7 +44,6 @@ export const homeMenuItems = [
     {
         title: 'Đơn hàng',
         href: AppNavigationRoutes.ORDERS,
-        authRequired: true,
     },
     {
         title: 'Đăng nhập',
