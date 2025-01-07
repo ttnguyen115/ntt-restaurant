@@ -101,6 +101,8 @@ const request = async <Response>(
                     }
                 }
             } else {
+                // API calling from Next.js (Route handlers, Server Components) to backend
+                // access token is still valid
                 const accessToken = (options?.headers as any)?.Authorization.split('Bearer ')[1];
                 redirect(`${AppNavigationRoutes.LOGOUT}?accessToken=${accessToken}`);
             }

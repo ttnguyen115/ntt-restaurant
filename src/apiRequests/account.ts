@@ -12,6 +12,13 @@ import type {
 const accountApiRequest = {
     me: () => http.get<AccountResType>(ApiRoutes.ME),
 
+    sMe: (accessToken: string) =>
+        http.get<AccountResType>(ApiRoutes.ME, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }),
+
     updateMe: (body: UpdateMeBodyType) => http.put<AccountResType>(ApiRoutes.ME, body),
 
     sChangePassword: (accessToken: string, body: ChangePasswordBodyType) =>
