@@ -18,6 +18,7 @@ const guestApiRequest = {
         status: number;
         payload: RefreshTokenResType;
     }> | null,
+
     sLogin: (body: GuestLoginBodyType) => http.post<GuestLoginResType>(ApiRoutes.SERVER_API_GUEST_LOGIN, body),
 
     login: (body: GuestLoginBodyType) =>
@@ -44,14 +45,16 @@ const guestApiRequest = {
         http.post<RefreshTokenResType>(ApiRoutes.SERVER_API_GUEST_REFRESH_TOKEN, body),
 
     async refreshToken() {
-        if (this.refreshTokenRequest) {
-            return this.refreshTokenRequest;
-        }
+        if (this.refreshTokenRequest) return this.refreshTokenRequest;
+
         this.refreshTokenRequest = http.post<RefreshTokenResType>(ApiRoutes.CLIENT_API_GUEST_REFRESH_TOKEN, null, {
             baseUrl: '',
         });
+
         const result = await this.refreshTokenRequest;
+
         this.refreshTokenRequest = null;
+
         return result;
     },
 

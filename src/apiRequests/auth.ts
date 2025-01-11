@@ -15,6 +15,7 @@ const authApiRequest = {
         status: number;
         payload: RefreshTokenResType;
     }> | null,
+
     sLogin: (body: LoginBodyType) => http.post<LoginResType>(ApiRoutes.SERVER_API_LOGIN, body),
 
     login: (body: LoginBodyType) =>
@@ -41,14 +42,16 @@ const authApiRequest = {
         http.post<RefreshTokenResType>(ApiRoutes.SERVER_API_REFRESH_TOKEN, body),
 
     async refreshToken() {
-        if (this.refreshTokenRequest) {
-            return this.refreshTokenRequest;
-        }
+        if (this.refreshTokenRequest) return this.refreshTokenRequest;
+
         this.refreshTokenRequest = http.post<RefreshTokenResType>(ApiRoutes.CLIENT_API_REFRESH_TOKEN, null, {
             baseUrl: '',
         });
+
         const result = await this.refreshTokenRequest;
+
         this.refreshTokenRequest = null;
+
         return result;
     },
 };
