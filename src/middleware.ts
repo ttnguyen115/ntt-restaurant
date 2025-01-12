@@ -17,7 +17,9 @@ export function middleware(request: NextRequest) {
 
     // If indeed user has not logged in yet
     if (isInPrivatePaths && !refreshToken) {
-        return NextResponse.redirect(new URL(AppNavigationRoutes.LOGIN, request.url));
+        const url = new URL(AppNavigationRoutes.LOGIN, request.url);
+        url.searchParams.set('clearTokens', 'true');
+        return NextResponse.redirect(url);
     }
 
     // If user has logged in already, do NOT allow to access login page

@@ -23,6 +23,8 @@ function RefreshTokenPage() {
                     router.push(redirectPath || AppNavigationRoutes.DEFAULT);
                 },
             });
+        } else {
+            router.push(AppNavigationRoutes.DEFAULT);
         }
     }, [router, refreshTokenFromUrl, redirectPath]);
 

@@ -201,6 +201,16 @@
                     // {},
                     // alias references (@/subfolder/* like utilities, components, containers, hooks,...)
                     {
+                        "pattern": "@/contexts/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/contexts**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
                         "pattern": "@/utilities/**",
                         "group": "internal",
                         "position": "after"

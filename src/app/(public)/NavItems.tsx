@@ -1,22 +1,20 @@
 'use client';
 
-import { memo, useEffect, useState } from 'react';
+import { memo } from 'react';
 
 import Link from 'next/link';
 
-import { getAccessTokenFromLocalStorage } from '@/utilities';
-
 import { homeMenuItems } from '@/constants';
 
-function NavItems({ className }: { className?: string }) {
-    const [isAuth, setIsAuth] = useState(false);
+import { useAuth } from '@/hooks';
 
-    useEffect(() => {
-        setIsAuth(Boolean(getAccessTokenFromLocalStorage()));
-    }, []);
+function NavItems({ className }: { className?: string }) {
+    const { isAuthenticated } = useAuth();
 
     return homeMenuItems.map((item) => {
-        if ((item.authRequired === false && isAuth) || (item.authRequired === true && !isAuth)) return null;
+        if ((item.authRequired === false && isAuthenticated) || (item.authRequired === true && !isAuthenticated)) {
+            return null;
+        }
 
         return (
             <Link

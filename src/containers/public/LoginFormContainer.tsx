@@ -1,16 +1,16 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { toast, useLoginMutation } from '@/hooks';
+import { toast, useAuth, useLoginMutation } from '@/hooks';
 
 import CardContainer from '@/containers/CardContainer';
 
@@ -26,6 +26,10 @@ import { LoginBody, type LoginBodyType } from '@/schemaValidations';
 
 function LoginFormContainer() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const clearTokens = searchParams.get('clearTokens');
+
+    const { setIsAuthenticated } = useAuth();
 
     const { isPending, mutateAsync: login } = useLoginMutation();
 
@@ -49,6 +53,12 @@ function LoginFormContainer() {
             handleErrorApi({ error, setError: form.setError });
         }
     };
+
+    useEffect(() => {
+        if (clearTokens) {
+            setIsAuthenticated(false);
+        }
+    }, [clearTokens, setIsAuthenticated]);
 
     return (
         <CardContainer

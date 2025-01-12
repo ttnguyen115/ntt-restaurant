@@ -23,20 +23,20 @@ function Logout() {
     const ref = useRef<typeof logout | null>(null);
 
     useEffect(() => {
-        if (
-            ref.current ||
-            (accessTokenFromUrl && accessTokenFromUrl !== getAccessTokenFromLocalStorage()) ||
-            (refreshTokenFromUrl && refreshTokenFromUrl !== getRefreshTokenFromLocalStorage())
-        ) {
-            return;
-        }
-        ref.current = logout;
-        logout().then(() => {
-            setTimeout(() => {
-                ref.current = null;
-            }, 1000);
+        const isAccessTokenValid = accessTokenFromUrl && accessTokenFromUrl === getAccessTokenFromLocalStorage();
+        const isRefreshTokenValid = refreshTokenFromUrl && refreshTokenFromUrl === getRefreshTokenFromLocalStorage();
+
+        if (!ref.current && (isAccessTokenValid || isRefreshTokenValid)) {
+            ref.current = logout;
+            logout().then(() => {
+                setTimeout(() => {
+                    ref.current = null;
+                }, 1000);
+                router.push(AppNavigationRoutes.DEFAULT);
+            });
+        } else {
             router.push(AppNavigationRoutes.DEFAULT);
-        });
+        }
     }, [logout, router, accessTokenFromUrl, refreshTokenFromUrl]);
 
     return null;
