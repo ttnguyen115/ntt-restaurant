@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, memo, useContext, useEffect, useState } from 'react';
+import { createContext, memo, use, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -93,7 +93,7 @@ export const columns: ColumnDef<TableItem>[] = [
         id: 'actions',
         enableHiding: false,
         cell: function Actions({ row }) {
-            const { setTableIdEdit, setTableDelete } = useContext(TableContext);
+            const { setTableIdEdit, setTableDelete } = use(TableContext);
 
             const openEditTable = () => {
                 setTableIdEdit(row.original.number);

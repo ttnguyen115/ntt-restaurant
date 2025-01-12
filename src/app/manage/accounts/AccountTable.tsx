@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, memo, useContext, useEffect, useState } from 'react';
+import { createContext, memo, use, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -59,12 +59,10 @@ interface IAccountTableContext {
 }
 
 const AccountTableContext = createContext<IAccountTableContext>({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setEmployeeIdEdit: (value: number | undefined) => {},
+    setEmployeeIdEdit: () => {},
     employeeIdEdit: undefined,
     employeeDelete: null,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setEmployeeDelete: (value: AccountItem | null) => {},
+    setEmployeeDelete: () => {},
 });
 
 export const columns: ColumnDef<AccountType>[] = [
@@ -110,7 +108,7 @@ export const columns: ColumnDef<AccountType>[] = [
         id: 'actions',
         enableHiding: false,
         cell: function Actions({ row }) {
-            const { setEmployeeIdEdit, setEmployeeDelete } = useContext(AccountTableContext);
+            const { setEmployeeIdEdit, setEmployeeDelete } = use(AccountTableContext);
 
             const openEditEmployee = () => {
                 setEmployeeIdEdit(row.original.id);

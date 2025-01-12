@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 import { OrderStatusValues } from '@/constants';
 
@@ -18,4 +18,4 @@ export const OrderTableContext = createContext({
     orderObjectByGuestId: {} as OrderObjectByGuestID,
 });
 
-export const useOrderTable = () => useContext(OrderTableContext);
+export const useOrderTable = () => use(OrderTableContext);

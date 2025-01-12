@@ -1,21 +1,21 @@
 'use client';
 
-import { createContext, memo, useContext, useEffect, useState } from 'react';
+import { createContext, memo, use, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import {
-    ColumnDef,
-    ColumnFiltersState,
+    type ColumnDef,
+    type ColumnFiltersState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    SortingState,
+    type SortingState,
     useReactTable,
-    VisibilityState,
+    type VisibilityState,
 } from '@tanstack/react-table';
 
 import { formatCurrency, getVietnameseDishStatus } from '@/utilities';
@@ -115,7 +115,7 @@ export const columns: ColumnDef<DishItem>[] = [
         id: 'actions',
         enableHiding: false,
         cell: function Actions({ row }) {
-            const { setDishIdEdit, setDishDelete } = useContext(DishTableContext);
+            const { setDishIdEdit, setDishDelete } = use(DishTableContext);
             const openEditDish = () => {
                 setDishIdEdit(row.original.id);
             };
