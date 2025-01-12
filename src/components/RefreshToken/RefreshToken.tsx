@@ -4,17 +4,9 @@ import { useEffect } from 'react';
 
 import { usePathname } from 'next/navigation';
 
-import {
-    decodeAndGetExpirationFromToken,
-    getAccessTokenFromLocalStorage,
-    getRefreshTokenFromLocalStorage,
-    setAccessTokenToLocalStorage,
-    setRefreshTokenToLocalStorage,
-} from '@/utilities';
-
-import { authApiRequest } from '@/apiRequests';
-
 import { AppNavigationRoutes } from '@/constants';
+
+import { checkAndRefreshToken } from '@/lib';
 
 type IntervalType = string | number | NodeJS.Timeout | undefined;
 
@@ -30,39 +22,11 @@ function RefreshToken() {
 
         let interval: IntervalType;
 
-        const checkAndRefreshToken = async () => {
-            const accessToken = getAccessTokenFromLocalStorage();
-            const refreshToken = getRefreshTokenFromLocalStorage();
-
-            if (!accessToken || !refreshToken) return;
-
-            const [decodedAccessToken, decodedRefreshToken] = decodeAndGetExpirationFromToken(
-                accessToken,
-                refreshToken
-            );
-            const now = Math.round(new Date().getTime() / 1000);
-
-            // refresh token is expired
-            if (decodedRefreshToken.exp <= now) return;
-
-            // Check if it remains 1/3 of the expiration, start to refresh token
-            // The remaining time: decodedAccessToken.exp - now
-            const expirationTime = decodedAccessToken.exp - decodedAccessToken.iat;
-            const remainingTime = decodedAccessToken.exp - now;
-
-            if (remainingTime < expirationTime / 3) {
-                try {
-                    const { payload } = await authApiRequest.refreshToken();
-                    setAccessTokenToLocalStorage(payload.data.accessToken);
-                    setRefreshTokenToLocalStorage(payload.data.refreshToken);
-                } catch {
-                    clearInterval(interval);
-                }
-            }
-        };
-
-        // Run at the first time before setting interval
-        (async () => checkAndRefreshToken())();
+        checkAndRefreshToken({
+            onError: () => {
+                clearInterval(interval);
+            },
+        });
 
         interval = setInterval(checkAndRefreshToken, TIMEOUT_ONE_SECOND);
 

@@ -11,10 +11,16 @@ import { authApiRequest, guestApiRequest } from '@/apiRequests';
 
 import { Role } from '@/constants';
 
-const checkAndRefreshToken = async (param?: { onError?: () => void; onSuccess?: () => void }) => {
+type CallbackParams = {
+    onError?: () => void;
+    onSuccess?: () => void;
+};
+
+const checkAndRefreshToken = async (param?: CallbackParams) => {
     // Whenever `checkAndRefreshToken` is called, `accessToken` and `refreshToken` are brand new
     const accessToken = getAccessTokenFromLocalStorage();
     const refreshToken = getRefreshTokenFromLocalStorage();
+
     // return if not have signed in
     if (!accessToken || !refreshToken) return;
     const decodedAccessToken = decodeToken(accessToken);
@@ -29,10 +35,13 @@ const checkAndRefreshToken = async (param?: { onError?: () => void; onSuccess?: 
         param?.onError && param.onError();
     }
 
-    // refresh token when the remaining time is 1/3
     // The remaining time is calculated by: decodedAccessToken.exp - now
+    const remainingTime = decodedAccessToken.exp - now;
     // The expiration of `accessToken` is calculated by: decodedAccessToken.exp - decodedAccessToken.iat
-    if (decodedAccessToken.exp - now < (decodedAccessToken.exp - decodedAccessToken.iat) / 3) {
+    const expirationTime = decodedAccessToken.exp - decodedAccessToken.iat;
+
+    // refreshing token when the remaining time is 1/3
+    if (remainingTime < expirationTime / 3) {
         try {
             const { role } = decodedRefreshToken;
             const res =

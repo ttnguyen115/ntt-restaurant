@@ -27,8 +27,9 @@ export function middleware(request: NextRequest) {
 
     // Logged-in user but access token is expired, while refresh token is still
     if (isInPrivatePaths && !accessToken && refreshToken) {
-        const url = new URL(AppNavigationRoutes.LOGOUT, request.url);
+        const url = new URL(AppNavigationRoutes.REFRESH_TOKEN, request.url);
         url.searchParams.set('refreshToken', refreshToken);
+        url.searchParams.set('redirect', pathname);
         return NextResponse.redirect(url);
     }
 
