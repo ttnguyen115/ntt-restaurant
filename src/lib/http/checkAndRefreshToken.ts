@@ -31,8 +31,8 @@ const checkAndRefreshToken = async (param?: CallbackParams) => {
     const now = new Date().getTime() / 1000 - 1;
     if (decodedRefreshToken.exp <= now) {
         removeTokensFromLocalStorage();
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        param?.onError && param.onError();
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions,consistent-return
+        return param?.onError && param.onError();
     }
 
     // The remaining time is calculated by: decodedAccessToken.exp - now

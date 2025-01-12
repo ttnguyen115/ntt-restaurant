@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { AppNavigationRoutes } from '@/constants';
 
@@ -16,6 +16,7 @@ const UNAUTHENTICATED_PATH = [AppNavigationRoutes.LOGIN, AppNavigationRoutes.LOG
 
 function RefreshToken() {
     const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
         if (UNAUTHENTICATED_PATH.includes(pathname)) return;
@@ -25,17 +26,27 @@ function RefreshToken() {
         checkAndRefreshToken({
             onError: () => {
                 clearInterval(interval);
+                router.push(AppNavigationRoutes.LOGIN);
             },
         });
 
-        interval = setInterval(checkAndRefreshToken, TIMEOUT_ONE_SECOND);
+        interval = setInterval(
+            () =>
+                checkAndRefreshToken({
+                    onError: () => {
+                        clearInterval(interval);
+                    },
+                }),
+            TIMEOUT_ONE_SECOND
+        );
 
         // I dunno why this line need to mark linter
         // eslint-disable-next-line consistent-return
         return () => {
             clearInterval(interval);
+            router.push(AppNavigationRoutes.LOGIN);
         };
-    }, [pathname]);
+    }, [pathname, router]);
 
     return null;
 }
