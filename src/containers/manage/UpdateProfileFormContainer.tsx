@@ -1,6 +1,6 @@
 'use client';
 
-import { type ChangeEvent, memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 

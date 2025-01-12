@@ -1,7 +1,12 @@
 import jwt from 'jsonwebtoken';
 
-function decodeAndGetExpirationFromToken(...args: string[]): Array<{ exp: number }> {
-    return args.map((token) => jwt.decode(token) as { exp: number });
+type DecodedToken = {
+    exp: number;
+    iat: number;
+};
+
+function decodeAndGetExpirationFromToken(...args: string[]): Array<DecodedToken> {
+    return args.map((token) => jwt.decode(token) as DecodedToken);
 }
 
 export default decodeAndGetExpirationFromToken;

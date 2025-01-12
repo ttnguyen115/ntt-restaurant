@@ -44,7 +44,9 @@ const guestApiRequest = {
     sRefreshToken: (body: RefreshTokenBodyType) =>
         http.post<RefreshTokenResType>(ApiRoutes.SERVER_API_GUEST_REFRESH_TOKEN, body),
 
+    // this function should use as `Function Declaration` for `this` can access exact this object scope
     async refreshToken() {
+        // return if having the same duplicated calling requests
         if (this.refreshTokenRequest) return this.refreshTokenRequest;
 
         this.refreshTokenRequest = http.post<RefreshTokenResType>(ApiRoutes.CLIENT_API_GUEST_REFRESH_TOKEN, null, {

@@ -9,7 +9,7 @@ import DashboardMain from './DashboardMain';
 async function Dashboard() {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get('accessToken')?.value as string;
-    console.log(accessToken);
+
     let name = '';
 
     try {

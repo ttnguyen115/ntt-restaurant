@@ -4,10 +4,9 @@ import type { Metadata } from 'next';
 
 import { cn } from '@/utilities';
 
-// providers
 import ReactQueryProvider from '@/components/ReactQueryProvider';
+import RefreshToken from '@/components/RefreshToken';
 import ThemeProvider from '@/components/ThemeProvider';
-// components
 import { Toaster } from '@/components/ui/toaster';
 
 import type { ChildrenObject } from '@/types';
@@ -40,6 +39,7 @@ function RootLayout({ children }: Readonly<ChildrenObject>) {
                         {children}
                         <Toaster />
                     </ThemeProvider>
+                    <RefreshToken />
                 </ReactQueryProvider>
             </body>
         </html>

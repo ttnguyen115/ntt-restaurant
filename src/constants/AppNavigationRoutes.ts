@@ -3,6 +3,7 @@ const PREFIX_MANAGE = '/manage';
 const AppNavigationRoutes = {
     LOGIN: '/login',
     LOGOUT: '/logout',
+    REFRESH_TOKEN: '/refresh-token',
 
     // main page navigations
     DEFAULT: '/',

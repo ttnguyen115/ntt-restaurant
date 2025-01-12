@@ -62,9 +62,7 @@ function LoginFormContainer() {
                     <form
                         className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
                         noValidate
-                        onSubmit={form.handleSubmit(onSubmit, (error) => {
-                            console.error(error);
-                        })}
+                        onSubmit={form.handleSubmit(onSubmit)}
                     >
                         <div className="grid gap-4">
                             <FormField
