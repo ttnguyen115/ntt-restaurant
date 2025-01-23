@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, memo, use, useEffect, useState } from 'react';
+import { createContext, memo, use, useCallback, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -19,6 +19,8 @@ import {
 } from '@tanstack/react-table';
 
 import { AppNavigationRoutes } from '@/constants';
+
+import { useGetAllAccounts } from '@/hooks';
 
 import AutoPagination from '@/components/AutoPagination';
 import {
@@ -59,10 +61,10 @@ interface IAccountTableContext {
 }
 
 const AccountTableContext = createContext<IAccountTableContext>({
-    setEmployeeIdEdit: () => {},
-    employeeIdEdit: undefined,
     employeeDelete: null,
+    employeeIdEdit: undefined,
     setEmployeeDelete: () => {},
+    setEmployeeIdEdit: () => {},
 });
 
 export const columns: ColumnDef<AccountType>[] = [
@@ -102,7 +104,6 @@ export const columns: ColumnDef<AccountType>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
     },
     {
         id: 'actions',
@@ -110,13 +111,14 @@ export const columns: ColumnDef<AccountType>[] = [
         cell: function Actions({ row }) {
             const { setEmployeeIdEdit, setEmployeeDelete } = use(AccountTableContext);
 
-            const openEditEmployee = () => {
+            const openEditEmployee = useCallback(() => {
                 setEmployeeIdEdit(row.original.id);
-            };
+            }, [row.original.id, setEmployeeIdEdit]);
 
-            const openDeleteEmployee = () => {
+            const openDeleteEmployee = useCallback(() => {
                 setEmployeeDelete(row.original);
-            };
+            }, [row.original, setEmployeeDelete]);
+
             return (
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
@@ -146,11 +148,14 @@ interface AlertDialogDeleteAccount {
 }
 
 const AlertDialogDeleteAccount = memo(({ employeeDelete, setEmployeeDelete }: AlertDialogDeleteAccount) => {
-    const handleOpenAlertDialog = (value: boolean) => {
-        if (!value) {
-            setEmployeeDelete(null);
-        }
-    };
+    const handleOpenAlertDialog = useCallback(
+        (value: boolean) => {
+            if (!value) {
+                setEmployeeDelete(null);
+            }
+        },
+        [setEmployeeDelete]
+    );
 
     return (
         <AlertDialog
@@ -195,10 +200,11 @@ function AccountTable() {
         pageSize: PAGE_SIZE,
     });
 
-    const data: any[] = [];
+    const { data } = useGetAllAccounts();
+    const accounts = data?.payload.data ?? [];
 
     const table = useReactTable({
-        data,
+        data: accounts,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -296,7 +302,7 @@ function AccountTable() {
                 <div className="flex items-center justify-end space-x-2 py-4">
                     <div className="text-xs text-muted-foreground py-4 flex-1 ">
                         Hiển thị <strong>{table.getPaginationRowModel().rows.length}</strong> trong{' '}
-                        <strong>{data.length}</strong> kết quả
+                        <strong>{accounts.length}</strong> kết quả
                     </div>
                     <div>
                         <AutoPagination

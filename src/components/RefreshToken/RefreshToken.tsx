@@ -44,7 +44,6 @@ function RefreshToken() {
         // eslint-disable-next-line consistent-return
         return () => {
             clearInterval(interval);
-            router.push(AppNavigationRoutes.LOGIN);
         };
     }, [pathname, router]);
 
