@@ -1,9 +1,13 @@
+import { Suspense } from 'react';
+
 import { LoginFormContainer } from '@/containers';
 
 function Login() {
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <LoginFormContainer />
+            <Suspense fallback={null}>
+                <LoginFormContainer />
+            </Suspense>
         </div>
     );
 }

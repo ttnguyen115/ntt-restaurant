@@ -34,7 +34,7 @@ function UpdateProfileFormContainer() {
         resolver: zodResolver(UpdateMeBody),
         defaultValues: {
             name: '',
-            avatar: '',
+            avatar: undefined,
         },
     });
     const avatar = form.watch('avatar');
@@ -84,7 +84,7 @@ function UpdateProfileFormContainer() {
             const { name: myName, avatar: myAvatar } = myAccountProfile.payload.data;
             form.reset({
                 name: myName,
-                avatar: myAvatar ?? '',
+                avatar: myAvatar ?? undefined,
             });
         }
     }, [form, myAccountProfile]);

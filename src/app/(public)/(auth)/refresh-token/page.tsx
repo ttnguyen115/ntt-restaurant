@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -31,4 +31,12 @@ function RefreshTokenPage() {
     return null;
 }
 
-export default RefreshTokenPage;
+function RefreshTokenWithSuspense() {
+    return (
+        <Suspense fallback={null}>
+            <RefreshTokenPage />
+        </Suspense>
+    );
+}
+
+export default RefreshTokenWithSuspense;

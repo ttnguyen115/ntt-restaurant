@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -39,7 +39,15 @@ function Logout() {
         }
     }, [logout, router, accessTokenFromUrl, refreshTokenFromUrl]);
 
-    return null;
+    return <Suspense>{null}</Suspense>;
 }
 
-export default Logout;
+function LogoutWithSuspense() {
+    return (
+        <Suspense fallback={null}>
+            <Logout />
+        </Suspense>
+    );
+}
+
+export default LogoutWithSuspense;
