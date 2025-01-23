@@ -94,6 +94,7 @@ function UpdateProfileFormContainer() {
             <form
                 noValidate
                 className="grid auto-rows-max items-start gap-4 md:gap-8"
+                id="update-profile-form"
                 onReset={resetForm}
                 onSubmit={form.handleSubmit(submitForm)}
             >

@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusCircle, Upload } from 'lucide-react';
 
+import { toast, useAddAccount, useMediaMutation } from '@/hooks';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,6 +24,8 @@ import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { handleErrorApi } from '@/lib';
+
 import { CreateEmployeeAccountBody, CreateEmployeeAccountBodyType } from '@/schemaValidations';
 
 function AddEmployee() {
@@ -29,6 +33,9 @@ function AddEmployee() {
     const [open, setOpen] = useState(false);
 
     const avatarInputRef = useRef<HTMLInputElement | null>(null);
+
+    const { mutateAsync: addAccount, isPending } = useAddAccount();
+    const { mutateAsync: uploadMedia } = useMediaMutation();
 
     const form = useForm<CreateEmployeeAccountBodyType>({
         resolver: zodResolver(CreateEmployeeAccountBody),
@@ -46,6 +53,42 @@ function AddEmployee() {
     const previewAvatarFromFile = file ? URL.createObjectURL(file) : avatar;
 
     const handleUploadAvatar = () => avatarInputRef.current?.click();
+
+    const resetForm = () => {
+        form.reset();
+        setFile(null);
+    };
+
+    const submitForm = async (values: CreateEmployeeAccountBodyType) => {
+        if (isPending) return;
+        try {
+            let body = values;
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                const { payload } = await uploadMedia(formData);
+                const imageUrl = payload.data;
+                body = {
+                    ...values,
+                    avatar: imageUrl,
+                };
+            }
+            const result = await addAccount(body);
+
+            toast({
+                description: result.payload.message,
+            });
+
+            // clear data from form and close modal
+            resetForm();
+            setOpen(false);
+        } catch (error) {
+            handleErrorApi({
+                error,
+                setError: form.setError,
+            });
+        }
+    };
 
     return (
         <Dialog
@@ -71,6 +114,8 @@ function AddEmployee() {
                         noValidate
                         className="grid auto-rows-max items-start gap-4 md:gap-8"
                         id="add-employee-form"
+                        onReset={resetForm}
+                        onSubmit={form.handleSubmit(submitForm)}
                     >
                         <div className="grid gap-4 py-4">
                             <FormField
@@ -110,7 +155,6 @@ function AddEmployee() {
                                     </FormItem>
                                 )}
                             />
-
                             <FormField
                                 control={form.control}
                                 name="name"

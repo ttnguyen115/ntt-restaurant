@@ -3,5 +3,14 @@ export { default as useClientOnly } from './useClientOnly';
 export { default as useAuth } from './useAuth';
 
 export { useLoginMutation, useLogoutMutation } from './queries/useAuth';
-export { useMyAccount, useMyAccountMutation, useMyPasswordMutation } from './queries/useAccount';
+export {
+    useMyAccount,
+    useMyAccountMutation,
+    useMyPasswordMutation,
+    useAddAccount,
+    useUpdateAccount,
+    useDeleteAccount,
+    useGetAccount,
+    useGetAllAccounts,
+} from './queries/useAccount';
 export { useMediaMutation } from './queries/useMedia';
