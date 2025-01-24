@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useRef, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -10,6 +10,8 @@ import { Upload } from 'lucide-react';
 import { getVietnameseDishStatus } from '@/utilities';
 
 import { DishStatus, DishStatusValues } from '@/constants';
+
+import { toast, useMediaMutation, useUpdateDish } from '@/hooks';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -27,6 +29,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
+import { handleErrorApi } from '@/lib';
+
 import { UpdateDishBody, UpdateDishBodyType } from '@/schemaValidations';
 
 interface EditDishProps {
@@ -35,11 +39,13 @@ interface EditDishProps {
     onSubmitSuccess?: () => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function EditDish({ id, setId, onSubmitSuccess }: EditDishProps) {
     const [file, setFile] = useState<File | null>(null);
 
     const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+    const { mutateAsync: updateDish, isPending } = useUpdateDish();
+    const { mutateAsync: uploadMedia } = useMediaMutation();
 
     const form = useForm<UpdateDishBodyType>({
         resolver: zodResolver(UpdateDishBody),
@@ -47,7 +53,7 @@ function EditDish({ id, setId, onSubmitSuccess }: EditDishProps) {
             name: '',
             description: '',
             price: 0,
-            image: '',
+            image: undefined,
             status: DishStatus.Unavailable,
         },
     });
@@ -58,25 +64,65 @@ function EditDish({ id, setId, onSubmitSuccess }: EditDishProps) {
 
     const handleUploadDishImage = () => imageInputRef.current?.click();
 
+    const resetForm = useCallback(() => {
+        form.reset();
+        setId(undefined);
+        setFile(null);
+    }, [form, setId]);
+
+    const submitForm = useCallback(
+        async (values: UpdateDishBodyType) => {
+            if (isPending) return;
+            try {
+                let body: UpdateDishBodyType & { id: number } = { id: id as number, ...values };
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const { payload } = await uploadMedia(formData);
+                    const imageUrl = payload.data;
+                    body = {
+                        ...body,
+                        image: imageUrl,
+                    };
+                }
+                const result = await updateDish(body);
+
+                toast({
+                    description: result.payload.message,
+                });
+
+                // clear data from form
+                resetForm();
+                if (onSubmitSuccess) onSubmitSuccess();
+            } catch (error) {
+                handleErrorApi({
+                    error,
+                    setError: form.setError,
+                });
+            }
+        },
+        [updateDish, file, form.setError, id, isPending, onSubmitSuccess, resetForm, uploadMedia]
+    );
+
     return (
         <Dialog
             open={Boolean(id)}
             onOpenChange={(value) => {
-                if (!value) {
-                    setId(undefined);
-                }
+                if (!value) resetForm();
             }}
         >
             <DialogContent className="sm:max-w-[600px] max-h-screen overflow-auto">
                 <DialogHeader>
                     <DialogTitle>Cập nhật món ăn</DialogTitle>
-                    <DialogDescription>Các trường sau đây là bắ buộc: Tên, ảnh</DialogDescription>
+                    <DialogDescription>Các trường sau đây là bắt buộc: Tên, ảnh</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form
                         noValidate
                         className="grid auto-rows-max items-start gap-4 md:gap-8"
                         id="edit-dish-form"
+                        onSubmit={form.handleSubmit(submitForm)}
+                        onReset={resetForm}
                     >
                         <div className="grid gap-4 py-4">
                             <FormField
@@ -88,7 +134,7 @@ function EditDish({ id, setId, onSubmitSuccess }: EditDishProps) {
                                             <Avatar className="aspect-square w-[100px] h-[100px] rounded-md object-cover">
                                                 <AvatarImage src={previewAvatarFromFile} />
                                                 <AvatarFallback className="rounded-none">
-                                                    {name || 'Avatar'}
+                                                    {name || 'Dish image'}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <input
@@ -116,7 +162,6 @@ function EditDish({ id, setId, onSubmitSuccess }: EditDishProps) {
                                     </FormItem>
                                 )}
                             />
-
                             <FormField
                                 control={form.control}
                                 name="name"

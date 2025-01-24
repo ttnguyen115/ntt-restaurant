@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useRef, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -11,6 +11,8 @@ import { getVietnameseDishStatus } from '@/utilities';
 
 import { DishStatus, DishStatusValues } from '@/constants';
 
+import { toast, useAddDish, useMediaMutation } from '@/hooks';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -20,6 +22,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
+import { handleErrorApi } from '@/lib';
+
 import { CreateDishBody, CreateDishBodyType } from '@/schemaValidations';
 
 function AddDish() {
@@ -28,13 +32,16 @@ function AddDish() {
 
     const imageInputRef = useRef<HTMLInputElement | null>(null);
 
+    const { mutateAsync: addDish, isPending } = useAddDish();
+    const { mutateAsync: uploadMedia } = useMediaMutation();
+
     const form = useForm<CreateDishBodyType>({
         resolver: zodResolver(CreateDishBody),
         defaultValues: {
             name: '',
             description: '',
             price: 0,
-            image: '',
+            image: undefined,
             status: DishStatus.Unavailable,
         },
     });
@@ -44,6 +51,41 @@ function AddDish() {
     const previewAvatarFromFile = file ? URL.createObjectURL(file) : image;
 
     const handleUploadDishImage = () => imageInputRef.current?.click();
+
+    const resetForm = useCallback(() => {
+        setFile(null);
+        form.reset();
+    }, [form]);
+
+    const onSubmit = useCallback(
+        async (values: CreateDishBodyType) => {
+            if (isPending) return;
+            try {
+                let body = values;
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const { payload } = await uploadMedia(formData);
+                    const imageUrl = payload.data;
+                    body = {
+                        ...body,
+                        image: imageUrl ?? undefined,
+                    };
+                }
+                const result = await addDish(body);
+
+                toast({
+                    title: result.payload.message,
+                });
+
+                resetForm();
+                setOpen(false);
+            } catch (error) {
+                handleErrorApi({ error, setError: form.setError });
+            }
+        },
+        [addDish, file, form.setError, isPending, resetForm, uploadMedia]
+    );
 
     return (
         <Dialog
@@ -68,6 +110,8 @@ function AddDish() {
                         noValidate
                         className="grid auto-rows-max items-start gap-4 md:gap-8"
                         id="add-dish-form"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        onReset={resetForm}
                     >
                         <div className="grid gap-4 py-4">
                             <FormField
@@ -79,7 +123,7 @@ function AddDish() {
                                             <Avatar className="aspect-square w-[100px] h-[100px] rounded-md object-cover">
                                                 <AvatarImage src={previewAvatarFromFile} />
                                                 <AvatarFallback className="rounded-none">
-                                                    {name || 'Avatar'}
+                                                    {name || 'Dish image'}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <input
@@ -107,7 +151,6 @@ function AddDish() {
                                     </FormItem>
                                 )}
                             />
-
                             <FormField
                                 control={form.control}
                                 name="name"
