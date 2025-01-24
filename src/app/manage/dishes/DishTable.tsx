@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, memo, use, useEffect, useState } from 'react';
+import { createContext, memo, use, useCallback, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -21,6 +21,8 @@ import {
 import { formatCurrency, getVietnameseDishStatus } from '@/utilities';
 
 import { AppNavigationRoutes } from '@/constants';
+
+import { useGetAllDishes } from '@/hooks';
 
 import AutoPagination from '@/components/AutoPagination';
 import {
@@ -54,19 +56,17 @@ import EditDish from './EditDish';
 type DishItem = DishListResType['data'][0];
 
 interface IDishTableContext {
-    setDishIdEdit: (value: number) => void;
-    dishIdEdit: number | undefined;
     dishDelete: DishItem | null;
+    dishIdEdit: number | undefined;
     setDishDelete: (value: DishItem | null) => void;
+    setDishIdEdit: (value: number) => void;
 }
 
 const DishTableContext = createContext<IDishTableContext>({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setDishIdEdit: (value: number | undefined) => {},
-    dishIdEdit: undefined,
     dishDelete: null,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setDishDelete: (value: DishItem | null) => {},
+    dishIdEdit: undefined,
+    setDishDelete: () => {},
+    setDishIdEdit: () => {},
 });
 
 export const columns: ColumnDef<DishItem>[] = [
@@ -116,13 +116,15 @@ export const columns: ColumnDef<DishItem>[] = [
         enableHiding: false,
         cell: function Actions({ row }) {
             const { setDishIdEdit, setDishDelete } = use(DishTableContext);
-            const openEditDish = () => {
-                setDishIdEdit(row.original.id);
-            };
 
-            const openDeleteDish = () => {
+            const openEditDish = useCallback(() => {
+                setDishIdEdit(row.original.id);
+            }, [row.original.id, setDishIdEdit]);
+
+            const openDeleteDish = useCallback(() => {
                 setDishDelete(row.original);
-            };
+            }, [row.original, setDishDelete]);
+
             return (
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
@@ -197,10 +199,12 @@ function DishTable() {
         pageSize: PAGE_SIZE,
     });
 
-    const data: any[] = [];
+    // TODO: oh maybe we can switch to query w pagination in later versions
+    const { data } = useGetAllDishes();
+    const dishes = data?.payload.data ?? [];
 
     const table = useReactTable({
-        data,
+        data: dishes,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -297,7 +301,7 @@ function DishTable() {
                 <div className="flex items-center justify-end space-x-2 py-4">
                     <div className="text-xs text-muted-foreground py-4 flex-1 ">
                         Hiển thị <strong>{table.getPaginationRowModel().rows.length}</strong> trong{' '}
-                        <strong>{data.length}</strong> kết quả
+                        <strong>{dishes.length}</strong> kết quả
                     </div>
                     <div>
                         <AutoPagination

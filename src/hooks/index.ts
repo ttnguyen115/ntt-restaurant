@@ -14,3 +14,11 @@ export {
     useGetAllAccounts,
 } from './queries/useAccount';
 export { useMediaMutation } from './queries/useMedia';
+export {
+    useAddDish,
+    useDeleteDish,
+    useGetDish,
+    useGetAllDishes,
+    useGetAllDishesWithPagination,
+    useUpdateDish,
+} from './queries/useDish';

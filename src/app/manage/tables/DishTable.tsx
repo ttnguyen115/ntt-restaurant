@@ -60,12 +60,10 @@ interface ITableContext {
 }
 
 const TableContext = createContext<ITableContext>({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setTableIdEdit: (value: number | undefined) => {},
-    tableIdEdit: undefined,
     tableDelete: null,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setTableDelete: (value: TableItem | null) => {},
+    tableIdEdit: undefined,
+    setTableDelete: () => {},
+    setTableIdEdit: () => {},
 });
 
 export const columns: ColumnDef<TableItem>[] = [

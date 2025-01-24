@@ -18,7 +18,15 @@ export type { LoginBodyType, LoginResType, LogoutBodyType, RefreshTokenBodyType,
 
 export type { MessageResType } from './common';
 
-export type { CreateDishBodyType, DishParamsType, DishResType, DishListResType, UpdateDishBodyType } from './dish';
+export type {
+    CreateDishBodyType,
+    DishParamsType,
+    DishResType,
+    DishListResType,
+    UpdateDishBodyType,
+    DishListWithPaginationResType,
+    DishListWithPaginationQueryType,
+} from './dish';
 
 export type {
     GuestCreateOrdersBodyType,
@@ -73,7 +81,16 @@ export { LoginBody, LoginRes, LogoutBody, RefreshTokenBody, RefreshTokenRes } fr
 
 export { MessageRes } from './common';
 
-export { CreateDishBody, DishListRes, DishParams, UpdateDishBody, DishRes, DishSchema } from './dish';
+export {
+    CreateDishBody,
+    DishListRes,
+    DishParams,
+    UpdateDishBody,
+    DishRes,
+    DishSchema,
+    DishListWithPaginationRes,
+    DishListWithPaginationQuery,
+} from './dish';
 
 export { GuestCreateOrdersBody, GuestCreateOrdersRes, GuestGetOrdersRes, GuestLoginBody, GuestLoginRes } from './guest';
 
