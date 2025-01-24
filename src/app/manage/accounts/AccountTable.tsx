@@ -20,7 +20,7 @@ import {
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { useGetAllAccounts } from '@/hooks';
+import { toast, useDeleteAccount, useGetAllAccounts } from '@/hooks';
 
 import AutoPagination from '@/components/AutoPagination';
 import {
@@ -45,6 +45,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+import { handleErrorApi } from '@/lib';
 
 import type { AccountListResType, AccountType } from '@/schemaValidations';
 
@@ -148,6 +150,8 @@ interface AlertDialogDeleteAccount {
 }
 
 const AlertDialogDeleteAccount = memo(({ employeeDelete, setEmployeeDelete }: AlertDialogDeleteAccount) => {
+    const { mutateAsync: deleteAccount } = useDeleteAccount();
+
     const handleOpenAlertDialog = useCallback(
         (value: boolean) => {
             if (!value) {
@@ -156,6 +160,25 @@ const AlertDialogDeleteAccount = memo(({ employeeDelete, setEmployeeDelete }: Al
         },
         [setEmployeeDelete]
     );
+
+    const handleDeleteEmployee = useCallback(async () => {
+        if (employeeDelete) {
+            try {
+                const result = await deleteAccount(employeeDelete.id);
+                // close modal
+                setEmployeeDelete(null);
+                toast({
+                    title: result.payload.message,
+                });
+            } catch (error) {
+                handleErrorApi({ error });
+            }
+        }
+    }, [deleteAccount, employeeDelete, setEmployeeDelete]);
+
+    const handleCancel = useCallback(() => {
+        setEmployeeDelete(null);
+    }, [setEmployeeDelete]);
 
     return (
         <AlertDialog
@@ -174,8 +197,8 @@ const AlertDialogDeleteAccount = memo(({ employeeDelete, setEmployeeDelete }: Al
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                    <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteEmployee}>Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
