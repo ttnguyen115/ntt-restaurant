@@ -1,11 +1,13 @@
 'use client';
 
-import { memo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload } from 'lucide-react';
+
+import { toast, useGetAccount, useMediaMutation, useUpdateAccount } from '@/hooks';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -22,6 +24,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
+import { handleErrorApi } from '@/lib';
+
 import { UpdateEmployeeAccountBody, UpdateEmployeeAccountBodyType } from '@/schemaValidations/account';
 
 interface EditEmployeeProps {
@@ -30,11 +34,17 @@ interface EditEmployeeProps {
     onSubmitSuccess?: () => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
     const [file, setFile] = useState<File | null>(null);
 
     const avatarInputRef = useRef<HTMLInputElement | null>(null);
+
+    const { data } = useGetAccount({
+        id: id as number,
+        enabled: Boolean(id),
+    });
+    const { mutateAsync: editEmployee, isPending } = useUpdateAccount();
+    const { mutateAsync: uploadMedia } = useMediaMutation();
 
     const form = useForm<UpdateEmployeeAccountBodyType>({
         resolver: zodResolver(UpdateEmployeeAccountBody),
@@ -53,15 +63,67 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
 
     const previewAvatarFromFile = file ? URL.createObjectURL(file) : avatar;
 
-    const handleUploadAvatar = () => avatarInputRef.current?.click();
+    const handleUploadAvatar = useCallback(() => avatarInputRef.current?.click(), []);
+
+    useEffect(() => {
+        if (data) {
+            const { name: employeeName, avatar: avatarEmployee, email } = data.payload.data;
+            form.reset({
+                email,
+                name: employeeName,
+                avatar: avatarEmployee ?? undefined,
+                changePassword: form.getValues('changePassword'),
+                password: form.getValues('password'),
+                confirmPassword: form.getValues('confirmPassword'),
+            });
+        }
+    }, [data, form]);
+
+    const resetForm = useCallback(() => {
+        form.reset();
+        setId(undefined);
+        setFile(null);
+    }, [form, setId]);
+
+    const submitForm = useCallback(
+        async (values: UpdateEmployeeAccountBodyType) => {
+            if (isPending) return;
+            try {
+                let body: UpdateEmployeeAccountBodyType & { id: number } = { id: id as number, ...values };
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const { payload } = await uploadMedia(formData);
+                    const imageUrl = payload.data;
+                    body = {
+                        ...body,
+                        avatar: imageUrl,
+                    };
+                }
+                const result = await editEmployee(body);
+
+                toast({
+                    description: result.payload.message,
+                });
+
+                // clear data from form
+                resetForm();
+                if (onSubmitSuccess) onSubmitSuccess();
+            } catch (error) {
+                handleErrorApi({
+                    error,
+                    setError: form.setError,
+                });
+            }
+        },
+        [editEmployee, file, form.setError, id, isPending, onSubmitSuccess, resetForm, uploadMedia]
+    );
 
     return (
         <Dialog
             open={Boolean(id)}
             onOpenChange={(value) => {
-                if (!value) {
-                    setId(undefined);
-                }
+                if (!value) resetForm();
             }}
         >
             <DialogContent className="sm:max-w-[600px] max-h-screen overflow-auto">
@@ -74,6 +136,8 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
                         noValidate
                         className="grid auto-rows-max items-start gap-4 md:gap-8"
                         id="edit-employee-form"
+                        onSubmit={form.handleSubmit(submitForm)}
+                        onReset={resetForm}
                     >
                         <div className="grid gap-4 py-4">
                             <FormField

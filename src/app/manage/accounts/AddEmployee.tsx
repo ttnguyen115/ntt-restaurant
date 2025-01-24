@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useRef, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -54,41 +54,44 @@ function AddEmployee() {
 
     const handleUploadAvatar = () => avatarInputRef.current?.click();
 
-    const resetForm = () => {
+    const resetForm = useCallback(() => {
         form.reset();
         setFile(null);
-    };
+    }, [form]);
 
-    const submitForm = async (values: CreateEmployeeAccountBodyType) => {
-        if (isPending) return;
-        try {
-            let body = values;
-            if (file) {
-                const formData = new FormData();
-                formData.append('file', file);
-                const { payload } = await uploadMedia(formData);
-                const imageUrl = payload.data;
-                body = {
-                    ...values,
-                    avatar: imageUrl,
-                };
+    const submitForm = useCallback(
+        async (values: CreateEmployeeAccountBodyType) => {
+            if (isPending) return;
+            try {
+                let body = values;
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const { payload } = await uploadMedia(formData);
+                    const imageUrl = payload.data;
+                    body = {
+                        ...values,
+                        avatar: imageUrl,
+                    };
+                }
+                const result = await addAccount(body);
+
+                toast({
+                    description: result.payload.message,
+                });
+
+                // clear data from form and close modal
+                resetForm();
+                setOpen(false);
+            } catch (error) {
+                handleErrorApi({
+                    error,
+                    setError: form.setError,
+                });
             }
-            const result = await addAccount(body);
-
-            toast({
-                description: result.payload.message,
-            });
-
-            // clear data from form and close modal
-            resetForm();
-            setOpen(false);
-        } catch (error) {
-            handleErrorApi({
-                error,
-                setError: form.setError,
-            });
-        }
-    };
+        },
+        [addAccount, file, form.setError, isPending, resetForm, uploadMedia]
+    );
 
     return (
         <Dialog
