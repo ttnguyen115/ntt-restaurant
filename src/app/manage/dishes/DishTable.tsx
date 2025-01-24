@@ -22,7 +22,7 @@ import { formatCurrency, getVietnameseDishStatus } from '@/utilities';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { useGetAllDishes } from '@/hooks';
+import { toast, useDeleteDish, useGetAllDishes } from '@/hooks';
 
 import AutoPagination from '@/components/AutoPagination';
 import {
@@ -47,6 +47,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+import { handleErrorApi } from '@/lib';
 
 import { DishListResType } from '@/schemaValidations';
 
@@ -154,6 +156,27 @@ interface AlertDialogDeleteDishProps {
 }
 
 function AlertDialogDeleteDish({ dishDelete, setDishDelete }: AlertDialogDeleteDishProps) {
+    const { mutateAsync: deleteDish } = useDeleteDish();
+
+    const handleDeleteDish = useCallback(async () => {
+        if (dishDelete) {
+            try {
+                const result = await deleteDish(dishDelete.id);
+                // close modal
+                setDishDelete(null);
+                toast({
+                    title: result.payload.message,
+                });
+            } catch (error) {
+                handleErrorApi({ error });
+            }
+        }
+    }, [deleteDish, dishDelete, setDishDelete]);
+
+    const handleCancel = useCallback(() => {
+        setDishDelete(null);
+    }, [setDishDelete]);
+
     return (
         <AlertDialog
             open={Boolean(dishDelete)}
@@ -173,8 +196,8 @@ function AlertDialogDeleteDish({ dishDelete, setDishDelete }: AlertDialogDeleteD
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                    <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteDish}>Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
