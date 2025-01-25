@@ -4,6 +4,7 @@ const PREFIX_ACCOUNTS = '/accounts';
 const PREFIX_AUTH = '/auth';
 const PREFIX_GUEST = '/guest';
 const PREFIX_DISHES = '/dishes';
+const PREFIX_TABLES = '/tables';
 
 const SUFFIX_LOGIN = '/login';
 const SUFFIX_LOGOUT = '/logout';
@@ -36,6 +37,9 @@ const ApiRoutes = {
     // API dishes
     API_DISHES: PREFIX_DISHES,
     API_DISHES_WITH_PAGINATION: `${PREFIX_DISHES}/pagination`,
+
+    // API tables
+    API_TABLES: PREFIX_TABLES,
 
     // Others, but should refactor because they are messy...
     ME: `${PREFIX_ACCOUNTS}${SUFFIX_ME}`,

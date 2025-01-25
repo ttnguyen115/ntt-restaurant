@@ -3,6 +3,7 @@ export { default as useClientOnly } from './useClientOnly';
 export { default as useAuth } from './useAuth';
 
 export { useLoginMutation, useLogoutMutation } from './queries/useAuth';
+
 export {
     useMyAccount,
     useMyAccountMutation,
@@ -13,7 +14,9 @@ export {
     useGetAccount,
     useGetAllAccounts,
 } from './queries/useAccount';
+
 export { useMediaMutation } from './queries/useMedia';
+
 export {
     useAddDish,
     useDeleteDish,
@@ -22,3 +25,11 @@ export {
     useGetAllDishesWithPagination,
     useUpdateDish,
 } from './queries/useDish';
+
+export {
+    useCreateTable,
+    useDeleteTable,
+    useGetTableByNumber,
+    useGetAllTables,
+    useUpdateTable,
+} from './queries/useTable';
