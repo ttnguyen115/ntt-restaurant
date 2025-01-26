@@ -12,7 +12,8 @@ import type {
 } from '@/schemaValidations';
 
 const dishApiRequest = {
-    getAll: () => http.get<DishListResType>(ApiRoutes.API_DISHES),
+    // apply ISR for homepage
+    getAll: () => http.get<DishListResType>(ApiRoutes.API_DISHES, { next: { tags: ['dishes'] } }),
 
     getAllWithPagination: ({ page, limit }: DishListWithPaginationQueryType) =>
         http.get<DishListWithPaginationResType>(`${ApiRoutes.API_DISHES_WITH_PAGINATION}?page=${page}&limit=${limit}`),

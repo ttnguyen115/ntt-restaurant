@@ -9,6 +9,8 @@ import { PlusCircle, Upload } from 'lucide-react';
 
 import { getVietnameseDishStatus } from '@/utilities';
 
+import { revalidateApiRequest } from '@/apiRequests';
+
 import { DishStatus, DishStatusValues } from '@/constants';
 
 import { toast, useAddDish, useMediaMutation } from '@/hooks';
@@ -73,6 +75,7 @@ function AddDish() {
                     };
                 }
                 const result = await addDish(body);
+                await revalidateApiRequest('dishes');
 
                 toast({
                     title: result.payload.message,
