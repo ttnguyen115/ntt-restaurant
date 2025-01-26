@@ -1,56 +1,17 @@
-const PREFIX_API = '/api';
+export const PREFIX_API = '/api';
 
-const PREFIX_ACCOUNTS = '/accounts';
-const PREFIX_AUTH = '/auth';
-const PREFIX_GUEST = '/guest';
-const PREFIX_DISHES = '/dishes';
-const PREFIX_TABLES = '/tables';
-
-const SUFFIX_LOGIN = '/login';
-const SUFFIX_LOGOUT = '/logout';
-const SUFFIX_REFRESH_TOKEN = '/refresh-token';
-const SUFFIX_ME = '/me';
-const SUFFIX_CHANGE_PASSWORD = '/change-password';
-
-const ApiRoutes = {
-    // server API employees
-    SERVER_API_LOGIN: `${PREFIX_AUTH}${SUFFIX_LOGIN}`,
-    SERVER_API_LOGOUT: `${PREFIX_AUTH}${SUFFIX_LOGOUT}`,
-    SERVER_API_REFRESH_TOKEN: `${PREFIX_AUTH}${SUFFIX_REFRESH_TOKEN}`,
-
-    // client API employees
-    CLIENT_API_LOGIN: `${PREFIX_API}${PREFIX_AUTH}${SUFFIX_LOGIN}`,
-    CLIENT_API_LOGOUT: `${PREFIX_API}${PREFIX_AUTH}${SUFFIX_LOGOUT}`,
-    CLIENT_API_REFRESH_TOKEN: `${PREFIX_API}${PREFIX_AUTH}${SUFFIX_REFRESH_TOKEN}`,
-
-    // server API guests
-    SERVER_API_GUEST_LOGIN: `${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_LOGIN}`,
-    SERVER_API_GUEST_LOGOUT: `${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_LOGOUT}`,
-    SERVER_API_GUEST_REFRESH_TOKEN: `${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_REFRESH_TOKEN}`,
-    SERVER_API_GUEST_ORDERS: `${PREFIX_GUEST}/orders`,
-
-    // client API guests
-    CLIENT_API_GUEST_LOGIN: `${PREFIX_API}${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_LOGIN}`,
-    CLIENT_API_GUEST_LOGOUT: `${PREFIX_API}${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_LOGOUT}`,
-    CLIENT_API_GUEST_REFRESH_TOKEN: `${PREFIX_API}${PREFIX_GUEST}${PREFIX_AUTH}${SUFFIX_REFRESH_TOKEN}`,
-
-    // API dishes
-    API_DISHES: PREFIX_DISHES,
-    API_DISHES_WITH_PAGINATION: `${PREFIX_DISHES}/pagination`,
-
-    // API tables
-    API_TABLES: PREFIX_TABLES,
-
-    // Others, but should refactor because they are messy...
-    ME: `${PREFIX_ACCOUNTS}${SUFFIX_ME}`,
-    MEDIA_UPLOAD: '/media/upload',
-
-    SERVER_API_CHANGE_PASSWORD: `${PREFIX_ACCOUNTS}${SUFFIX_CHANGE_PASSWORD}`,
-    CLIENT_API_CHANGE_PASSWORD: `${PREFIX_API}${PREFIX_ACCOUNTS}${SUFFIX_CHANGE_PASSWORD}`,
-
-    API_ACCOUNTS: PREFIX_ACCOUNTS,
-
-    SERVER_API_ACCOUNT_DETAIL: `${PREFIX_ACCOUNTS}/detail`,
+export const Prefix = {
+    ACCOUNTS: '/accounts',
+    AUTH: '/auth',
+    GUEST: '/guest',
+    DISHES: '/dishes',
+    TABLES: '/tables',
 };
 
-export default ApiRoutes;
+export const Suffix = {
+    LOGIN: '/login',
+    LOGOUT: '/logout',
+    REFRESH_TOKEN: '/refresh-token',
+    ME: '/me',
+    CHANGE_PASSWORD: '/change-password',
+};

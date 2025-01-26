@@ -1,8 +1,8 @@
-import { ApiRoutes } from '@/constants';
+import { Prefix, PREFIX_API, Suffix } from '@/constants';
 
 import { http } from '@/lib';
 
-import {
+import type {
     LoginBodyType,
     LoginResType,
     LogoutBodyType,
@@ -10,22 +10,26 @@ import {
     RefreshTokenResType,
 } from '@/schemaValidations';
 
+export const ROUTE_HANDLER = {
+    LOGIN: PREFIX_API + Prefix.AUTH + Suffix.LOGIN,
+    LOGOUT: PREFIX_API + Prefix.AUTH + Suffix.LOGOUT,
+    REFRESH_TOKEN: PREFIX_API + Prefix.AUTH + Suffix.REFRESH_TOKEN,
+};
+
+export const BACKEND_API = {
+    LOGIN: Prefix.AUTH + Suffix.LOGIN,
+    LOGOUT: Prefix.AUTH + Suffix.LOGOUT,
+    REFRESH_TOKEN: Prefix.AUTH + Suffix.REFRESH_TOKEN,
+};
+
 const authApiRequest = {
-    refreshTokenRequest: null as Promise<{
-        status: number;
-        payload: RefreshTokenResType;
-    }> | null,
+    sLogin: (body: LoginBodyType) => {
+        return http.post<LoginResType>(BACKEND_API.LOGIN, body);
+    },
 
-    sLogin: (body: LoginBodyType) => http.post<LoginResType>(ApiRoutes.SERVER_API_LOGIN, body),
-
-    login: (body: LoginBodyType) =>
-        http.post<LoginResType>(ApiRoutes.CLIENT_API_LOGIN, body, {
-            baseUrl: '',
-        }),
-
-    sLogout: (body: LogoutBodyType & { accessToken: string }) =>
-        http.post(
-            ApiRoutes.SERVER_API_LOGOUT,
+    sLogout: (body: LogoutBodyType & { accessToken: string }) => {
+        return http.post(
+            BACKEND_API.LOGOUT,
             {
                 refreshToken: body.refreshToken,
             },
@@ -34,19 +38,35 @@ const authApiRequest = {
                     Authorization: `Bearer ${body.accessToken}`,
                 },
             }
-        ),
+        );
+    },
 
-    logout: () => http.post(ApiRoutes.CLIENT_API_LOGOUT, null, { baseUrl: '' }),
+    sRefreshToken: (body: RefreshTokenBodyType) => {
+        return http.post<RefreshTokenResType>(BACKEND_API.REFRESH_TOKEN, body);
+    },
 
-    sRefreshToken: (body: RefreshTokenBodyType) =>
-        http.post<RefreshTokenResType>(ApiRoutes.SERVER_API_REFRESH_TOKEN, body),
+    // Route handlers
+    login: (body: LoginBodyType) => {
+        return http.post<LoginResType>(ROUTE_HANDLER.LOGIN, body, {
+            baseUrl: '',
+        });
+    },
+
+    logout: () => {
+        return http.post(ROUTE_HANDLER.LOGOUT, null, { baseUrl: '' });
+    },
+
+    refreshTokenRequest: null as Promise<{
+        status: number;
+        payload: RefreshTokenResType;
+    }> | null,
 
     // this function should use as `Function Declaration` for `this` can access exact this object scope
     async refreshToken() {
         // return if having the same duplicated calling requests
         if (this.refreshTokenRequest) return this.refreshTokenRequest;
 
-        this.refreshTokenRequest = http.post<RefreshTokenResType>(ApiRoutes.CLIENT_API_REFRESH_TOKEN, null, {
+        this.refreshTokenRequest = http.post<RefreshTokenResType>(ROUTE_HANDLER.LOGOUT, null, {
             baseUrl: '',
         });
 

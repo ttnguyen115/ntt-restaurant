@@ -1,20 +1,31 @@
-import { ApiRoutes } from '@/constants';
+import { Prefix } from '@/constants';
 
 import { http } from '@/lib';
 
 import type { CreateTableBodyType, TableListResType, TableResType, UpdateTableBodyType } from '@/schemaValidations';
 
+const API_TABLES = Prefix.TABLES;
+
 const tableApiRequest = {
-    getAll: () => http.get<TableListResType>(ApiRoutes.API_TABLES),
+    getAll: () => {
+        return http.get<TableListResType>(API_TABLES);
+    },
 
-    getTable: (number: number) => http.get<TableResType>(`${ApiRoutes.API_TABLES}/${number}`),
+    getTable: (number: number) => {
+        return http.get<TableResType>(`${API_TABLES}/${number}`);
+    },
 
-    createTable: (body: CreateTableBodyType) => http.post<TableResType>(ApiRoutes.API_TABLES, body),
+    createTable: (body: CreateTableBodyType) => {
+        return http.post<TableResType>(API_TABLES, body);
+    },
 
-    updateTable: (number: number, body: UpdateTableBodyType) =>
-        http.put<TableResType>(`${ApiRoutes.API_TABLES}/${number}`, body),
+    updateTable: (number: number, body: UpdateTableBodyType) => {
+        return http.put<TableResType>(`${API_TABLES}/${number}`, body);
+    },
 
-    deleteTable: (number: number) => http.delete<TableResType>(`${ApiRoutes.API_TABLES}/${number}`),
+    deleteTable: (number: number) => {
+        return http.delete<TableResType>(`${API_TABLES}/${number}`);
+    },
 };
 
 export default tableApiRequest;

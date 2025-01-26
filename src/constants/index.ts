@@ -12,7 +12,7 @@ export {
     ManagerRoom,
     OrderStatusIcon,
 } from './type';
-export { default as ApiRoutes } from './ApiRoutes';
+export { PREFIX_API, Prefix, Suffix } from './ApiRoutes';
 export { default as AppNavigationRoutes } from './AppNavigationRoutes';
 export { manageMenuItems, homeMenuItems } from './menuItems';
 

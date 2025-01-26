@@ -1,4 +1,6 @@
-import { ApiRoutes } from '@/constants';
+import querystring from 'querystring';
+
+import { Prefix } from '@/constants';
 
 import { http } from '@/lib';
 
@@ -11,20 +13,35 @@ import type {
     UpdateDishBodyType,
 } from '@/schemaValidations';
 
+const API_DISHES = Prefix.DISHES;
+const API_DISHES_WITH_PAGINATION = API_DISHES + '/pagination';
+
 const dishApiRequest = {
     // apply ISR for homepage
-    getAll: () => http.get<DishListResType>(ApiRoutes.API_DISHES, { next: { tags: ['dishes'] } }),
+    getAll: () => {
+        return http.get<DishListResType>(API_DISHES, { next: { tags: ['dishes'] } });
+    },
 
-    getAllWithPagination: ({ page, limit }: DishListWithPaginationQueryType) =>
-        http.get<DishListWithPaginationResType>(`${ApiRoutes.API_DISHES_WITH_PAGINATION}?page=${page}&limit=${limit}`),
+    getAllWithPagination: ({ page, limit }: DishListWithPaginationQueryType) => {
+        const queryString = querystring.stringify({ page, limit });
+        return http.get<DishListWithPaginationResType>(`${API_DISHES_WITH_PAGINATION}?${queryString}`);
+    },
 
-    getDish: (id: number) => http.get<DishResType>(`${ApiRoutes.API_DISHES}/${id}`),
+    getDish: (id: number) => {
+        return http.get<DishResType>(`${API_DISHES}/${id}`);
+    },
 
-    createDish: (body: CreateDishBodyType) => http.post<DishResType>(ApiRoutes.API_DISHES, body),
+    createDish: (body: CreateDishBodyType) => {
+        return http.post<DishResType>(API_DISHES, body);
+    },
 
-    updateDish: (id: number, body: UpdateDishBodyType) => http.put<DishResType>(`${ApiRoutes.API_DISHES}/${id}`, body),
+    updateDish: (id: number, body: UpdateDishBodyType) => {
+        return http.put<DishResType>(`${API_DISHES}/${id}`, body);
+    },
 
-    deleteDish: (id: number) => http.delete<DishResType>(`${ApiRoutes.API_DISHES}/${id}`),
+    deleteDish: (id: number) => {
+        return http.delete<DishResType>(`${API_DISHES}/${id}`);
+    },
 };
 
 export default dishApiRequest;

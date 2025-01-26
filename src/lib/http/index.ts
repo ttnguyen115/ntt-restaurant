@@ -8,7 +8,9 @@ import {
     setRefreshTokenToLocalStorage,
 } from '@/utilities';
 
-import { ApiRoutes, AppNavigationRoutes } from '@/constants';
+import { AUTH_ROUTE_HANDLER } from '@/apiRequests';
+
+import { AppNavigationRoutes } from '@/constants';
 
 import { LoginResType } from '@/schemaValidations';
 
@@ -77,7 +79,7 @@ const request = async <Response>(
         } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
             if (isClient) {
                 if (!clientLogoutRequest) {
-                    clientLogoutRequest = fetch(ApiRoutes.CLIENT_API_LOGOUT, {
+                    clientLogoutRequest = fetch(AUTH_ROUTE_HANDLER.LOGOUT, {
                         method: 'POST',
                         body: null, // temporarily always be success (ex: session is expired...)
                         headers: {
@@ -113,11 +115,11 @@ const request = async <Response>(
 
     // LocalStorage handling
     if (isClient) {
-        if (url === ApiRoutes.CLIENT_API_LOGIN) {
+        if (url === AUTH_ROUTE_HANDLER.LOGIN) {
             const { accessToken, refreshToken } = (payload as LoginResType).data;
             setAccessTokenToLocalStorage(accessToken);
             setRefreshTokenToLocalStorage(refreshToken);
-        } else if (url === ApiRoutes.CLIENT_API_LOGOUT) {
+        } else if (url === AUTH_ROUTE_HANDLER.LOGOUT) {
             removeTokensFromLocalStorage();
         }
     }

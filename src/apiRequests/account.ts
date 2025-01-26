@@ -1,4 +1,4 @@
-import { ApiRoutes } from '@/constants';
+import { Prefix, PREFIX_API, Suffix } from '@/constants';
 
 import { http } from '@/lib';
 
@@ -12,40 +12,65 @@ import type {
     UpdateMeBodyType,
 } from '@/schemaValidations';
 
+const ROUTE_HANDLER = {
+    CHANGE_PASSWORD: PREFIX_API + Prefix.ACCOUNTS + Suffix.CHANGE_PASSWORD,
+};
+
+const BACKEND_API = {
+    ACCOUNTS: Prefix.ACCOUNTS,
+    ACCOUNT_DETAIL: Prefix.ACCOUNTS + '/detail',
+    CHANGE_PASSWORD: Prefix.ACCOUNTS + Suffix.CHANGE_PASSWORD,
+    ME: Prefix.ACCOUNTS + Suffix.ME,
+};
+
 const accountApiRequest = {
-    me: () => http.get<AccountResType>(ApiRoutes.ME),
-
-    sMe: (accessToken: string) =>
-        http.get<AccountResType>(ApiRoutes.ME, {
+    sMe: (accessToken: string) => {
+        return http.get<AccountResType>(BACKEND_API.ME, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
-        }),
+        });
+    },
 
-    updateMe: (body: UpdateMeBodyType) => http.put<AccountResType>(ApiRoutes.ME, body),
-
-    sChangePassword: (accessToken: string, body: ChangePasswordBodyType) =>
-        http.put<ChangePasswordResType>(ApiRoutes.SERVER_API_CHANGE_PASSWORD, body, {
+    sChangePassword: (accessToken: string, body: ChangePasswordBodyType) => {
+        return http.put<ChangePasswordResType>(BACKEND_API.CHANGE_PASSWORD, body, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
-        }),
+        });
+    },
 
-    changePassword: (body: ChangePasswordBodyType) =>
-        http.put<ChangePasswordResType>(ApiRoutes.CLIENT_API_CHANGE_PASSWORD, body, {
+    updateMe: (body: UpdateMeBodyType) => {
+        return http.put<AccountResType>(BACKEND_API.ME, body);
+    },
+
+    // route handlers
+    changePassword: (body: ChangePasswordBodyType) => {
+        return http.put<ChangePasswordResType>(ROUTE_HANDLER.CHANGE_PASSWORD, body, {
             baseUrl: '',
-        }),
+        });
+    },
 
-    getAllAccounts: () => http.get<AccountListResType>(ApiRoutes.API_ACCOUNTS),
+    //
+    getAllAccounts: () => {
+        return http.get<AccountListResType>(BACKEND_API.ACCOUNTS);
+    },
 
-    getEmployee: (id: number) => http.get<AccountResType>(`${ApiRoutes.SERVER_API_ACCOUNT_DETAIL}/${id}`),
+    getEmployee: (id: number) => {
+        return http.get<AccountResType>(`${BACKEND_API.ACCOUNT_DETAIL}/${id}`);
+    },
 
-    addEmployee: (body: CreateEmployeeAccountBodyType) => http.post<AccountResType>(ApiRoutes.API_ACCOUNTS, body),
+    addEmployee: (body: CreateEmployeeAccountBodyType) => {
+        return http.post<AccountResType>(BACKEND_API.ACCOUNTS, body);
+    },
 
-    updateEmployee: (id: number, body: UpdateEmployeeAccountBodyType) =>
-        http.put<AccountResType>(`${ApiRoutes.SERVER_API_ACCOUNT_DETAIL}/${id}`, body),
+    updateEmployee: (id: number, body: UpdateEmployeeAccountBodyType) => {
+        return http.put<AccountResType>(`${BACKEND_API.ACCOUNT_DETAIL}/${id}`, body);
+    },
 
-    deleteEmployee: (id: number) => http.delete<AccountResType>(`${ApiRoutes.SERVER_API_ACCOUNT_DETAIL}/${id}`),
+    deleteEmployee: (id: number) => {
+        return http.delete<AccountResType>(`${BACKEND_API.ACCOUNT_DETAIL}/${id}`);
+    },
 };
 
 export default accountApiRequest;
