@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, memo, use, useEffect, useState } from 'react';
+import { createContext, memo, use, useCallback, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -22,7 +22,10 @@ import { getVietnameseTableStatus } from '@/utilities';
 
 import { AppNavigationRoutes } from '@/constants';
 
+import { toast, useDeleteTable, useGetAllTables } from '@/hooks';
+
 import AutoPagination from '@/components/AutoPagination';
+import QRCodeTable from '@/components/QRCodeTable';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -45,7 +48,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-import { TableListResType } from '@/schemaValidations';
+import { handleErrorApi } from '@/lib';
+
+import type { TableListResType } from '@/schemaValidations';
 
 import AddTable from './AddTable';
 import EditTable from './EditTable';
@@ -53,10 +58,10 @@ import EditTable from './EditTable';
 type TableItem = TableListResType['data'][0];
 
 interface ITableContext {
-    setTableIdEdit: (value: number) => void;
-    tableIdEdit: number | undefined;
     tableDelete: TableItem | null;
+    tableIdEdit: number | undefined;
     setTableDelete: (value: TableItem | null) => void;
+    setTableIdEdit: (value: number) => void;
 }
 
 const TableContext = createContext<ITableContext>({
@@ -85,7 +90,12 @@ export const columns: ColumnDef<TableItem>[] = [
     {
         accessorKey: 'token',
         header: 'QR Code',
-        cell: ({ row }) => <div>{row.getValue('number')}</div>,
+        cell: ({ row }) => (
+            <QRCodeTable
+                tableNumber={row.getValue('number')}
+                token={row.getValue('token')}
+            />
+        ),
     },
     {
         id: 'actions',
@@ -93,13 +103,13 @@ export const columns: ColumnDef<TableItem>[] = [
         cell: function Actions({ row }) {
             const { setTableIdEdit, setTableDelete } = use(TableContext);
 
-            const openEditTable = () => {
+            const openEditTable = useCallback(() => {
                 setTableIdEdit(row.original.number);
-            };
+            }, [row.original.number, setTableIdEdit]);
 
-            const openDeleteTable = () => {
+            const openDeleteTable = useCallback(() => {
                 setTableDelete(row.original);
-            };
+            }, [row.original, setTableDelete]);
 
             return (
                 <DropdownMenu modal={false}>
@@ -131,6 +141,27 @@ function AlertDialogDeleteTable({
     tableDelete: TableItem | null;
     setTableDelete: (value: TableItem | null) => void;
 }) {
+    const { mutateAsync: deleteTable } = useDeleteTable();
+
+    const handleDeleteTable = useCallback(async () => {
+        if (tableDelete) {
+            try {
+                const result = await deleteTable(tableDelete.number);
+                // close modal
+                setTableDelete(null);
+                toast({
+                    title: result.payload.message,
+                });
+            } catch (error) {
+                handleErrorApi({ error });
+            }
+        }
+    }, [tableDelete, deleteTable, setTableDelete]);
+
+    const handleCancel = useCallback(() => {
+        setTableDelete(null);
+    }, [setTableDelete]);
+
     return (
         <AlertDialog
             open={Boolean(tableDelete)}
@@ -152,8 +183,8 @@ function AlertDialogDeleteTable({
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                    <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteTable}>Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
@@ -166,10 +197,9 @@ function DishTable() {
     const searchParam = useSearchParams();
     const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1;
     const pageIndex = page - 1;
-    // const params = Object.fromEntries(searchParam.entries())
+
     const [tableIdEdit, setTableIdEdit] = useState<number | undefined>();
     const [tableDelete, setTableDelete] = useState<TableItem | null>(null);
-    const data: unknown[] = [];
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -179,10 +209,11 @@ function DishTable() {
         pageSize: ITEMS_PER_PAGE,
     });
 
+    const { data } = useGetAllTables();
+    const tables = data?.payload.data ?? [];
+
     const table = useReactTable({
-        data,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        data: tables,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -213,10 +244,12 @@ function DishTable() {
     return (
         <TableContext.Provider value={{ tableIdEdit, setTableIdEdit, tableDelete, setTableDelete }}>
             <div className="w-full">
-                <EditTable
-                    id={tableIdEdit}
-                    setId={setTableIdEdit}
-                />
+                {tableIdEdit && (
+                    <EditTable
+                        id={tableIdEdit}
+                        setId={setTableIdEdit}
+                    />
+                )}
                 <AlertDialogDeleteTable
                     tableDelete={tableDelete}
                     setTableDelete={setTableDelete}
@@ -279,7 +312,7 @@ function DishTable() {
                 <div className="flex items-center justify-end space-x-2 py-4">
                     <div className="text-xs text-muted-foreground py-4 flex-1 ">
                         Hiển thị <strong>{table.getPaginationRowModel().rows.length}</strong> trong{' '}
-                        <strong>{data.length}</strong> kết quả
+                        <strong>{tables.length}</strong> kết quả
                     </div>
                     <div>
                         <AutoPagination

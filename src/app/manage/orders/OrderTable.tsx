@@ -36,7 +36,7 @@ import OrderTableColumns from './OrderTableColumns';
 import { OrderTableContext } from './OrderTableContext';
 import { useOrderService } from './useOrderService';
 
-const PAGE_SIZE = 10;
+const ITEMS_PER_PAGE = 10;
 const initFromDate = startOfDay(new Date());
 const initToDate = endOfDay(new Date());
 
@@ -59,7 +59,7 @@ function OrderTable() {
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
         pageIndex,
-        pageSize: PAGE_SIZE,
+        pageSize: ITEMS_PER_PAGE,
     });
 
     const { statics, orderObjectByGuestId, servingGuestByTableNumber } = useOrderService(orderList);
@@ -97,7 +97,7 @@ function OrderTable() {
     useEffect(() => {
         table.setPagination({
             pageIndex,
-            pageSize: PAGE_SIZE,
+            pageSize: ITEMS_PER_PAGE,
         });
     }, [table, pageIndex]);
 

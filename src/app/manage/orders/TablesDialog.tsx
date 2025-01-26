@@ -49,7 +49,7 @@ export const columns: ColumnDef<TableItem>[] = [
     },
 ];
 
-const PAGE_SIZE = 10;
+const ITEMS_PER_PAGE = 10;
 
 function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
     const data: TableListResType['data'] = [];
@@ -61,7 +61,7 @@ function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: PAGE_SIZE,
+        pageSize: ITEMS_PER_PAGE,
     });
 
     const table = useReactTable({
@@ -89,7 +89,7 @@ function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
     useEffect(() => {
         table.setPagination({
             pageIndex: 0,
-            pageSize: PAGE_SIZE,
+            pageSize: ITEMS_PER_PAGE,
         });
     }, [table]);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -11,6 +11,8 @@ import { getVietnameseTableStatus } from '@/utilities';
 
 import { TableStatus, TableStatusValues } from '@/constants';
 
+import { toast, useCreateTable } from '@/hooks';
+
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -18,10 +20,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+import { handleErrorApi } from '@/lib';
+
 import { CreateTableBody, type CreateTableBodyType } from '@/schemaValidations';
 
 function AddTable() {
     const [open, setOpen] = useState(false);
+
+    const { mutateAsync: createTable, isPending } = useCreateTable();
 
     const form = useForm<CreateTableBodyType>({
         resolver: zodResolver(CreateTableBody),
@@ -31,6 +37,27 @@ function AddTable() {
             status: TableStatus.Hidden,
         },
     });
+
+    const resetForm = useCallback(() => {
+        form.reset();
+    }, [form]);
+
+    const onSubmit = useCallback(
+        async (values: CreateTableBodyType) => {
+            if (isPending) return;
+            try {
+                const result = await createTable(values);
+                toast({
+                    title: result.payload.message,
+                });
+                resetForm();
+                setOpen(false);
+            } catch (error) {
+                handleErrorApi({ error, setError: form.setError });
+            }
+        },
+        [createTable, form.setError, isPending, resetForm]
+    );
 
     return (
         <Dialog
@@ -48,7 +75,7 @@ function AddTable() {
             </DialogTrigger>
             <DialogContent
                 className="sm:max-w-[600px] max-h-screen overflow-auto"
-                onCloseAutoFocus={() => form.reset()}
+                onCloseAutoFocus={resetForm}
             >
                 <DialogHeader>
                     <DialogTitle>Thêm bàn</DialogTitle>
@@ -58,6 +85,8 @@ function AddTable() {
                         noValidate
                         className="grid auto-rows-max items-start gap-4 md:gap-8"
                         id="add-table-form"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        onReset={resetForm}
                     >
                         <div className="grid gap-4 py-4">
                             <FormField

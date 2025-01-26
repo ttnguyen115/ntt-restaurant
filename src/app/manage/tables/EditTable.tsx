@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -12,6 +12,9 @@ import { getTableLink, getVietnameseTableStatus } from '@/utilities';
 
 import { TableStatus, TableStatusValues } from '@/constants';
 
+import { toast, useGetTableByNumber, useUpdateTable } from '@/hooks';
+
+import QRCodeTable from '@/components/QRCodeTable';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -20,19 +23,25 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 
+import { handleErrorApi } from '@/lib';
+
 import { UpdateTableBody, type UpdateTableBodyType } from '@/schemaValidations';
 
 function EditTable({
     id,
     setId,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSubmitSuccess,
 }: {
     id?: number | undefined;
     setId: (value: number | undefined) => void;
     onSubmitSuccess?: () => void;
 }) {
-    const tableNumber = 0;
+    const tableNumber = id as number;
+
+    const [qrToken, setQrToken] = useState<string | null>(null);
+
+    const { data: table } = useGetTableByNumber(id as number);
+    const { mutateAsync: updateTable, isPending } = useUpdateTable();
 
     const form = useForm<UpdateTableBodyType>({
         resolver: zodResolver(UpdateTableBody),
@@ -43,21 +52,51 @@ function EditTable({
         },
     });
 
+    const resetForm = useCallback(() => {
+        form.reset();
+        setId(undefined);
+    }, [form, setId]);
+
+    const onSubmit = useCallback(
+        async (values: UpdateTableBodyType) => {
+            if (isPending) return;
+            try {
+                const {
+                    payload: { message },
+                } = await updateTable({ number: tableNumber, ...values });
+                toast({ title: message });
+                resetForm();
+                if (onSubmitSuccess) onSubmitSuccess();
+            } catch (error) {
+                handleErrorApi({ error });
+            }
+        },
+        [tableNumber, isPending, onSubmitSuccess, resetForm, updateTable]
+    );
+
+    useEffect(() => {
+        if (table) {
+            const { capacity, status, token } = table.payload.data;
+            setQrToken(token);
+            form.reset({
+                capacity,
+                status,
+            });
+        }
+    }, [table, form]);
+
     return (
         <Dialog
             open={Boolean(id)}
             onOpenChange={(value) => {
                 if (!value) {
-                    setId(undefined);
+                    resetForm();
                 }
             }}
         >
             <DialogContent
                 className="sm:max-w-[600px] max-h-screen overflow-auto"
-                onCloseAutoFocus={() => {
-                    form.reset();
-                    setId(undefined);
-                }}
+                onCloseAutoFocus={resetForm}
             >
                 <DialogHeader>
                     <DialogTitle>Cập nhật bàn ăn</DialogTitle>
@@ -67,6 +106,8 @@ function EditTable({
                         noValidate
                         className="grid auto-rows-max items-start gap-4 md:gap-8"
                         id="edit-table-form"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        onReset={resetForm}
                     >
                         <div className="grid gap-4 py-4">
                             <FormItem>
@@ -164,7 +205,14 @@ function EditTable({
                             <FormItem>
                                 <div className="grid grid-cols-4 items-center justify-items-start gap-4">
                                     <Label>QR Code</Label>
-                                    <div className="col-span-3 w-full space-y-2"></div>
+                                    <div className="col-span-3 w-full space-y-2">
+                                        {qrToken && (
+                                            <QRCodeTable
+                                                tableNumber={id as number}
+                                                token={qrToken}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </FormItem>
                             <FormItem>

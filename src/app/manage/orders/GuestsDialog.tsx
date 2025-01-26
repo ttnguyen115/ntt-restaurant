@@ -62,7 +62,7 @@ export const columns: ColumnDef<GuestItem>[] = [
     },
 ];
 
-const PAGE_SIZE = 10;
+const ITEMS_PER_PAGE = 10;
 const initFromDate = startOfDay(new Date());
 const initToDate = endOfDay(new Date());
 
@@ -75,8 +75,8 @@ function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
-        pageIndex: 0, // Gía trị mặc định ban đầu, không có ý nghĩa khi data được fetch bất đồng bộ
-        pageSize: PAGE_SIZE, // default page size
+        pageIndex: 0,
+        pageSize: ITEMS_PER_PAGE,
     });
 
     const data: GetListGuestsResType['data'] = [];
@@ -106,7 +106,7 @@ function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
     useEffect(() => {
         table.setPagination({
             pageIndex: 0,
-            pageSize: PAGE_SIZE,
+            pageSize: ITEMS_PER_PAGE,
         });
     }, [table]);
 

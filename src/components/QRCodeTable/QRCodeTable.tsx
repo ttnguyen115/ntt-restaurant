@@ -6,6 +6,8 @@ import QRCode from 'qrcode';
 
 import { getTableLink } from '@/utilities';
 
+import { toast } from '@/hooks';
+
 interface QRCodeTableProps {
     token: string;
     tableNumber: number;
@@ -40,7 +42,12 @@ const QRCodeTable = ({ token, tableNumber, width = 250 }: QRCodeTableProps) => {
             tableNumber,
         });
         const qrCanvasCallback = (error: Error | null | undefined) => {
-            if (error) console.error(error);
+            if (error) {
+                toast({
+                    title: 'Error in creating QR code',
+                    description: error.message,
+                });
+            }
             canvasContext.drawImage(qrCanvas, 0, 0, width, width);
         };
 

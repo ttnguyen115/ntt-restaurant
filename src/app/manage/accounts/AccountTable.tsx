@@ -205,7 +205,7 @@ const AlertDialogDeleteAccount = memo(({ employeeDelete, setEmployeeDelete }: Al
     );
 });
 
-const PAGE_SIZE = 10;
+const ITEMS_PER_PAGE = 10;
 
 function AccountTable() {
     const searchParam = useSearchParams();
@@ -220,7 +220,7 @@ function AccountTable() {
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
         pageIndex,
-        pageSize: PAGE_SIZE,
+        pageSize: ITEMS_PER_PAGE,
     });
 
     const { data } = useGetAllAccounts();
@@ -251,18 +251,20 @@ function AccountTable() {
     useEffect(() => {
         table.setPagination({
             pageIndex,
-            pageSize: PAGE_SIZE,
+            pageSize: ITEMS_PER_PAGE,
         });
     }, [table, pageIndex]);
 
     return (
         <AccountTableContext.Provider value={{ employeeIdEdit, setEmployeeIdEdit, employeeDelete, setEmployeeDelete }}>
             <div className="w-full">
-                <EditEmployee
-                    id={employeeIdEdit}
-                    setId={setEmployeeIdEdit}
-                    onSubmitSuccess={() => {}}
-                />
+                {employeeIdEdit && (
+                    <EditEmployee
+                        id={employeeIdEdit}
+                        setId={setEmployeeIdEdit}
+                        onSubmitSuccess={() => {}}
+                    />
+                )}
                 <AlertDialogDeleteAccount
                     employeeDelete={employeeDelete}
                     setEmployeeDelete={setEmployeeDelete}

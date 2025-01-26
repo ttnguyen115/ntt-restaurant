@@ -68,7 +68,7 @@ interface DishesDialogProps {
     onChoose: (dish: DishItem) => void;
 }
 
-const PAGE_SIZE = 10;
+const ITEMS_PER_PAGE = 10;
 
 function DishesDialog({ onChoose }: DishesDialogProps) {
     const [open, setOpen] = useState(false);
@@ -78,7 +78,7 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: PAGE_SIZE,
+        pageSize: ITEMS_PER_PAGE,
     });
 
     const data = fakeDishes as DishItem[];
@@ -108,7 +108,7 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
     useEffect(() => {
         table.setPagination({
             pageIndex: 0,
-            pageSize: PAGE_SIZE,
+            pageSize: ITEMS_PER_PAGE,
         });
     }, [table]);
 

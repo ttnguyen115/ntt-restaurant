@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -11,7 +11,7 @@ import { getVietnameseDishStatus } from '@/utilities';
 
 import { DishStatus, DishStatusValues } from '@/constants';
 
-import { toast, useMediaMutation, useUpdateDish } from '@/hooks';
+import { toast, useGetDish, useMediaMutation, useUpdateDish } from '@/hooks';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -44,6 +44,7 @@ function EditDish({ id, setId, onSubmitSuccess }: EditDishProps) {
 
     const imageInputRef = useRef<HTMLInputElement | null>(null);
 
+    const { data: dish } = useGetDish(id as number);
     const { mutateAsync: updateDish, isPending } = useUpdateDish();
     const { mutateAsync: uploadMedia } = useMediaMutation();
 
@@ -103,6 +104,19 @@ function EditDish({ id, setId, onSubmitSuccess }: EditDishProps) {
         },
         [updateDish, file, form.setError, id, isPending, onSubmitSuccess, resetForm, uploadMedia]
     );
+
+    useEffect(() => {
+        if (dish) {
+            const { name: dishName, image: dishImage, price, description, status } = dish.payload.data;
+            form.reset({
+                name: dishName,
+                image: dishImage,
+                price,
+                description,
+                status,
+            });
+        }
+    }, [dish, form]);
 
     return (
         <Dialog

@@ -204,7 +204,7 @@ function AlertDialogDeleteDish({ dishDelete, setDishDelete }: AlertDialogDeleteD
     );
 }
 
-const PAGE_SIZE = 10;
+const ITEMS_PER_PAGE = 10;
 
 function DishTable() {
     const searchParam = useSearchParams();
@@ -219,7 +219,7 @@ function DishTable() {
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
         pageIndex,
-        pageSize: PAGE_SIZE,
+        pageSize: ITEMS_PER_PAGE,
     });
 
     // TODO: oh maybe we can switch to query w pagination in later versions
@@ -251,17 +251,19 @@ function DishTable() {
     useEffect(() => {
         table.setPagination({
             pageIndex,
-            pageSize: PAGE_SIZE,
+            pageSize: ITEMS_PER_PAGE,
         });
     }, [table, pageIndex]);
 
     return (
         <DishTableContext.Provider value={{ dishIdEdit, setDishIdEdit, dishDelete, setDishDelete }}>
             <div className="w-full">
-                <EditDish
-                    id={dishIdEdit}
-                    setId={setDishIdEdit}
-                />
+                {dishIdEdit && (
+                    <EditDish
+                        id={dishIdEdit}
+                        setId={setDishIdEdit}
+                    />
+                )}
                 <AlertDialogDeleteDish
                     dishDelete={dishDelete}
                     setDishDelete={setDishDelete}

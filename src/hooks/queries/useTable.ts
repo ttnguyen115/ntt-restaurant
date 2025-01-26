@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { tableApiRequest } from '@/apiRequests';
 
-import { UpdateDishBodyType, UpdateTableBodyType } from '@/schemaValidations';
+import { UpdateTableBodyType } from '@/schemaValidations';
 
 export const useGetAllTables = () => {
     return useQuery({
