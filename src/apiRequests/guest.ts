@@ -65,7 +65,9 @@ const guestApiRequest = {
     },
 
     logout: () => {
-        return http.post(ROUTE_HANDLER.LOGOUT, null, { baseUrl: '' });
+        return http.post(ROUTE_HANDLER.LOGOUT, null, {
+            baseUrl: '',
+        });
     },
 
     refreshTokenRequest: null as Promise<{
