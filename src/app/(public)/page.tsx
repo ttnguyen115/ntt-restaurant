@@ -1,6 +1,24 @@
 import Image from 'next/image';
 
-function Home() {
+import { formatCurrency } from '@/utilities';
+
+import { dishApiRequest } from '@/apiRequests';
+
+import { DishListResType } from '@/schemaValidations';
+
+async function Home() {
+    let dishes: DishListResType['data'] = [];
+
+    try {
+        const {
+            payload: { data },
+        } = await dishApiRequest.getAll();
+        dishes = data;
+    } catch {
+        // TODO: add error api UI
+        return <div>Something went wrong!</div>;
+    }
+
     return (
         <div className="w-full space-y-4">
             <div className="relative">
@@ -23,27 +41,28 @@ function Home() {
             <section className="space-y-10 py-16">
                 <h2 className="text-center text-2xl font-bold">Đa dạng các món ăn</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-                    {Array(4)
-                        .fill(0)
-                        .map((_, index) => (
-                            <div
-                                className="flex gap-4 w"
-                                key={index}
-                            >
-                                <div className="flex-shrink-0">
-                                    <img
-                                        src="https://ik.imagekit.io/freeflo/production/6b91c700-92c4-4601-8e96-37d84ac3c28c.png?tr=w-2048,q-75&alt=media&pr-true"
-                                        className="object-cover w-[150px] h-[150px] rounded-md"
-                                        alt="something"
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <h3 className="text-xl font-semibold">Bánh mì</h3>
-                                    <p className="">Bánh mì sandwidch</p>
-                                    <p className="font-semibold">123,123đ</p>
-                                </div>
+                    {dishes.map(({ id, image, name, description, price }) => (
+                        <div
+                            className="flex gap-4 w"
+                            key={id}
+                        >
+                            <div className="flex-shrink-0">
+                                <Image
+                                    src={image}
+                                    width={150}
+                                    height={150}
+                                    quality={100}
+                                    className="object-cover rounded-md"
+                                    alt={name}
+                                />
                             </div>
-                        ))}
+                            <div className="space-y-1">
+                                <h3 className="text-xl font-semibold">{name}</h3>
+                                <p className="">{description}</p>
+                                <p className="font-semibold">{formatCurrency(price)}</p>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </section>
         </div>
