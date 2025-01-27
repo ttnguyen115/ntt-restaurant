@@ -1,10 +1,18 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, use, useCallback, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import { AuthContext } from '@/contexts';
+
+import { AppNavigationRoutes, DEFAULT_PATH } from '@/constants';
+
+import { useGuestLogin } from '@/hooks';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,17 +20,51 @@ import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { handleErrorApi } from '@/lib';
+
 import { GuestLoginBody, GuestLoginBodyType } from '@/schemaValidations';
 
 function GuestLoginForm() {
+    const router = useRouter();
+
+    const searchParams = useSearchParams();
+    const params = useParams();
+
+    const tableNumber = Number(params.number);
+    const token = searchParams.get('token');
+
+    const { setRole } = use(AuthContext);
+
+    const { mutateAsync: loginAsGuest, isPending } = useGuestLogin();
+
     const form = useForm<GuestLoginBodyType>({
         resolver: zodResolver(GuestLoginBody),
         defaultValues: {
             name: '',
-            token: '',
-            tableNumber: 1,
+            token: token ?? '',
+            tableNumber,
         },
     });
+
+    const onSubmit = useCallback(
+        async (values: GuestLoginBodyType) => {
+            if (isPending) return;
+            try {
+                const {
+                    payload: { data },
+                } = await loginAsGuest(values);
+                setRole(data.guest.role);
+                router.push(AppNavigationRoutes.GUEST_MENU);
+            } catch (error) {
+                handleErrorApi({ error, setError: form.setError });
+            }
+        },
+        [isPending, router, loginAsGuest, form.setError, setRole]
+    );
+
+    useEffect(() => {
+        if (!token) router.push(DEFAULT_PATH);
+    }, [token, router]);
 
     return (
         <Card className="mx-auto max-w-sm">
@@ -34,6 +76,7 @@ function GuestLoginForm() {
                     <form
                         className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
                         noValidate
+                        onSubmit={form.handleSubmit(onSubmit)}
                     >
                         <div className="grid gap-4">
                             <FormField
@@ -54,7 +97,6 @@ function GuestLoginForm() {
                                     </FormItem>
                                 )}
                             />
-
                             <Button
                                 type="submit"
                                 className="w-full"

@@ -2,13 +2,14 @@ import { redirect } from 'next/navigation';
 
 import envConfig from '@/config';
 import {
+    getAccessTokenFromLocalStorage,
     isClient,
     removeTokensFromLocalStorage,
     setAccessTokenToLocalStorage,
     setRefreshTokenToLocalStorage,
 } from '@/utilities';
 
-import { AUTH_ROUTE_HANDLER } from '@/apiRequests';
+import { AUTH_ROUTE_HANDLER, GUEST_ROUTE_HANDLER } from '@/apiRequests';
 
 import { AppNavigationRoutes } from '@/constants';
 
@@ -42,7 +43,7 @@ const request = async <Response>(
     } = body instanceof FormData ? {} : { 'Content-Type': 'application/json' };
 
     if (isClient) {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = getAccessTokenFromLocalStorage();
         if (accessToken) {
             baseHeaders.Authorization = `Bearer ${accessToken}`;
         }
@@ -90,8 +91,7 @@ const request = async <Response>(
                     try {
                         await clientLogoutRequest;
                     } finally {
-                        localStorage.removeItem('accessToken');
-                        localStorage.removeItem('refreshToken');
+                        removeTokensFromLocalStorage();
                         clientLogoutRequest = null;
 
                         /* IMPORTANT:
@@ -115,11 +115,11 @@ const request = async <Response>(
 
     // LocalStorage handling
     if (isClient) {
-        if (url === AUTH_ROUTE_HANDLER.LOGIN) {
+        if ([AUTH_ROUTE_HANDLER.LOGIN, GUEST_ROUTE_HANDLER.LOGIN].includes(url)) {
             const { accessToken, refreshToken } = (payload as LoginResType).data;
             setAccessTokenToLocalStorage(accessToken);
             setRefreshTokenToLocalStorage(refreshToken);
-        } else if (url === AUTH_ROUTE_HANDLER.LOGOUT) {
+        } else if ([AUTH_ROUTE_HANDLER.LOGOUT, GUEST_ROUTE_HANDLER.LOGOUT].includes(url)) {
             removeTokensFromLocalStorage();
         }
     }

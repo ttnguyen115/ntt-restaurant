@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -36,11 +36,7 @@ function EditTable({
     setId: (value: number | undefined) => void;
     onSubmitSuccess?: () => void;
 }) {
-    const tableNumber = id as number;
-
-    const [qrToken, setQrToken] = useState<string | null>(null);
-
-    const { data: table } = useGetTableByNumber(id as number);
+    const { data: table } = useGetTableByNumber({ number: id as number, enabled: Boolean(id) });
     const { mutateAsync: updateTable, isPending } = useUpdateTable();
 
     const form = useForm<UpdateTableBodyType>({
@@ -63,24 +59,24 @@ function EditTable({
             try {
                 const {
                     payload: { message },
-                } = await updateTable({ number: tableNumber, ...values });
+                } = await updateTable({ number: id as number, ...values });
                 toast({ title: message });
                 resetForm();
                 if (onSubmitSuccess) onSubmitSuccess();
             } catch (error) {
-                handleErrorApi({ error });
+                handleErrorApi({ error, setError: form.setError });
             }
         },
-        [tableNumber, isPending, onSubmitSuccess, resetForm, updateTable]
+        [id, isPending, onSubmitSuccess, resetForm, updateTable, form.setError]
     );
 
     useEffect(() => {
         if (table) {
-            const { capacity, status, token } = table.payload.data;
-            setQrToken(token);
+            const { capacity, status } = table.payload.data;
             form.reset({
                 capacity,
                 status,
+                changeToken: form.getValues('changeToken'),
             });
         }
     }, [table, form]);
@@ -118,7 +114,7 @@ function EditTable({
                                             id="number"
                                             type="number"
                                             className="w-full"
-                                            value={tableNumber}
+                                            value={id as number}
                                             readOnly
                                         />
                                         <FormMessage />
@@ -206,10 +202,10 @@ function EditTable({
                                 <div className="grid grid-cols-4 items-center justify-items-start gap-4">
                                     <Label>QR Code</Label>
                                     <div className="col-span-3 w-full space-y-2">
-                                        {qrToken && (
+                                        {table && (
                                             <QRCodeTable
-                                                tableNumber={id as number}
-                                                token={qrToken}
+                                                tableNumber={table.payload.data.number}
+                                                token={table.payload.data.token}
                                             />
                                         )}
                                     </div>
@@ -219,19 +215,21 @@ function EditTable({
                                 <div className="grid grid-cols-4 items-center justify-items-start gap-4">
                                     <Label>URL gọi món</Label>
                                     <div className="col-span-3 w-full space-y-2">
-                                        <Link
-                                            href={getTableLink({
-                                                token: '123123123',
-                                                tableNumber,
-                                            })}
-                                            target="_blank"
-                                            className="break-all"
-                                        >
-                                            {getTableLink({
-                                                token: '123123123',
-                                                tableNumber,
-                                            })}
-                                        </Link>
+                                        {table && (
+                                            <Link
+                                                href={getTableLink({
+                                                    token: table.payload.data.token,
+                                                    tableNumber: table.payload.data.number,
+                                                })}
+                                                target="_blank"
+                                                className="break-all"
+                                            >
+                                                {getTableLink({
+                                                    token: table.payload.data.token,
+                                                    tableNumber: table.payload.data.number,
+                                                })}
+                                            </Link>
+                                        )}
                                     </div>
                                 </div>
                             </FormItem>

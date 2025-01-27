@@ -29,7 +29,7 @@ function LoginFormContainer() {
     const searchParams = useSearchParams();
     const clearTokens = searchParams.get('clearTokens');
 
-    const { setIsAuthenticated } = useAuth();
+    const { setRole } = useAuth();
 
     const { isPending, mutateAsync: login } = useLoginMutation();
 
@@ -44,10 +44,11 @@ function LoginFormContainer() {
     const onSubmit = async (data: LoginBodyType) => {
         if (isPending) return;
         try {
-            const result = await login(data);
+            const { payload } = await login(data);
             toast({
-                description: result.payload.message,
+                description: payload.message,
             });
+            setRole(payload.data.account.role);
             router.push(AppNavigationRoutes.MANAGE_DASHBOARD);
         } catch (error: unknown) {
             handleErrorApi({ error, setError: form.setError });
@@ -56,9 +57,9 @@ function LoginFormContainer() {
 
     useEffect(() => {
         if (clearTokens) {
-            setIsAuthenticated(false);
+            setRole(undefined);
         }
-    }, [clearTokens, setIsAuthenticated]);
+    }, [clearTokens, setRole]);
 
     return (
         <CardContainer

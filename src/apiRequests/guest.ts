@@ -13,13 +13,13 @@ import type {
     RefreshTokenResType,
 } from '@/schemaValidations';
 
-const ROUTE_HANDLER = {
+export const ROUTE_HANDLER = {
     LOGIN: PREFIX_API + Prefix.GUEST + Prefix.AUTH + Suffix.LOGIN,
     LOGOUT: PREFIX_API + Prefix.GUEST + Prefix.AUTH + Suffix.LOGOUT,
     REFRESH_TOKEN: PREFIX_API + Prefix.GUEST + Prefix.AUTH + Suffix.REFRESH_TOKEN,
 };
 
-const BACKEND_API = {
+export const BACKEND_API = {
     LOGIN: Prefix.GUEST + Prefix.AUTH + Suffix.LOGIN,
     LOGOUT: Prefix.GUEST + Prefix.AUTH + Suffix.LOGOUT,
     REFRESH_TOKEN: Prefix.GUEST + Prefix.AUTH + Suffix.REFRESH_TOKEN,

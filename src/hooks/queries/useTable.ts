@@ -11,10 +11,11 @@ export const useGetAllTables = () => {
     });
 };
 
-export const useGetTableByNumber = (number: number) => {
+export const useGetTableByNumber = ({ number, enabled }: { number: number; enabled: boolean }) => {
     return useQuery({
         queryKey: ['tables', number],
         queryFn: () => tableApiRequest.getTable(number),
+        enabled,
     });
 };
 

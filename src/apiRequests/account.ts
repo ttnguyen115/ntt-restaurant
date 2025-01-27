@@ -24,6 +24,8 @@ const BACKEND_API = {
 };
 
 const accountApiRequest = {
+    me: () => http.get<AccountResType>(BACKEND_API.ME),
+
     sMe: (accessToken: string) => {
         return http.get<AccountResType>(BACKEND_API.ME, {
             headers: {

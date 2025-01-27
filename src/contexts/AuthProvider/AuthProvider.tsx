@@ -2,38 +2,41 @@
 
 import { createContext, useEffect, useState } from 'react';
 
-import { getAccessTokenFromLocalStorage, removeTokensFromLocalStorage } from '@/utilities';
+import { decodeToken, getAccessTokenFromLocalStorage, removeTokensFromLocalStorage } from '@/utilities';
 
-import type { ChildrenObject } from '@/types';
+import type { ChildrenObject, RoleType } from '@/types';
 
 interface IAuthContext {
     isAuthenticated: boolean;
-    setIsAuthenticated: (isAuth: boolean) => void;
+    role: RoleType | undefined;
+    setRole: (role?: RoleType | undefined) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
     isAuthenticated: false,
-    setIsAuthenticated: () => {},
+    role: undefined,
+    setRole: () => {},
 });
 
 function AuthProvider({ children }: ChildrenObject) {
-    const [isAuthenticated, setIsAuth] = useState(false);
+    const [role, setRoleState] = useState<RoleType | undefined>();
 
-    const setIsAuthenticated = (isAuth: boolean) => {
-        if (isAuth) {
-            setIsAuth(true);
-        } else {
-            setIsAuth(false);
-            removeTokensFromLocalStorage();
-        }
+    const isAuthenticated = Boolean(role);
+
+    const setRole = (_role?: RoleType | undefined) => {
+        setRoleState(_role);
+        if (!_role) removeTokensFromLocalStorage();
     };
 
     useEffect(() => {
         const accessToken = getAccessTokenFromLocalStorage();
-        if (accessToken) setIsAuth(true);
+        if (accessToken) {
+            const decodedToken = decodeToken(accessToken);
+            setRoleState(decodedToken.role);
+        }
     }, []);
 
-    return <AuthContext value={{ isAuthenticated, setIsAuthenticated }}>{children}</AuthContext>;
+    return <AuthContext value={{ isAuthenticated, role, setRole }}>{children}</AuthContext>;
 }
 
 export default AuthProvider;

@@ -4,6 +4,8 @@ export { default as useAuth } from './useAuth';
 
 export { useLoginMutation, useLogoutMutation } from './queries/useAuth';
 
+export { useGuestLogin, useGuestLogout } from './queries/useGuest';
+
 export {
     useMyAccount,
     useMyAccountMutation,

@@ -20,6 +20,9 @@ const AppNavigationRoutes = {
     MANAGE_ACCOUNTS: `${PREFIX_MANAGE}/accounts`,
     MANAGE_GUESTS: `${PREFIX_MANAGE}/guests`,
     MANAGE_SETTING: `${PREFIX_MANAGE}/setting`,
+
+    // guest pages
+    GUEST_MENU: '/guest/menu',
 };
 
 export default AppNavigationRoutes;
