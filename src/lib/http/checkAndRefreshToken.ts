@@ -48,11 +48,9 @@ const checkAndRefreshToken = async (param?: CallbackParams) => {
                 role === Role.Guest ? await guestApiRequest.refreshToken() : await authApiRequest.refreshToken();
             setAccessTokenToLocalStorage(res.payload.data.accessToken);
             setRefreshTokenToLocalStorage(res.payload.data.refreshToken);
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            param?.onSuccess && param.onSuccess();
+            if (param?.onSuccess) param.onSuccess();
         } catch {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            param?.onError && param.onError();
+            if (param?.onError) param.onError();
         }
     }
 };

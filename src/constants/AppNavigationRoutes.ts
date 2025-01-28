@@ -1,4 +1,5 @@
 const PREFIX_MANAGE = '/manage';
+const PREFIX_GUEST = '/guest';
 
 const AppNavigationRoutes = {
     LOGIN: '/login',
@@ -10,6 +11,7 @@ const AppNavigationRoutes = {
     MENU: '/menu',
     ORDERS: '/orders',
     MANAGE: '/manage',
+    GUEST: '/guest',
 
     // manage pages
     MANAGE_DASHBOARD: `${PREFIX_MANAGE}/dashboard`,
@@ -22,7 +24,7 @@ const AppNavigationRoutes = {
     MANAGE_SETTING: `${PREFIX_MANAGE}/setting`,
 
     // guest pages
-    GUEST_MENU: '/guest/menu',
+    GUEST_MENU: `${PREFIX_GUEST}/menu`,
 };
 
 export default AppNavigationRoutes;
