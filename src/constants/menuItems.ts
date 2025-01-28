@@ -1,6 +1,9 @@
 import { Home, LineChart, Salad, ShoppingCart, Table, Users2 } from 'lucide-react';
 
+import { RoleType } from '@/types';
+
 import AppNavigationRoutes from './AppNavigationRoutes';
+import { Role } from './type';
 
 export const manageMenuItems = [
     {
@@ -36,10 +39,20 @@ export const manageMenuItems = [
     },
 ];
 
-export const homeMenuItems = [
+export const homeMenuItems: Array<{
+    title: string;
+    href: string;
+    role?: RoleType[] | undefined;
+    hideWhenLoggedIn?: boolean | undefined;
+}> = [
+    {
+        title: 'Trang chủ',
+        href: AppNavigationRoutes.MANAGE_DASHBOARD,
+    },
     {
         title: 'Món ăn',
         href: AppNavigationRoutes.MENU,
+        role: [Role.Guest],
     },
     {
         title: 'Đơn hàng',
@@ -48,11 +61,11 @@ export const homeMenuItems = [
     {
         title: 'Đăng nhập',
         href: AppNavigationRoutes.LOGIN,
-        authRequired: false,
+        hideWhenLoggedIn: true,
     },
     {
         title: 'Quản lý',
         href: AppNavigationRoutes.MANAGE_DASHBOARD,
-        authRequired: true,
+        role: [Role.Owner, Role.Employee],
     },
 ];

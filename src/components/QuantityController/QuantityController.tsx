@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { ChangeEvent, memo, useCallback } from 'react';
 
 import { Minus, Plus } from 'lucide-react';
 
@@ -11,12 +11,32 @@ interface QuantityProps {
 }
 
 function QuantityController({ onChange, value }: QuantityProps) {
+    const handleChangeInput = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            const { value: inputValue } = e.target;
+            const numberValue = Number(inputValue);
+            if (Number.isNaN(numberValue)) {
+                return;
+            }
+            onChange(numberValue);
+        },
+        [onChange]
+    );
+
+    const handleChangeMinusButton = useCallback(() => {
+        onChange(value - 1);
+    }, [onChange, value]);
+
+    const handleChangePlusButton = useCallback(() => {
+        onChange(value + 1);
+    }, [onChange, value]);
+
     return (
         <div className="flex gap-1 ">
             <Button
                 className="h-6 w-6 p-0"
                 disabled={value === 0}
-                onClick={() => onChange(value - 1)}
+                onClick={handleChangeMinusButton}
             >
                 <Minus className="w-3 h-3" />
             </Button>
@@ -26,18 +46,11 @@ function QuantityController({ onChange, value }: QuantityProps) {
                 pattern="[0-9]*"
                 className="h-6 p-1 w-8 text-center"
                 value={value}
-                onChange={(e) => {
-                    const { value: inputValue } = e.target;
-                    const numberValue = Number(inputValue);
-                    if (Number.isNaN(numberValue)) {
-                        return;
-                    }
-                    onChange(numberValue);
-                }}
+                onChange={handleChangeInput}
             />
             <Button
                 className="h-6 w-6 p-0"
-                onClick={() => onChange(value + 1)}
+                onClick={handleChangePlusButton}
             >
                 <Plus className="w-3 h-3" />
             </Button>

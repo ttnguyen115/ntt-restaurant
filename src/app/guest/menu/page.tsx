@@ -2,12 +2,26 @@ import Image from 'next/image';
 
 import { Minus, Plus } from 'lucide-react';
 
+import { dishApiRequest } from '@/apiRequests';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { dishes } from './mock';
+import { DishListResType } from '@/schemaValidations';
 
 async function MenuPage() {
+    let dishes: DishListResType['data'] = [];
+
+    try {
+        const {
+            payload: { data },
+        } = await dishApiRequest.getAll();
+        dishes = data;
+    } catch {
+        // TODO: add error api UI
+        return <div>Something went wrong!</div>;
+    }
+
     return (
         <div className="max-w-[400px] mx-auto space-y-4">
             <h1 className="text-center text-xl font-bold">🍕 Menu quán</h1>
