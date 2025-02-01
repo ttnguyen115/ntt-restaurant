@@ -11,7 +11,7 @@ function Footer() {
                 <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
                     <Link
                         href="/client/public"
-                        className="flex items-center gap-2 "
+                        className="flex items-center gap-2"
                         prefetch={false}
                     >
                         <Beef className="h-6 w-6 hover:text-foreground" />

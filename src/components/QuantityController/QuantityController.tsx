@@ -15,9 +15,7 @@ function QuantityController({ onChange, value }: QuantityProps) {
         (e: ChangeEvent<HTMLInputElement>) => {
             const { value: inputValue } = e.target;
             const numberValue = Number(inputValue);
-            if (Number.isNaN(numberValue)) {
-                return;
-            }
+            if (Number.isNaN(numberValue)) return;
             onChange(numberValue);
         },
         [onChange]
@@ -32,7 +30,7 @@ function QuantityController({ onChange, value }: QuantityProps) {
     }, [onChange, value]);
 
     return (
-        <div className="flex gap-1 ">
+        <div className="flex gap-1">
             <Button
                 className="h-6 w-6 p-0"
                 disabled={value === 0}

@@ -182,7 +182,7 @@ function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
                             </Table>
                         </div>
                         <div className="flex items-center justify-end space-x-2 py-4">
-                            <div className="text-xs text-muted-foreground py-4 flex-1 ">
+                            <div className="text-xs text-muted-foreground py-4 flex-1">
                                 Hiển thị <strong>{table.getPaginationRowModel().rows.length}</strong> trong{' '}
                                 <strong>{data.length}</strong> kết quả
                             </div>
