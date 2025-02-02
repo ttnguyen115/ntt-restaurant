@@ -26,7 +26,6 @@ export const manageMenuItems = [
         Icon: Salad,
         href: AppNavigationRoutes.MANAGE_DISHES,
     },
-
     {
         title: 'Phân tích',
         Icon: LineChart,

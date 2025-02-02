@@ -9,13 +9,13 @@ const managePaths = [AppNavigationRoutes.MANAGE];
 const privatePaths = [...guestPaths, ...managePaths];
 
 export function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
+    const { pathname = '' } = request.nextUrl;
 
     const accessToken = request.cookies.get('accessToken')?.value;
     const refreshToken = request.cookies.get('refreshToken')?.value;
 
-    const isInPrivatePaths = privatePaths.some(pathname.startsWith);
-    const isInPublicPaths = publicPaths.some(pathname.startsWith);
+    const isInPrivatePaths = privatePaths.some((path) => pathname.startsWith(path));
+    const isInPublicPaths = publicPaths.some((path) => pathname.startsWith(path));
 
     // 1. If indeed user has not logged in yet
     if (isInPrivatePaths && !refreshToken) {
@@ -41,8 +41,9 @@ export function middleware(request: NextRequest) {
 
         // 2.3 Allow to access based on role
         const { role } = decodeToken(refreshToken);
-        const isGuestAccessManagePaths = role === Role.Guest && managePaths.some(pathname.startsWith);
-        const isAdminAndEmployeeAccessGuestPaths = role !== Role.Guest && guestPaths.some(pathname.startsWith);
+        const isGuestAccessManagePaths = role === Role.Guest && managePaths.some((path) => pathname.startsWith(path));
+        const isAdminAndEmployeeAccessGuestPaths =
+            role !== Role.Guest && guestPaths.some((path) => pathname.startsWith(path));
         if (isGuestAccessManagePaths || isAdminAndEmployeeAccessGuestPaths) {
             return NextResponse.redirect(new URL(AppNavigationRoutes.DEFAULT, request.url));
         }
