@@ -25,6 +25,7 @@ const AppNavigationRoutes = {
 
     // guest pages
     GUEST_MENU: `${PREFIX_GUEST}/menu`,
+    GUEST_ORDERS: `${PREFIX_GUEST}/orders`,
 };
 
 export default AppNavigationRoutes;

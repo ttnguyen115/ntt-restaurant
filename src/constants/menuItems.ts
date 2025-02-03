@@ -46,16 +46,16 @@ export const homeMenuItems: Array<{
 }> = [
     {
         title: 'Trang chủ',
-        href: AppNavigationRoutes.MANAGE_DASHBOARD,
+        href: AppNavigationRoutes.DEFAULT,
     },
     {
         title: 'Món ăn',
-        href: AppNavigationRoutes.MENU,
+        href: AppNavigationRoutes.GUEST_MENU,
         role: [Role.Guest],
     },
     {
         title: 'Đơn hàng',
-        href: AppNavigationRoutes.ORDERS,
+        href: AppNavigationRoutes.GUEST_ORDERS,
     },
     {
         title: 'Đăng nhập',

@@ -3,22 +3,32 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-import { formatCurrency } from '@/utilities';
+import { clsx } from 'clsx';
 
-import { useGetAllDishes } from '@/hooks';
+import { formatCurrency, getVietnameseDishStatus } from '@/utilities';
+
+import { AppNavigationRoutes, DishStatus } from '@/constants';
+
+import { useGetAllDishes, useUpdateGuestOrder } from '@/hooks';
 
 import QuantityController from '@/components/QuantityController';
 import { Button } from '@/components/ui/button';
 
-import { GuestCreateOrdersBodyType } from '@/schemaValidations';
+import { handleErrorApi } from '@/lib';
+
+import type { GuestCreateOrdersBodyType } from '@/schemaValidations';
 
 function MenuOrder() {
+    const router = useRouter();
+
     const [orders, setOrders] = useState<GuestCreateOrdersBodyType>([]);
 
     const { data } = useGetAllDishes();
+    const { mutateAsync: updateGuestOrder, isPending } = useUpdateGuestOrder();
 
-    const dishes = useMemo(() => data?.payload.data || [], []);
+    const dishes = useMemo(() => data?.payload.data || [], [data?.payload.data]);
 
     const totalPrice = useMemo(() => {
         return dishes.reduce((result, dish) => {
@@ -46,38 +56,60 @@ function MenuOrder() {
         });
     }, []);
 
+    const handleUpdateGuestOrder = useCallback(async () => {
+        if (isPending) return;
+
+        try {
+            await updateGuestOrder(orders);
+            router.push(AppNavigationRoutes.GUEST_ORDERS);
+        } catch (error) {
+            handleErrorApi({ error });
+        }
+    }, [orders, router, isPending, updateGuestOrder]);
+
     return (
         <>
-            {dishes.map((dish) => (
-                <div
-                    key={dish.id}
-                    className="flex gap-4"
-                >
-                    <div className="flex-shrink-0">
-                        <Image
-                            src={dish.image}
-                            alt={dish.name}
-                            height={100}
-                            width={100}
-                            quality={100}
-                            className="object-cover w-[80px] h-[80px] rounded-md"
-                        />
+            {dishes
+                .filter((dish) => dish.status !== DishStatus.Hidden)
+                .map((dish) => (
+                    <div
+                        key={dish.id}
+                        className={clsx('flex gap-4', dish.status === DishStatus.Unavailable && 'pointer-events-none')}
+                    >
+                        <div className="flex-shrink-0 relative">
+                            {dish.status === DishStatus.Unavailable && (
+                                <span className="absolute inset-0 flex items-center justify-center text-sm">
+                                    {getVietnameseDishStatus(dish.status)}
+                                </span>
+                            )}
+                            <Image
+                                src={dish.image}
+                                alt={dish.name}
+                                height={100}
+                                width={100}
+                                quality={100}
+                                className="object-cover w-[80px] h-[80px] rounded-md"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <h3 className="text-sm">{dish.name}</h3>
+                            <p className="text-xs">{dish.description}</p>
+                            <p className="text-xs font-semibold">{formatCurrency(dish.price)}</p>
+                        </div>
+                        <div className="flex-shrink-0 ml-auto flex justify-center items-center">
+                            <QuantityController
+                                onChange={(value) => handleChangeQuantity(dish.id, value)}
+                                value={orders.find((order) => order.dishId === dish.id)?.quantity ?? 0}
+                            />
+                        </div>
                     </div>
-                    <div className="space-y-1">
-                        <h3 className="text-sm">{dish.name}</h3>
-                        <p className="text-xs">{dish.description}</p>
-                        <p className="text-xs font-semibold">{formatCurrency(dish.price)}</p>
-                    </div>
-                    <div className="flex-shrink-0 ml-auto flex justify-center items-center">
-                        <QuantityController
-                            onChange={(value) => handleChangeQuantity(dish.id, value)}
-                            value={orders.find((order) => order.dishId === dish.id)?.quantity ?? 0}
-                        />
-                    </div>
-                </div>
-            ))}
+                ))}
             <div className="sticky bottom-0">
-                <Button className="w-full justify-between">
+                <Button
+                    className="w-full justify-between"
+                    disabled={orders.length === 0 || isPending}
+                    onClick={handleUpdateGuestOrder}
+                >
                     <span>Giỏ hàng · {orders.length} món</span>
                     <span>{formatCurrency(totalPrice)}</span>
                 </Button>
