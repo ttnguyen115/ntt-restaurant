@@ -5,3 +5,4 @@ export { HttpError } from './http/HttpError';
 export { ENTITY_ERROR_STATUS, AUTHENTICATION_ERROR_STATUS } from './http/StatusCode';
 export { default as handleErrorApi } from './http/handleErrorApi';
 export { default as checkAndRefreshToken } from './http/checkAndRefreshToken';
+export { default as clientSocket } from './socket';

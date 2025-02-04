@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 
 import Image from 'next/image';
 
@@ -10,8 +10,12 @@ import { useGetGuestOrders } from '@/hooks';
 
 import { Badge } from '@/components/ui/badge';
 
+import { clientSocket } from '@/lib';
+
+import type { UpdateOrderResType } from '@/schemaValidations';
+
 function OrderCart() {
-    const { data } = useGetGuestOrders();
+    const { data, refetch } = useGetGuestOrders();
 
     const orders = useMemo(() => data?.payload.data ?? [], [data?.payload.data]);
 
@@ -20,6 +24,29 @@ function OrderCart() {
             return result + order.dishSnapshot.price * order.quantity;
         }, 0);
     }, [orders]);
+
+    useEffect(() => {
+        function onConnect() {}
+
+        function onDisconnect() {}
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-shadow
+        async function onUpdateOrder(data: UpdateOrderResType['data']) {
+            await refetch();
+        }
+
+        if (clientSocket.connected) onConnect();
+
+        clientSocket.on('update-order', onUpdateOrder);
+        clientSocket.on('connect', onConnect);
+        clientSocket.on('disconnect', onDisconnect);
+
+        return () => {
+            clientSocket.off('update-order', onUpdateOrder);
+            clientSocket.off('connect', onConnect);
+            clientSocket.off('disconnect', onDisconnect);
+        };
+    }, []);
 
     return (
         <>
