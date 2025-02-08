@@ -11,6 +11,18 @@ import { AppNavigationRoutes, homeMenuItems } from '@/constants';
 
 import { useAuth, useLogoutMutation } from '@/hooks';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
 import { handleErrorApi } from '@/lib';
 
 function NavItems({ className }: { className?: string }) {
@@ -30,6 +42,24 @@ function NavItems({ className }: { className?: string }) {
             handleErrorApi({ error });
         }
     }, [isPending, router, logout, setRole]);
+
+    const renderLogoutDialog = (
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <div className={clsx(className, 'cursor-pointer')}>Logout</div>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Do you want to log out?</AlertDialogTitle>
+                    <AlertDialogDescription>Log out will DELETE ALL your orders</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleLogout}>OK</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    );
 
     return (
         <>
@@ -52,14 +82,7 @@ function NavItems({ className }: { className?: string }) {
 
                 return null;
             })}
-            {role && (
-                <div
-                    className={clsx(className, 'cursor-pointer')}
-                    onClick={handleLogout}
-                >
-                    Logout
-                </div>
-            )}
+            {role && renderLogoutDialog}
         </>
     );
 }
