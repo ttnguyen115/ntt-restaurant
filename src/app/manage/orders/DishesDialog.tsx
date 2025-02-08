@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -106,17 +106,20 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
         },
     });
 
+    const choose = useCallback(
+        (dish: DishItem) => {
+            onChoose(dish);
+            setOpen(false);
+        },
+        [onChoose]
+    );
+
     useEffect(() => {
         table.setPagination({
             pageIndex: 0,
             pageSize: ITEMS_PER_PAGE,
         });
     }, [table]);
-
-    const choose = (dish: DishItem) => {
-        onChoose(dish);
-        setOpen(false);
-    };
 
     return (
         <Dialog
@@ -126,7 +129,7 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
             <DialogTrigger asChild>
                 <Button variant="outline">Thay đổi</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
+            <DialogContent className="sm:max-w-[600px] max-h-full overflow-auto">
                 <DialogHeader>
                     <DialogTitle>Chọn món ăn</DialogTitle>
                 </DialogHeader>

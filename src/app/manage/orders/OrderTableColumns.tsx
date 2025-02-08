@@ -1,5 +1,7 @@
 'use client';
 
+import { useCallback } from 'react';
+
 import Image from 'next/image';
 
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
@@ -108,7 +110,6 @@ const OrderTableColumns: ColumnDef<OrderItem>[] = [
                         </div>
                     </PopoverContent>
                 </Popover>
-
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
                         <span>{row.original.dishSnapshot.name}</span>
@@ -130,19 +131,26 @@ const OrderTableColumns: ColumnDef<OrderItem>[] = [
         accessorKey: 'status',
         header: 'Trạng thái',
         cell: function Cell({ row }) {
+            const { id, dishSnapshot, quantity } = row.original;
+
             const { changeStatus } = useOrderTable();
-            const changeOrderStatus = async (status: (typeof OrderStatusValues)[number]) => {
-                changeStatus({
-                    orderId: row.original.id,
-                    dishId: row.original.dishSnapshot.dishId!,
-                    status,
-                    quantity: row.original.quantity,
-                });
-            };
+
+            const changeOrderStatus = useCallback(
+                async (status: (typeof OrderStatusValues)[number]) => {
+                    changeStatus({
+                        orderId: id,
+                        dishId: dishSnapshot.dishId as number,
+                        status,
+                        quantity,
+                    });
+                },
+                [dishSnapshot.dishId, id, quantity, changeStatus]
+            );
+
             return (
                 <Select
-                    onValueChange={(value: (typeof OrderStatusValues)[number]) => {
-                        changeOrderStatus(value);
+                    onValueChange={async (value: (typeof OrderStatusValues)[number]) => {
+                        await changeOrderStatus(value);
                     }}
                     defaultValue={OrderStatus.Pending}
                     value={row.getValue('status')}
@@ -188,6 +196,7 @@ const OrderTableColumns: ColumnDef<OrderItem>[] = [
         enableHiding: false,
         cell: function Actions({ row }) {
             const { setOrderIdEdit } = useOrderTable();
+
             const openEditOrder = () => {
                 setOrderIdEdit(row.original.id);
             };

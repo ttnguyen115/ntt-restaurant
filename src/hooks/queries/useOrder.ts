@@ -11,7 +11,7 @@ export const useGetAllOrders = (query: GetOrdersQueryParamsType) => {
     });
 };
 
-export const useGetOrderDetail = (id: number, enabled: boolean) => {
+export const useGetOrderDetail = ({ id, enabled }: { id: number; enabled: boolean }) => {
     return useQuery({
         queryFn: () => orderApiRequest.getOrderDetail(id),
         queryKey: ['orders', id],
@@ -19,9 +19,10 @@ export const useGetOrderDetail = (id: number, enabled: boolean) => {
     });
 };
 
+type UseUpdateOrderBodyType = UpdateOrderBodyType & { orderId: number };
+
 export const useUpdateOrder = () => {
     return useMutation({
-        mutationFn: ({ orderId, ...body }: UpdateOrderBodyType & { orderId: number }) =>
-            orderApiRequest.updateOrder(orderId, body),
+        mutationFn: ({ orderId, ...body }: UseUpdateOrderBodyType) => orderApiRequest.updateOrder(orderId, body),
     });
 };

@@ -26,11 +26,14 @@ function OrderCart() {
     }, [orders]);
 
     useEffect(() => {
-        function onConnect() {}
+        function onConnect() {
+            console.log('socket from guest/orders/OrderCart is connected.');
+        }
 
-        function onDisconnect() {}
+        function onDisconnect() {
+            console.log('socket from guest/orders/OrderCart is disconnected.');
+        }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-shadow
         async function onUpdateOrder(data: UpdateOrderResType['data']) {
             const {
                 dishSnapshot: { name },
@@ -54,7 +57,7 @@ function OrderCart() {
             clientSocket.off('connect', onConnect);
             clientSocket.off('disconnect', onDisconnect);
         };
-    }, []);
+    }, [refetch]);
 
     return (
         <>

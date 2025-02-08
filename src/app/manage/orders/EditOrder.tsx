@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -10,6 +10,8 @@ import { getVietnameseOrderStatus } from '@/utilities';
 
 import { OrderStatus, OrderStatusValues } from '@/constants';
 
+import { toast, useGetOrderDetail, useUpdateOrder } from '@/hooks';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -18,25 +20,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+import { handleErrorApi } from '@/lib';
+
 import { DishListResType, UpdateOrderBody, UpdateOrderBodyType } from '@/schemaValidations';
 
 import DishesDialog from './DishesDialog';
-import { fakeOrderDetail } from './mocks';
 
-function EditOrder({
-    id,
-    setId,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSubmitSuccess,
-}: {
+interface EditOrderProps {
     id?: number | undefined;
     setId: (value: number | undefined) => void;
     onSubmitSuccess?: () => void;
-}) {
-    const [selectedDish, setSelectedDish] = useState<DishListResType['data'][0]>(fakeOrderDetail.dishSnapshot as any);
+}
 
-    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
-    const orderDetail = fakeOrderDetail;
+function EditOrder({ id, setId, onSubmitSuccess }: EditOrderProps) {
+    const [selectedDish, setSelectedDish] = useState<DishListResType['data'][0] | null>(null);
+
     const form = useForm<UpdateOrderBodyType>({
         resolver: zodResolver(UpdateOrderBody),
         defaultValues: {
@@ -46,12 +44,51 @@ function EditOrder({
         },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const onSubmit = async (values: UpdateOrderBodyType) => {};
+    const { data } = useGetOrderDetail({ id: id as number, enabled: !!id });
+    const { mutateAsync: updateOrder, isPending } = useUpdateOrder();
 
-    const reset = () => {
+    const reset = useCallback(() => {
         setId(undefined);
-    };
+    }, [setId]);
+
+    const onSubmit = useCallback(
+        async (values: UpdateOrderBodyType) => {
+            if (isPending) return;
+
+            const body = {
+                orderId: id as number,
+                ...values,
+            };
+
+            try {
+                const result = await updateOrder(body);
+                toast({
+                    description: result.payload.message,
+                });
+                if (onSubmitSuccess) onSubmitSuccess();
+                reset();
+            } catch (error) {
+                handleErrorApi({ error });
+            }
+        },
+        [id, isPending, updateOrder, reset]
+    );
+
+    useEffect(() => {
+        if (data) {
+            const {
+                status,
+                dishSnapshot: { dishId },
+                quantity,
+            } = data.payload.data;
+            form.reset({
+                status,
+                dishId: dishId ?? 0,
+                quantity,
+            });
+            setSelectedDish(data.payload.data.dishSnapshot);
+        }
+    }, [data, form]);
 
     return (
         <Dialog

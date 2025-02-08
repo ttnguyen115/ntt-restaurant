@@ -5,15 +5,15 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import {
-    ColumnFiltersState,
+    type ColumnFiltersState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    SortingState,
+    type SortingState,
     useReactTable,
-    VisibilityState,
+    type VisibilityState,
 } from '@tanstack/react-table';
 import { endOfDay, format, startOfDay } from 'date-fns';
 import { Check, ChevronsUpDown } from 'lucide-react';
@@ -22,7 +22,7 @@ import { cn, getVietnameseOrderStatus } from '@/utilities';
 
 import { AppNavigationRoutes, OrderStatusValues } from '@/constants';
 
-import { useGetAllOrders, useGetAllTables } from '@/hooks';
+import { toast, useGetAllOrders, useGetAllTables, useUpdateOrder } from '@/hooks';
 
 import AutoPagination from '@/components/AutoPagination';
 import { Button } from '@/components/ui/button';
@@ -30,6 +30,10 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+import { clientSocket, handleErrorApi } from '@/lib';
+
+import type { GuestCreateOrdersResType, UpdateOrderResType } from '@/schemaValidations';
 
 import AddOrder from './AddOrder';
 import EditOrder from './EditOrder';
@@ -61,26 +65,13 @@ function OrderTable() {
         pageSize: ITEMS_PER_PAGE,
     });
 
-    const { data: ordersRes, isPending, isFetching } = useGetAllOrders({ fromDate, toDate });
+    const { data: ordersRes, isPending, isFetching, refetch: refetchOrders } = useGetAllOrders({ fromDate, toDate });
     const { data: tablesRes } = useGetAllTables();
+    const { mutateAsync: updateOrder } = useUpdateOrder();
 
     const orders = ordersRes?.payload.data ?? [];
     const isGettingOrders = isPending || isFetching;
     const { statics, orderObjectByGuestId, servingGuestByTableNumber } = useOrderService(orders);
-
-    const tables = useMemo(() => tablesRes?.payload.data ?? [], [tablesRes?.payload.data]);
-    const tablesSortedByNumber = useMemo(() => tables.sort((a, b) => a.number - b.number), [tables]);
-
-    const changeStatus = useCallback(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        async (body: {
-            orderId: number;
-            dishId: number;
-            status: (typeof OrderStatusValues)[number];
-            quantity: number;
-        }) => {},
-        []
-    );
 
     const table = useReactTable({
         data: orders,
@@ -104,6 +95,38 @@ function OrderTable() {
         },
     });
 
+    const tables = useMemo(() => tablesRes?.payload.data ?? [], [tablesRes?.payload.data]);
+    const tablesSortedByNumber = useMemo(() => tables.sort((a, b) => a.number - b.number), [tables]);
+
+    const changeStatus = useCallback(
+        async (body: {
+            orderId: number;
+            dishId: number;
+            status: (typeof OrderStatusValues)[number];
+            quantity: number;
+        }) => {
+            try {
+                await updateOrder(body);
+            } catch (error) {
+                handleErrorApi({ error });
+            }
+        },
+        [updateOrder]
+    );
+
+    const resetDateFilter = useCallback(() => {
+        setFromDate(initFromDate);
+        setToDate(initToDate);
+    }, []);
+
+    const renderStatusCombobox = useCallback(() => {
+        const getFieldStatus = table.getColumn('status')?.getFilterValue();
+
+        return getFieldStatus
+            ? getVietnameseOrderStatus(getFieldStatus as (typeof OrderStatusValues)[number])
+            : 'Trạng thái';
+    }, [table]);
+
     useEffect(() => {
         table.setPagination({
             pageIndex,
@@ -111,18 +134,58 @@ function OrderTable() {
         });
     }, [table, pageIndex]);
 
-    const resetDateFilter = () => {
-        setFromDate(initFromDate);
-        setToDate(initToDate);
-    };
+    useEffect(() => {
+        function onConnect() {
+            console.log('socket from manage/orders/OrderTable is connected.');
+        }
 
-    const renderStatusCombobox = () => {
-        const getFieldStatus = table.getColumn('status')?.getFilterValue();
+        function onDisconnect() {
+            console.log('socket from manage/orders/OrderTable is disconnected.');
+        }
 
-        return getFieldStatus
-            ? getVietnameseOrderStatus(getFieldStatus as (typeof OrderStatusValues)[number])
-            : 'Trạng thái';
-    };
+        async function refetch() {
+            const now = new Date();
+            if (now >= fromDate && now <= toDate) {
+                await refetchOrders();
+            }
+        }
+
+        // when having new orders from guest
+        async function onNewOrder(data: GuestCreateOrdersResType['data']) {
+            const { guest } = data[0];
+            const description = `${guest?.name} tại bàn ${guest?.tableNumber} vừa đặt ${data.length} đơn`;
+
+            toast({ description });
+            await refetch();
+        }
+
+        // When internal admins change order status
+        async function onUpdateOrder(data: UpdateOrderResType['data']) {
+            const {
+                dishSnapshot: { name },
+                quantity,
+                status,
+            } = data;
+            const description = `${name} (SL: ${quantity}) vừa được cập nhật sang trạng thái "${getVietnameseOrderStatus(status)}"`;
+
+            toast({ description });
+            await refetch();
+        }
+
+        if (clientSocket.connected) onConnect();
+
+        clientSocket.on('new-order', onNewOrder);
+        clientSocket.on('update-order', onUpdateOrder);
+        clientSocket.on('connect', onConnect);
+        clientSocket.on('disconnect', onDisconnect);
+
+        return () => {
+            clientSocket.off('new-order', onNewOrder);
+            clientSocket.off('update-order', onUpdateOrder);
+            clientSocket.off('connect', onConnect);
+            clientSocket.off('disconnect', onDisconnect);
+        };
+    }, [fromDate, toDate, refetchOrders]);
 
     return (
         <OrderTableContext.Provider
