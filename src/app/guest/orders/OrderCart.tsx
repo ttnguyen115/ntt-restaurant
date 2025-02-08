@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 import { formatCurrency, getVietnameseOrderStatus } from '@/utilities';
 
-import { useGetGuestOrders } from '@/hooks';
+import { toast, useGetGuestOrders } from '@/hooks';
 
 import { Badge } from '@/components/ui/badge';
 
@@ -32,6 +32,14 @@ function OrderCart() {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-shadow
         async function onUpdateOrder(data: UpdateOrderResType['data']) {
+            const {
+                dishSnapshot: { name },
+                quantity,
+                status,
+            } = data;
+            const description = `${name} (SL: ${quantity}) vừa được cập nhật sang trạng thái "${getVietnameseOrderStatus(status)}"`;
+
+            toast({ description });
             await refetch();
         }
 
