@@ -19,6 +19,8 @@ import { formatCurrency, getVietnameseDishStatus, simpleMatchText } from '@/util
 
 import { AppNavigationRoutes } from '@/constants';
 
+import { useGetAllDishes } from '@/hooks';
+
 import AutoPagination from '@/components/AutoPagination';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -26,8 +28,6 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 import { DishListResType } from '@/schemaValidations/dish';
-
-import { fakeDishes } from './mocks';
 
 type DishItem = DishListResType['data'][0];
 
@@ -81,10 +81,11 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
         pageSize: ITEMS_PER_PAGE,
     });
 
-    const data = fakeDishes as DishItem[];
+    const { data } = useGetAllDishes();
+    const dishes = data?.payload.data ?? [];
 
     const table = useReactTable({
-        data,
+        data: dishes,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -191,7 +192,7 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
                         <div className="flex items-center justify-end space-x-2 py-4">
                             <div className="text-xs text-muted-foreground py-4 flex-1">
                                 Hiển thị <strong>{table.getPaginationRowModel().rows.length}</strong> trong{' '}
-                                <strong>{data.length}</strong> kết quả
+                                <strong>{dishes.length}</strong> kết quả
                             </div>
                             <div>
                                 <AutoPagination

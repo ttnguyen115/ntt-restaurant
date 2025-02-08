@@ -4,7 +4,7 @@ import type { GetOrdersResType } from '@/schemaValidations';
 
 import type { OrderObjectByGuestID, ServingGuestByTableNumber, Statics } from './types';
 
-export const useOrderService = (orderList: GetOrdersResType['data']) => {
+const useOrderService = (orderList: GetOrdersResType['data']) => {
     const statics: Statics = {
         status: {
             Pending: 0,
@@ -80,3 +80,5 @@ export const useOrderService = (orderList: GetOrdersResType['data']) => {
         servingGuestByTableNumber,
     };
 };
+
+export default useOrderService;
