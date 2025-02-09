@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload } from 'lucide-react';
 
+import { Role, RoleValues } from '@/constants';
+
 import { toast, useGetAccount, useMediaMutation, useUpdateAccount } from '@/hooks';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -19,14 +21,15 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 
 import { handleErrorApi } from '@/lib';
 
-import { UpdateEmployeeAccountBody, UpdateEmployeeAccountBodyType } from '@/schemaValidations/account';
+import { UpdateEmployeeAccountBody, type UpdateEmployeeAccountBodyType } from '@/schemaValidations/account';
 
 interface EditEmployeeProps {
     id?: number | undefined;
@@ -55,6 +58,7 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
             password: undefined,
             confirmPassword: undefined,
             changePassword: false,
+            role: Role.Employee,
         },
     });
     const avatar = form.watch('avatar');
@@ -64,20 +68,6 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
     const previewAvatarFromFile = file ? URL.createObjectURL(file) : avatar;
 
     const handleUploadAvatar = useCallback(() => avatarInputRef.current?.click(), []);
-
-    useEffect(() => {
-        if (data) {
-            const { name: employeeName, avatar: avatarEmployee, email } = data.payload.data;
-            form.reset({
-                email,
-                name: employeeName,
-                avatar: avatarEmployee ?? undefined,
-                changePassword: form.getValues('changePassword'),
-                password: form.getValues('password'),
-                confirmPassword: form.getValues('confirmPassword'),
-            });
-        }
-    }, [data, form]);
 
     const resetForm = useCallback(() => {
         form.reset();
@@ -118,6 +108,21 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
         },
         [editEmployee, file, form.setError, id, isPending, onSubmitSuccess, resetForm, uploadMedia]
     );
+
+    useEffect(() => {
+        if (data) {
+            const { name: employeeName, avatar: avatarEmployee, email, role } = data.payload.data;
+            form.reset({
+                email,
+                name: employeeName,
+                avatar: avatarEmployee ?? undefined,
+                changePassword: form.getValues('changePassword'),
+                password: form.getValues('password'),
+                confirmPassword: form.getValues('confirmPassword'),
+                role,
+            });
+        }
+    }, [data, form]);
 
     return (
         <Dialog
@@ -177,7 +182,6 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
                                     </FormItem>
                                 )}
                             />
-
                             <FormField
                                 control={form.control}
                                 name="name"
@@ -210,6 +214,43 @@ function EditEmployee({ id, setId, onSubmitSuccess }: EditEmployeeProps) {
                                                     className="w-full"
                                                     {...field}
                                                 />
+                                                <FormMessage />
+                                            </div>
+                                        </div>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="role"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <div className="grid grid-cols-4 items-center justify-items-start gap-4">
+                                            <Label htmlFor="role">Vai trò</Label>
+                                            <div className="col-span-3 w-full space-y-2">
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    value={field.value}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Chọn vai trò" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {RoleValues.map((role) => {
+                                                            if (role === Role.Guest) return null;
+                                                            return (
+                                                                <SelectItem
+                                                                    key={role}
+                                                                    value={role}
+                                                                >
+                                                                    {role}
+                                                                </SelectItem>
+                                                            );
+                                                        })}
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </div>
                                         </div>
