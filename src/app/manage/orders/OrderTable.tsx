@@ -33,7 +33,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 import { clientSocket, handleErrorApi } from '@/lib';
 
-import type { GuestCreateOrdersResType, UpdateOrderResType } from '@/schemaValidations';
+import type { GuestCreateOrdersResType, PayGuestOrdersResType, UpdateOrderResType } from '@/schemaValidations';
 
 import AddOrder from './AddOrder';
 import EditOrder from './EditOrder';
@@ -172,16 +172,26 @@ function OrderTable() {
             await refetch();
         }
 
+        async function onPayment(data: PayGuestOrdersResType['data']) {
+            const { guest } = data[0];
+            const description = `${guest?.name} tại bàn ${guest?.tableNumber} thanh toán thành công ${data.length} đơn`;
+
+            toast({ description });
+            await refetch();
+        }
+
         if (clientSocket.connected) onConnect();
 
         clientSocket.on('new-order', onNewOrder);
         clientSocket.on('update-order', onUpdateOrder);
+        clientSocket.on('payment', onPayment);
         clientSocket.on('connect', onConnect);
         clientSocket.on('disconnect', onDisconnect);
 
         return () => {
             clientSocket.off('new-order', onNewOrder);
             clientSocket.off('update-order', onUpdateOrder);
+            clientSocket.off('payment', onPayment);
             clientSocket.off('connect', onConnect);
             clientSocket.off('disconnect', onDisconnect);
         };

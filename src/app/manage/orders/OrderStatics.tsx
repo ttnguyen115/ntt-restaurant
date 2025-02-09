@@ -16,46 +16,16 @@ import { TableListResType } from '@/schemaValidations';
 import OrderGuestDetail from './OrderGuestDetail';
 import type { ServingGuestByTableNumber, Statics, StatusCountObject } from './types';
 
-// Ví dụ:
-// const statics: Statics = {
-//   status: {
-//     Pending: 1,
-//     Processing: 2,
-//     Delivered: 3,
-//     Paid: 5,
-//     Rejected: 0
-//   },
-//   table: {
-//     1: { // Bàn số 1
-//       20: { // Guest 20
-//         Pending: 1,
-//         Processing: 2,
-//         Delivered: 3,
-//         Paid: 5,
-//         Rejected: 0
-//       },
-//       21: { // Guest 21
-//         Pending: 1,
-//         Processing: 2,
-//         Delivered: 3,
-//         Paid: 5,
-//         Rejected: 0
-//       }
-//     }
-//   }
-// }
-
-function OrderStatics({
-    statics,
-    tableList,
-    servingGuestByTableNumber,
-}: {
+interface OrderStaticsProps {
     statics: Statics;
     tableList: TableListResType['data'];
     servingGuestByTableNumber: ServingGuestByTableNumber;
-}) {
+}
+
+function OrderStatics({ statics, tableList, servingGuestByTableNumber }: OrderStaticsProps) {
     const [selectedTableNumber, setSelectedTableNumber] = useState<number>(0);
     const selectedServingGuest = servingGuestByTableNumber[selectedTableNumber];
+
     return (
         <Fragment>
             <Dialog
@@ -81,6 +51,7 @@ function OrderStatics({
                                         <OrderGuestDetail
                                             guest={orders[0].guest}
                                             orders={orders}
+                                            onPaySuccess={() => setSelectedTableNumber(0)}
                                         />
                                         {index !== Object.keys(selectedServingGuest).length - 1 && (
                                             <Separator className="my-5" />

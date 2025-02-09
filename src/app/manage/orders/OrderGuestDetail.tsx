@@ -1,4 +1,6 @@
-import { Fragment, memo } from 'react';
+'use client';
+
+import { Fragment, memo, useCallback, useMemo } from 'react';
 
 import Image from 'next/image';
 
@@ -11,20 +13,58 @@ import {
 
 import { OrderStatus, OrderStatusIcon } from '@/constants';
 
+import { usePayBills } from '@/hooks';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-import { GetOrdersResType } from '@/schemaValidations';
+import { handleErrorApi } from '@/lib';
+
+import type { GetOrdersResType } from '@/schemaValidations';
 
 type Guest = GetOrdersResType['data'][0]['guest'];
 type Orders = GetOrdersResType['data'];
 
-function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
-    const ordersFilterToPurchase = guest
-        ? orders.filter((order) => order.status !== OrderStatus.Paid && order.status !== OrderStatus.Rejected)
-        : [];
+interface OrderGuestDetailProps {
+    guest: Guest;
+    orders: Orders;
+    onPaySuccess?: () => void;
+}
 
-    const purchasedOrderFilter = guest ? orders.filter((order) => order.status === OrderStatus.Paid) : [];
+function OrderGuestDetail({ guest, orders, onPaySuccess }: OrderGuestDetailProps) {
+    const { mutateAsync: payBills, isPending } = usePayBills();
+
+    const ordersFilterToPurchase = useMemo(() => {
+        if (!guest) return [];
+        return orders.filter((order) => order.status !== OrderStatus.Paid && order.status !== OrderStatus.Rejected);
+    }, [guest, orders]);
+
+    const purchasedOrderFilter = useMemo(() => {
+        if (!guest) return [];
+        return orders.filter((order) => order.status === OrderStatus.Paid);
+    }, [guest, orders]);
+
+    const handlePayBills = useCallback(async () => {
+        if (isPending || !guest) return;
+        try {
+            await payBills({ guestId: guest.id });
+            if (onPaySuccess) onPaySuccess();
+        } catch (error) {
+            handleErrorApi({ error });
+        }
+    }, [isPending, payBills, guest, onPaySuccess]);
+
+    const renderOrderStatus = (orderStatus: keyof typeof OrderStatus) => {
+        const renderStatusIcon = {
+            [OrderStatus.Pending]: <OrderStatusIcon.Pending className="w-4 h-4" />,
+            [OrderStatus.Processing]: <OrderStatusIcon.Processing className="w-4 h-4" />,
+            [OrderStatus.Rejected]: <OrderStatusIcon.Rejected className="w-4 h-4 text-red-400" />,
+            [OrderStatus.Delivered]: <OrderStatusIcon.Delivered className="w-4 h-4" />,
+            [OrderStatus.Paid]: <OrderStatusIcon.Paid className="w-4 h-4 text-yellow-400" />,
+        }[orderStatus];
+
+        return <span title={getVietnameseOrderStatus(orderStatus)}>{renderStatusIcon}</span>;
+    };
 
     return (
         <div className="space-y-2 text-sm">
@@ -54,23 +94,7 @@ function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
                             className="flex gap-2 items-center text-xs"
                         >
                             <span className="w-[10px]">{index + 1}</span>
-                            <span title={getVietnameseOrderStatus(order.status)}>
-                                {order.status === OrderStatus.Pending && (
-                                    <OrderStatusIcon.Pending className="w-4 h-4" />
-                                )}
-                                {order.status === OrderStatus.Processing && (
-                                    <OrderStatusIcon.Processing className="w-4 h-4" />
-                                )}
-                                {order.status === OrderStatus.Rejected && (
-                                    <OrderStatusIcon.Rejected className="w-4 h-4 text-red-400" />
-                                )}
-                                {order.status === OrderStatus.Delivered && (
-                                    <OrderStatusIcon.Delivered className="w-4 h-4" />
-                                )}
-                                {order.status === OrderStatus.Paid && (
-                                    <OrderStatusIcon.Paid className="w-4 h-4 text-yellow-400" />
-                                )}
-                            </span>
+                            {renderOrderStatus(order.status)}
                             <Image
                                 src={order.dishSnapshot.image}
                                 alt={order.dishSnapshot.name}
@@ -96,8 +120,7 @@ function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
                                 className="hidden sm:inline"
                                 title={`Tạo: ${formatDateTimeToLocaleString(
                                     order.createdAt
-                                )} | Cập nhật: ${formatDateTimeToLocaleString(order.updatedAt)}
-          `}
+                                )} | Cập nhật: ${formatDateTimeToLocaleString(order.updatedAt)}`}
                             >
                                 {formatDateTimeToLocaleString(order.createdAt)}
                             </span>
@@ -105,8 +128,7 @@ function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
                                 className="sm:hidden"
                                 title={`Tạo: ${formatDateTimeToLocaleString(
                                     order.createdAt
-                                )} | Cập nhật: ${formatDateTimeToLocaleString(order.updatedAt)}
-          `}
+                                )} | Cập nhật: ${formatDateTimeToLocaleString(order.updatedAt)}`}
                             >
                                 {formatDateTimeToTimeString(order.createdAt)}
                             </span>
@@ -146,6 +168,7 @@ function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
                     size="sm"
                     variant="secondary"
                     disabled={ordersFilterToPurchase.length === 0}
+                    onClick={handlePayBills}
                 >
                     Thanh toán tất cả ({ordersFilterToPurchase.length} đơn)
                 </Button>

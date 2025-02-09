@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge';
 
 import { clientSocket } from '@/lib';
 
-import type { UpdateOrderResType } from '@/schemaValidations';
+import type { PayGuestOrdersResType, UpdateOrderResType } from '@/schemaValidations';
 
 function OrderCart() {
     const { data, refetch } = useGetGuestOrders();
@@ -80,14 +80,24 @@ function OrderCart() {
             await refetch();
         }
 
+        async function onPayment(payload: PayGuestOrdersResType['data']) {
+            const { guest } = payload[0];
+            const description = `${guest?.name} tại bàn ${guest?.tableNumber} thanh toán thành công ${payload.length} đơn`;
+
+            toast({ description });
+            await refetch();
+        }
+
         if (clientSocket.connected) onConnect();
 
         clientSocket.on('update-order', onUpdateOrder);
+        clientSocket.on('payment', onPayment);
         clientSocket.on('connect', onConnect);
         clientSocket.on('disconnect', onDisconnect);
 
         return () => {
             clientSocket.off('update-order', onUpdateOrder);
+            clientSocket.off('payment', onPayment);
             clientSocket.off('connect', onConnect);
             clientSocket.off('disconnect', onDisconnect);
         };

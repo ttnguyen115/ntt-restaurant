@@ -6,6 +6,8 @@ import type {
     GetOrderDetailResType,
     GetOrdersQueryParamsType,
     GetOrdersResType,
+    PayGuestOrdersBodyType,
+    PayGuestOrdersResType,
     UpdateOrderBodyType,
     UpdateOrderResType,
 } from '@/schemaValidations';
@@ -30,6 +32,10 @@ const orderApiRequest = {
 
     updateOrder: (orderId: number, body: UpdateOrderBodyType) => {
         return http.put<UpdateOrderResType>(`${BACKEND_API.ORDERS}/${orderId}`, body);
+    },
+
+    payment: (body: PayGuestOrdersBodyType) => {
+        return http.post<PayGuestOrdersResType>(`${BACKEND_API.ORDERS}/pay`, body);
     },
 };
 

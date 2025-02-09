@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { orderApiRequest } from '@/apiRequests';
 
-import type { GetOrdersQueryParamsType, UpdateOrderBodyType } from '@/schemaValidations';
+import type { GetOrdersQueryParamsType, PayGuestOrdersBodyType, UpdateOrderBodyType } from '@/schemaValidations';
 
 export const useGetAllOrders = (query: GetOrdersQueryParamsType) => {
     return useQuery({
@@ -24,5 +24,12 @@ type UseUpdateOrderBodyType = UpdateOrderBodyType & { orderId: number };
 export const useUpdateOrder = () => {
     return useMutation({
         mutationFn: ({ orderId, ...body }: UseUpdateOrderBodyType) => orderApiRequest.updateOrder(orderId, body),
+        // Real time response with socket.io => we don't need query keys
+    });
+};
+
+export const usePayBills = () => {
+    return useMutation({
+        mutationFn: (body: PayGuestOrdersBodyType) => orderApiRequest.payment(body),
     });
 };
