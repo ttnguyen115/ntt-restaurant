@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import {
     type ColumnDef,
@@ -16,6 +16,8 @@ import {
 import { cn, getVietnameseTableStatus, simpleMatchText } from '@/utilities';
 
 import { AppNavigationRoutes, TableStatus } from '@/constants';
+
+import { useGetAllTables } from '@/hooks';
 
 import AutoPagination from '@/components/AutoPagination';
 import { Button } from '@/components/ui/button';
@@ -49,11 +51,13 @@ export const columns: ColumnDef<TableItem>[] = [
     },
 ];
 
+interface TablesDialogProps {
+    onChoose: (table: TableItem) => void;
+}
+
 const ITEMS_PER_PAGE = 10;
 
-function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
-    const data: TableListResType['data'] = [];
-
+function TablesDialog({ onChoose }: TablesDialogProps) {
     const [open, setOpen] = useState(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -64,8 +68,11 @@ function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
         pageSize: ITEMS_PER_PAGE,
     });
 
+    const { data } = useGetAllTables();
+    const tables = data?.payload.data ?? [];
+
     const table = useReactTable({
-        data,
+        data: tables,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -86,17 +93,20 @@ function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
         },
     });
 
+    const choose = useCallback(
+        (selectedTable: TableItem) => {
+            onChoose(selectedTable);
+            setOpen(false);
+        },
+        [onChoose]
+    );
+
     useEffect(() => {
         table.setPagination({
             pageIndex: 0,
             pageSize: ITEMS_PER_PAGE,
         });
     }, [table]);
-
-    const choose = (selectedTable: TableItem) => {
-        onChoose(selectedTable);
-        setOpen(false);
-    };
 
     return (
         <Dialog
@@ -184,7 +194,7 @@ function TablesDialog({ onChoose }: { onChoose: (table: TableItem) => void }) {
                         <div className="flex items-center justify-end space-x-2 py-4">
                             <div className="text-xs text-muted-foreground py-4 flex-1">
                                 Hiển thị <strong>{table.getPaginationRowModel().rows.length}</strong> trong{' '}
-                                <strong>{data.length}</strong> kết quả
+                                <strong>{tables.length}</strong> kết quả
                             </div>
                             <div>
                                 <AutoPagination

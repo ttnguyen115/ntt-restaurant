@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import {
     type ColumnDef,
@@ -17,6 +17,8 @@ import { endOfDay, format, startOfDay } from 'date-fns';
 import { formatDateTimeToLocaleString, simpleMatchText } from '@/utilities';
 
 import { AppNavigationRoutes } from '@/constants';
+
+import { useGetAllGuests } from '@/hooks';
 
 import AutoPagination from '@/components/AutoPagination';
 import { Button } from '@/components/ui/button';
@@ -62,11 +64,15 @@ export const columns: ColumnDef<GuestItem>[] = [
     },
 ];
 
+interface GuestsDialogProps {
+    onChoose: (table: GuestItem) => void;
+}
+
 const ITEMS_PER_PAGE = 10;
 const initFromDate = startOfDay(new Date());
 const initToDate = endOfDay(new Date());
 
-function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
+function GuestsDialog({ onChoose }: GuestsDialogProps) {
     const [open, setOpen] = useState(false);
     const [fromDate, setFromDate] = useState(initFromDate);
     const [toDate, setToDate] = useState(initToDate);
@@ -79,10 +85,11 @@ function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
         pageSize: ITEMS_PER_PAGE,
     });
 
-    const data: GetListGuestsResType['data'] = [];
+    const { data } = useGetAllGuests({ fromDate, toDate });
+    const guests = data?.payload.data ?? [];
 
     const table = useReactTable({
-        data,
+        data: guests,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -103,22 +110,25 @@ function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
         },
     });
 
+    const choose = useCallback(
+        (guest: GuestItem) => {
+            onChoose(guest);
+            setOpen(false);
+        },
+        [onChoose]
+    );
+
+    const resetDateFilter = useCallback(() => {
+        setFromDate(initFromDate);
+        setToDate(initToDate);
+    }, []);
+
     useEffect(() => {
         table.setPagination({
             pageIndex: 0,
             pageSize: ITEMS_PER_PAGE,
         });
     }, [table]);
-
-    const choose = (guest: GuestItem) => {
-        onChoose(guest);
-        setOpen(false);
-    };
-
-    const resetDateFilter = () => {
-        setFromDate(initFromDate);
-        setToDate(initToDate);
-    };
 
     return (
         <Dialog
@@ -229,7 +239,7 @@ function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem) => void }) {
                         <div className="flex items-center justify-end space-x-2 py-4">
                             <div className="text-xs text-muted-foreground py-4 flex-1">
                                 Hiển thị <strong>{table.getPaginationRowModel().rows.length}</strong> trong{' '}
-                                <strong>{data.length}</strong> kết quả
+                                <strong>{guests.length}</strong> kết quả
                             </div>
                             <div>
                                 <AutoPagination

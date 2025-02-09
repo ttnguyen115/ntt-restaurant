@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
@@ -13,6 +13,8 @@ import { cn, formatCurrency } from '@/utilities';
 
 import { DishStatus } from '@/constants';
 
+import { toast, useCreateGuest, useCreateOrders, useGetAllDishes } from '@/hooks';
+
 import QuantityController from '@/components/QuantityController';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -21,9 +23,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
+import { handleErrorApi } from '@/lib';
+
 import {
     type CreateOrdersBodyType,
-    type DishListResType,
     type GetListGuestsResType,
     GuestLoginBody,
     type GuestLoginBodyType,
@@ -38,13 +41,21 @@ function AddOrder() {
     const [isNewGuest, setIsNewGuest] = useState(true);
     const [orders, setOrders] = useState<CreateOrdersBodyType['orders']>([]);
 
-    const dishes: DishListResType['data'] = [];
+    const { data } = useGetAllDishes();
+    const { mutateAsync: createOrders, isPending: isCreatingOrders } = useCreateOrders();
+    const { mutateAsync: createGuest, isPending: isCreatingGuest } = useCreateGuest();
 
-    const totalPrice = dishes.reduce((result, dish) => {
-        const order = orders.find((o) => o.dishId === dish.id);
-        if (!order) return result;
-        return result + order.quantity * dish.price;
-    }, 0);
+    const dishes = useMemo(() => data?.payload.data ?? [], [data?.payload.data]);
+
+    const totalPrice = useMemo(
+        () =>
+            dishes.reduce((result, dish) => {
+                const order = orders.find((o) => o.dishId === dish.id);
+                if (!order) return result;
+                return result + order.quantity * dish.price;
+            }, 0),
+        [dishes, orders]
+    );
 
     const form = useForm<GuestLoginBodyType>({
         resolver: zodResolver(GuestLoginBody),
@@ -53,12 +64,10 @@ function AddOrder() {
             tableNumber: 0,
         },
     });
-    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     const name = form.watch('name');
-    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     const tableNumber = form.watch('tableNumber');
 
-    const handleQuantityChange = (dishId: number, quantity: number) => {
+    const handleQuantityChange = useCallback((dishId: number, quantity: number) => {
         setOrders((prevOrders) => {
             if (quantity === 0) {
                 return prevOrders.filter((order) => order.dishId !== dishId);
@@ -74,9 +83,48 @@ function AddOrder() {
 
             return newOrders;
         });
-    };
+    }, []);
 
-    const handleOrder = async () => {};
+    const reset = useCallback(() => {
+        form.reset();
+        setSelectedGuest(null);
+        setIsNewGuest(true);
+        setOrders([]);
+        setOpen(false);
+    }, [form]);
+
+    const handleOrder = useCallback(async () => {
+        if (isCreatingOrders || isCreatingGuest) return;
+
+        let guestId = selectedGuest?.id;
+        try {
+            if (isNewGuest) {
+                const response = await createGuest({ name, tableNumber });
+                guestId = response.payload.data.id;
+            }
+            if (!guestId) {
+                toast({ description: 'Hãy chọn một khách hàng' });
+                return;
+            }
+            await createOrders({ guestId, orders });
+            reset();
+        } catch (error) {
+            handleErrorApi({
+                error,
+                setError: form.setError,
+            });
+        }
+    }, [
+        isCreatingOrders,
+        isCreatingGuest,
+        isNewGuest,
+        name,
+        orders,
+        selectedGuest?.id,
+        tableNumber,
+        createGuest,
+        createOrders,
+    ]);
 
     const renderDishes = dishes
         .filter((dish) => dish.status !== DishStatus.Hidden)
@@ -116,7 +164,10 @@ function AddOrder() {
 
     return (
         <Dialog
-            onOpenChange={setOpen}
+            onOpenChange={(value) => {
+                if (!value) reset();
+                setOpen(value);
+            }}
             open={open}
         >
             <DialogTrigger asChild>
