@@ -61,7 +61,6 @@ function RefreshToken() {
         socket?.on('connect', onConnect);
         socket?.on('disconnect', onDisconnect);
 
-        // I dunno why this line need to mark linter
         // eslint-disable-next-line consistent-return
         return () => {
             clearInterval(interval);

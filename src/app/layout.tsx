@@ -6,6 +6,7 @@ import { cn } from '@/utilities';
 
 import { AuthProvider } from '@/contexts';
 
+import ListenLogoutSocket from '@/components/ListenLogoutSocket';
 import ReactQueryProvider from '@/components/ReactQueryProvider';
 import RefreshToken from '@/components/RefreshToken';
 import ThemeProvider from '@/components/ThemeProvider';
@@ -43,6 +44,7 @@ function RootLayout({ children }: Readonly<ChildrenObject>) {
                             <Toaster />
                         </ThemeProvider>
                         <RefreshToken />
+                        <ListenLogoutSocket />
                     </ReactQueryProvider>
                 </AuthProvider>
             </body>
