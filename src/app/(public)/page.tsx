@@ -58,7 +58,7 @@ async function Home() {
                             </div>
                             <div className="space-y-1">
                                 <h3 className="text-xl font-semibold">{name}</h3>
-                                <p className="">{description}</p>
+                                <p>{description}</p>
                                 <p className="font-semibold">{formatCurrency(price)}</p>
                             </div>
                         </div>

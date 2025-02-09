@@ -129,7 +129,7 @@ function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
             </div>
             <div className="space-x-1">
                 <span className="font-semibold">Đã thanh toán:</span>
-                <Badge variant={'outline'}>
+                <Badge variant="outline">
                     <span>
                         {formatCurrency(
                             purchasedOrderFilter.reduce((acc, order) => {
@@ -143,8 +143,8 @@ function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
             <div>
                 <Button
                     className="w-full"
-                    size={'sm'}
-                    variant={'secondary'}
+                    size="sm"
+                    variant="secondary"
                     disabled={ordersFilterToPurchase.length === 0}
                 >
                     Thanh toán tất cả ({ordersFilterToPurchase.length} đơn)

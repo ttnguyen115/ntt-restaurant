@@ -132,7 +132,6 @@ function DashboardMain() {
                 />
             </div>
             <Button
-                className=""
                 variant="outline"
                 onClick={resetDateFilter}
             >

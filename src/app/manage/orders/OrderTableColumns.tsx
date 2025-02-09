@@ -115,7 +115,7 @@ const OrderTableColumns: ColumnDef<OrderItem>[] = [
                         <span>{row.original.dishSnapshot.name}</span>
                         <Badge
                             className="px-1"
-                            variant={'secondary'}
+                            variant="secondary"
                         >
                             x{row.original.quantity}
                         </Badge>

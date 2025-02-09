@@ -84,7 +84,7 @@ function DishBarChart() {
                 />
                 <Bar
                     dataKey="successOrders"
-                    name={'Đơn thanh toán'}
+                    name="Đơn thanh toán"
                     layout="vertical"
                     radius={5}
                 />

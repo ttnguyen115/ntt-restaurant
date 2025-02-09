@@ -224,8 +224,7 @@ function OrderTable() {
                             />
                         </div>
                         <Button
-                            className=""
-                            variant={'outline'}
+                            variant="outline"
                             onClick={resetDateFilter}
                         >
                             Reset
