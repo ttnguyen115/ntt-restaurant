@@ -14,6 +14,7 @@ import { Role } from '@/constants';
 type CallbackParams = {
     onError?: () => void;
     onSuccess?: () => void;
+    force?: boolean;
 };
 
 const checkAndRefreshToken = async (param?: CallbackParams) => {
@@ -41,7 +42,7 @@ const checkAndRefreshToken = async (param?: CallbackParams) => {
     const expirationTime = decodedAccessToken.exp - decodedAccessToken.iat;
 
     // refreshing token when the remaining time is 1/3
-    if (remainingTime < expirationTime / 3) {
+    if (param?.force || remainingTime < expirationTime / 3) {
         try {
             const { role } = decodedRefreshToken;
             const res =

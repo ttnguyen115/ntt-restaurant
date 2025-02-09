@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { checkAndRefreshToken } from '@/lib';
+import { checkAndRefreshToken, clientSocket } from '@/lib';
 
 type IntervalType = string | number | NodeJS.Timeout | undefined;
 
@@ -23,27 +23,43 @@ function RefreshToken() {
 
         let interval: IntervalType;
 
-        checkAndRefreshToken({
-            onError: () => {
-                clearInterval(interval);
-                router.push(AppNavigationRoutes.LOGIN);
-            },
-        });
+        function onRefreshToken(force?: boolean) {
+            return checkAndRefreshToken({
+                onError: () => {
+                    clearInterval(interval);
+                    router.push(AppNavigationRoutes.LOGIN);
+                },
+                force,
+            });
+        }
+        onRefreshToken().then(() => {});
 
-        interval = setInterval(
-            () =>
-                checkAndRefreshToken({
-                    onError: () => {
-                        clearInterval(interval);
-                    },
-                }),
-            TIMEOUT_ONE_SECOND
-        );
+        interval = setInterval(onRefreshToken, TIMEOUT_ONE_SECOND);
+
+        function onConnect() {
+            console.log('socket from component RefreshToken is connected.');
+        }
+
+        function onDisconnect() {
+            console.log('socket from component RefreshToken is disconnected.');
+        }
+
+        function onRefreshTokenWithSocket() {
+            onRefreshToken(true).then(() => {});
+        }
+
+        if (clientSocket.connected) onConnect();
+        clientSocket.on('refresh-token', onRefreshTokenWithSocket);
+        clientSocket.on('connect', onConnect);
+        clientSocket.on('disconnect', onDisconnect);
 
         // I dunno why this line need to mark linter
         // eslint-disable-next-line consistent-return
         return () => {
             clearInterval(interval);
+            clientSocket.off('refresh-token', onRefreshTokenWithSocket);
+            clientSocket.off('connect', onConnect);
+            clientSocket.off('disconnect', onDisconnect);
         };
     }, [pathname, router]);
 

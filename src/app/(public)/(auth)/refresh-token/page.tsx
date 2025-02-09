@@ -22,7 +22,7 @@ function RefreshTokenPage() {
                 onSuccess: () => {
                     router.push(redirectPath || AppNavigationRoutes.DEFAULT);
                 },
-            });
+            }).then(() => {});
         } else {
             router.push(AppNavigationRoutes.DEFAULT);
         }
