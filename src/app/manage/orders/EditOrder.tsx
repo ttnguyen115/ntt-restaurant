@@ -71,7 +71,7 @@ function EditOrder({ id, setId, onSubmitSuccess }: EditOrderProps) {
                 handleErrorApi({ error });
             }
         },
-        [id, isPending, updateOrder, reset]
+        [id, isPending, updateOrder, reset, onSubmitSuccess]
     );
 
     useEffect(() => {

@@ -17,8 +17,6 @@ import {
 
 import { formatCurrency, getVietnameseDishStatus, simpleMatchText } from '@/utilities';
 
-import { AppNavigationRoutes } from '@/constants';
-
 import { useGetAllDishes } from '@/hooks';
 
 import AutoPagination from '@/components/AutoPagination';

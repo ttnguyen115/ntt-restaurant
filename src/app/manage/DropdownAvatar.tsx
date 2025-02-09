@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, use } from 'react';
+import { memo, use, useCallback } from 'react';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -27,25 +27,24 @@ import { handleErrorApi } from '@/lib';
 function DropdownAvatar() {
     const router = useRouter();
 
-    const { setRole } = use(AuthContext);
+    const { setRole, disconnectSocket } = use(AuthContext);
 
     const { isPending, mutateAsync: logout } = useLogoutMutation();
 
     const { data } = useMyAccount();
     const account = data?.payload.data;
 
-    const handleLogout = async () => {
+    const handleLogout = useCallback(async () => {
         if (isPending) return;
         try {
             await logout();
             setRole(undefined);
+            disconnectSocket();
             router.push(AppNavigationRoutes.DEFAULT);
-        } catch (error: unknown) {
-            handleErrorApi({
-                error,
-            });
+        } catch (error) {
+            handleErrorApi({ error });
         }
-    };
+    }, [isPending, logout, router, setRole, disconnectSocket]);
 
     return (
         <DropdownMenu>

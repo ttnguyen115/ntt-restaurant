@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
 
+import { AuthContext } from '@/contexts';
+
 import { AppNavigationRoutes } from '@/constants';
 
-import { checkAndRefreshToken, clientSocket } from '@/lib';
+import { checkAndRefreshToken } from '@/lib';
 
 type IntervalType = string | number | NodeJS.Timeout | undefined;
 
@@ -18,6 +20,8 @@ function RefreshToken() {
     const pathname = usePathname();
     const router = useRouter();
 
+    const { socket, disconnectSocket } = use(AuthContext);
+
     useEffect(() => {
         if (UNAUTHENTICATED_PATH.includes(pathname)) return;
 
@@ -27,20 +31,20 @@ function RefreshToken() {
             return checkAndRefreshToken({
                 onError: () => {
                     clearInterval(interval);
+                    disconnectSocket();
                     router.push(AppNavigationRoutes.LOGIN);
                 },
                 force,
             });
         }
-        onRefreshToken().then(() => {});
-
-        interval = setInterval(onRefreshToken, TIMEOUT_ONE_SECOND);
 
         function onConnect() {
+            // eslint-disable-next-line no-console
             console.log('socket from component RefreshToken is connected.');
         }
 
         function onDisconnect() {
+            // eslint-disable-next-line no-console
             console.log('socket from component RefreshToken is disconnected.');
         }
 
@@ -48,20 +52,25 @@ function RefreshToken() {
             onRefreshToken(true).then(() => {});
         }
 
-        if (clientSocket.connected) onConnect();
-        clientSocket.on('refresh-token', onRefreshTokenWithSocket);
-        clientSocket.on('connect', onConnect);
-        clientSocket.on('disconnect', onDisconnect);
+        onRefreshToken().then(() => {});
+        interval = setInterval(onRefreshToken, TIMEOUT_ONE_SECOND);
+
+        if (socket?.connected) onConnect();
+
+        socket?.on('refresh-token', onRefreshTokenWithSocket);
+        socket?.on('connect', onConnect);
+        socket?.on('disconnect', onDisconnect);
 
         // I dunno why this line need to mark linter
         // eslint-disable-next-line consistent-return
         return () => {
             clearInterval(interval);
-            clientSocket.off('refresh-token', onRefreshTokenWithSocket);
-            clientSocket.off('connect', onConnect);
-            clientSocket.off('disconnect', onDisconnect);
+
+            socket?.off('refresh-token', onRefreshTokenWithSocket);
+            socket?.off('connect', onConnect);
+            socket?.off('disconnect', onDisconnect);
         };
-    }, [pathname, router]);
+    }, [pathname, router, socket, disconnectSocket]);
 
     return null;
 }

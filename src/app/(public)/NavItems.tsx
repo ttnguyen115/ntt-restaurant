@@ -28,7 +28,7 @@ import { handleErrorApi } from '@/lib';
 function NavItems({ className }: { className?: string }) {
     const router = useRouter();
 
-    const { role, setRole } = useAuth();
+    const { role, setRole, disconnectSocket } = useAuth();
 
     const { mutateAsync: logout, isPending } = useLogoutMutation();
 
@@ -37,11 +37,12 @@ function NavItems({ className }: { className?: string }) {
         try {
             await logout();
             setRole(undefined);
+            disconnectSocket();
             router.push(AppNavigationRoutes.DEFAULT);
         } catch (error) {
             handleErrorApi({ error });
         }
-    }, [isPending, router, logout, setRole]);
+    }, [isPending, router, logout, setRole, disconnectSocket]);
 
     const renderLogoutDialog = (
         <AlertDialog>

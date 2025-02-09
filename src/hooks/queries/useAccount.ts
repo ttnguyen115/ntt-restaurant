@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { accountApiRequest } from '@/apiRequests';
 
-import { CreateGuestBodyType, GetGuestListQueryParamsType, UpdateEmployeeAccountBodyType } from '@/schemaValidations';
+import type { GetGuestListQueryParamsType, UpdateEmployeeAccountBodyType } from '@/schemaValidations';
 
 export const useMyAccount = () => {
     return useQuery({

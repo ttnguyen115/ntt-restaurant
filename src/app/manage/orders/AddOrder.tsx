@@ -124,6 +124,8 @@ function AddOrder() {
         tableNumber,
         createGuest,
         createOrders,
+        form.setError,
+        reset,
     ]);
 
     const renderDishes = dishes

@@ -15,7 +15,7 @@ import {
 
 import { cn, getVietnameseTableStatus, simpleMatchText } from '@/utilities';
 
-import { AppNavigationRoutes, TableStatus } from '@/constants';
+import { TableStatus } from '@/constants';
 
 import { useGetAllTables } from '@/hooks';
 

@@ -1,10 +1,12 @@
 'use client';
 
-import { memo, useEffect, useMemo } from 'react';
+import { memo, use, useEffect, useMemo } from 'react';
 
 import Image from 'next/image';
 
 import { formatCurrency, getVietnameseOrderStatus } from '@/utilities';
+
+import { AuthContext } from '@/contexts';
 
 import { OrderStatus } from '@/constants';
 
@@ -12,11 +14,11 @@ import { toast, useGetGuestOrders } from '@/hooks';
 
 import { Badge } from '@/components/ui/badge';
 
-import { clientSocket } from '@/lib';
-
 import type { PayGuestOrdersResType, UpdateOrderResType } from '@/schemaValidations';
 
 function OrderCart() {
+    const { socket } = use(AuthContext);
+
     const { data, refetch } = useGetGuestOrders();
 
     const orders = useMemo(() => data?.payload.data ?? [], [data?.payload.data]);
@@ -61,10 +63,12 @@ function OrderCart() {
 
     useEffect(() => {
         function onConnect() {
+            // eslint-disable-next-line no-console
             console.log('socket from guest/orders/OrderCart is connected.');
         }
 
         function onDisconnect() {
+            // eslint-disable-next-line no-console
             console.log('socket from guest/orders/OrderCart is disconnected.');
         }
 
@@ -88,20 +92,20 @@ function OrderCart() {
             await refetch();
         }
 
-        if (clientSocket.connected) onConnect();
+        if (socket?.connected) onConnect();
 
-        clientSocket.on('update-order', onUpdateOrder);
-        clientSocket.on('payment', onPayment);
-        clientSocket.on('connect', onConnect);
-        clientSocket.on('disconnect', onDisconnect);
+        socket?.on('update-order', onUpdateOrder);
+        socket?.on('payment', onPayment);
+        socket?.on('connect', onConnect);
+        socket?.on('disconnect', onDisconnect);
 
         return () => {
-            clientSocket.off('update-order', onUpdateOrder);
-            clientSocket.off('payment', onPayment);
-            clientSocket.off('connect', onConnect);
-            clientSocket.off('disconnect', onDisconnect);
+            socket?.off('update-order', onUpdateOrder);
+            socket?.off('payment', onPayment);
+            socket?.off('connect', onConnect);
+            socket?.off('disconnect', onDisconnect);
         };
-    }, [refetch]);
+    }, [refetch, socket]);
 
     return (
         <>

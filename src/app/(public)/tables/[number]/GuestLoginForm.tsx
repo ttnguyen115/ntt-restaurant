@@ -8,6 +8,8 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { initSocketInstance } from '@/utilities';
+
 import { AuthContext } from '@/contexts';
 
 import { AppNavigationRoutes, DEFAULT_PATH } from '@/constants';
@@ -33,7 +35,7 @@ function GuestLoginForm() {
     const tableNumber = Number(params.number);
     const token = searchParams.get('token');
 
-    const { setRole } = use(AuthContext);
+    const { setSocket, setRole } = use(AuthContext);
 
     const { mutateAsync: loginAsGuest, isPending } = useGuestLogin();
 
@@ -54,12 +56,13 @@ function GuestLoginForm() {
                     payload: { data },
                 } = await loginAsGuest(values);
                 setRole(data.guest.role);
+                setSocket(initSocketInstance(data.accessToken));
                 router.push(AppNavigationRoutes.GUEST_MENU);
             } catch (error) {
                 handleErrorApi({ error, setError: form.setError });
             }
         },
-        [isPending, router, loginAsGuest, form.setError, setRole]
+        [isPending, router, loginAsGuest, form.setError, setRole, setSocket]
     );
 
     useEffect(() => {

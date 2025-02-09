@@ -12,6 +12,7 @@ export { default as formatDateTimeToLocaleString } from './formatDateTimeToLocal
 export { default as formatDateTimeToTimeString } from './formatDateTimeToTimeString';
 export { default as decodeAndGetExpirationFromToken } from './decodeAndGetExpirationFromToken';
 export { default as cn } from './cn';
+export { default as initSocketInstance } from './initSocketInstance';
 export {
     getRefreshTokenFromLocalStorage,
     getAccessTokenFromLocalStorage,

@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, use, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -20,6 +20,8 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn, getVietnameseOrderStatus } from '@/utilities';
 
+import { AuthContext } from '@/contexts';
+
 import { AppNavigationRoutes, OrderStatusValues } from '@/constants';
 
 import { toast, useGetAllOrders, useGetAllTables, useUpdateOrder } from '@/hooks';
@@ -31,7 +33,7 @@ import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-import { clientSocket, handleErrorApi } from '@/lib';
+import { handleErrorApi } from '@/lib';
 
 import type { GuestCreateOrdersResType, PayGuestOrdersResType, UpdateOrderResType } from '@/schemaValidations';
 
@@ -48,6 +50,8 @@ const initFromDate = startOfDay(new Date());
 const initToDate = endOfDay(new Date());
 
 function OrderTable() {
+    const { socket } = use(AuthContext);
+
     const searchParam = useSearchParams();
     const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1;
     const pageIndex = page - 1;
@@ -136,10 +140,12 @@ function OrderTable() {
 
     useEffect(() => {
         function onConnect() {
+            // eslint-disable-next-line no-console
             console.log('socket from manage/orders/OrderTable is connected.');
         }
 
         function onDisconnect() {
+            // eslint-disable-next-line no-console
             console.log('socket from manage/orders/OrderTable is disconnected.');
         }
 
@@ -180,22 +186,22 @@ function OrderTable() {
             await refetch();
         }
 
-        if (clientSocket.connected) onConnect();
+        if (socket?.connected) onConnect();
 
-        clientSocket.on('new-order', onNewOrder);
-        clientSocket.on('update-order', onUpdateOrder);
-        clientSocket.on('payment', onPayment);
-        clientSocket.on('connect', onConnect);
-        clientSocket.on('disconnect', onDisconnect);
+        socket?.on('new-order', onNewOrder);
+        socket?.on('update-order', onUpdateOrder);
+        socket?.on('payment', onPayment);
+        socket?.on('connect', onConnect);
+        socket?.on('disconnect', onDisconnect);
 
         return () => {
-            clientSocket.off('new-order', onNewOrder);
-            clientSocket.off('update-order', onUpdateOrder);
-            clientSocket.off('payment', onPayment);
-            clientSocket.off('connect', onConnect);
-            clientSocket.off('disconnect', onDisconnect);
+            socket?.off('new-order', onNewOrder);
+            socket?.off('update-order', onUpdateOrder);
+            socket?.off('payment', onPayment);
+            socket?.off('connect', onConnect);
+            socket?.off('disconnect', onDisconnect);
         };
-    }, [fromDate, toDate, refetchOrders]);
+    }, [fromDate, toDate, refetchOrders, socket]);
 
     return (
         <OrderTableContext.Provider

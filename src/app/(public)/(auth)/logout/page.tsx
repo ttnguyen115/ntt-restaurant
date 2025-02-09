@@ -19,7 +19,7 @@ function Logout() {
     const accessTokenFromUrl = searchParams.get('accessToken');
     const refreshTokenFromUrl = searchParams.get('refreshToken');
 
-    const { setRole } = use(AuthContext);
+    const { socket, disconnectSocket, setRole } = use(AuthContext);
 
     // use spread operator for preventing infinite loops in useEffect cause re-new object
     const { mutateAsync: logout } = useLogoutMutation();
@@ -38,12 +38,13 @@ function Logout() {
                     ref.current = null;
                 }, 1000);
                 setRole(undefined);
+                disconnectSocket();
                 router.push(AppNavigationRoutes.DEFAULT);
             });
         } else {
             router.push(AppNavigationRoutes.DEFAULT);
         }
-    }, [logout, router, accessTokenFromUrl, refreshTokenFromUrl, setRole]);
+    }, [socket, logout, router, accessTokenFromUrl, refreshTokenFromUrl, setRole, disconnectSocket]);
 
     return <Suspense>{null}</Suspense>;
 }

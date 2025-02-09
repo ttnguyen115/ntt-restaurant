@@ -8,6 +8,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { initSocketInstance } from '@/utilities';
+
 import { AppNavigationRoutes } from '@/constants';
 
 import { toast, useAuth, useLoginMutation } from '@/hooks';
@@ -29,7 +31,7 @@ function LoginFormContainer() {
     const searchParams = useSearchParams();
     const clearTokens = searchParams.get('clearTokens');
 
-    const { setRole } = useAuth();
+    const { setRole, setSocket } = useAuth();
 
     const { isPending, mutateAsync: login } = useLoginMutation();
 
@@ -49,8 +51,9 @@ function LoginFormContainer() {
                 description: payload.message,
             });
             setRole(payload.data.account.role);
+            setSocket(initSocketInstance(payload.data.accessToken));
             router.push(AppNavigationRoutes.MANAGE_DASHBOARD);
-        } catch (error: unknown) {
+        } catch (error) {
             handleErrorApi({ error, setError: form.setError });
         }
     };

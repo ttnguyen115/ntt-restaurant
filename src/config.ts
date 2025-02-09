@@ -11,6 +11,7 @@ const configProject = configSchema.safeParse({
 });
 
 if (!configProject.success) {
+    // eslint-disable-next-line no-console
     console.error(configProject.error.issues);
     throw new Error('Variables in .env are not valid!');
 }
