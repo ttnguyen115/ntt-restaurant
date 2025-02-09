@@ -39,3 +39,5 @@ export {
     useGetAllTables,
     useUpdateTable,
 } from './queries/useTable';
+
+export { useGetIndicators } from './queries/useIndicator';

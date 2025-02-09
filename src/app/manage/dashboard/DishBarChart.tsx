@@ -1,13 +1,14 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { Bar, BarChart, XAxis, YAxis } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
-// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+import { DashboardIndicatorResType } from '@/schemaValidations';
+
 const colors = [
     'var(--color-chrome)',
     'var(--color-safari)',
@@ -42,20 +43,27 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-const chartData = [
-    { name: 'chrome', successOrders: 275, fill: 'var(--color-chrome)' },
-    { name: 'safari', successOrders: 200, fill: 'var(--color-safari)' },
-    { name: 'firefox', successOrders: 187, fill: 'var(--color-firefox)' },
-    { name: 'edge', successOrders: 173, fill: 'var(--color-edge)' },
-    { name: 'other', successOrders: 90, fill: 'var(--color-other)' },
-];
+interface DishBarChartProps {
+    chartData: Pick<DashboardIndicatorResType['data']['dishIndicator'][0], 'name' | 'successOrders'>[];
+}
 
-function DishBarChart() {
+function DishBarChart({ chartData }: DishBarChartProps) {
+    const chartDataColors = useMemo(
+        () =>
+            chartData.map((data, index) => {
+                return {
+                    ...data,
+                    fill: colors[index] ?? colors[colors.length - 1],
+                };
+            }),
+        [chartData]
+    );
+
     const renderBarChart = (
         <ChartContainer config={chartConfig}>
             <BarChart
                 accessibilityLayer
-                data={chartData}
+                data={chartDataColors}
                 layout="vertical"
                 margin={{
                     left: 0,
@@ -69,7 +77,6 @@ function DishBarChart() {
                     axisLine={false}
                     tickFormatter={(value) => {
                         return value;
-
                         // return chartConfig[value as keyof typeof chartConfig]?.label
                     }}
                 />

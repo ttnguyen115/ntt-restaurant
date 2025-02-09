@@ -1,6 +1,12 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback, useState } from 'react';
+
+import { endOfDay, format, startOfDay } from 'date-fns';
+
+import { formatCurrency } from '@/utilities';
+
+import { useGetIndicators } from '@/hooks';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -82,37 +88,67 @@ const ServingTableSvg = memo(() => (
     </svg>
 ));
 
-const dashboardCards = [
+const dashboardCards = ({
+    revenue,
+    guestCount,
+    orderCount,
+    servingTableCount,
+}: {
+    revenue: number;
+    guestCount: number;
+    orderCount: number;
+    servingTableCount: number;
+}) => [
     {
         id: 'revenue',
         title: 'Tổng doanh thu',
-        count: 0,
+        count: formatCurrency(revenue),
         Icon: DollarSign,
     },
     {
         id: 'customers',
         title: 'Khách',
         subtitle: 'Gọi món',
-        count: 0,
+        count: guestCount,
         Icon: CustomersSvg,
     },
     {
         id: 'orders',
         title: 'Đơn hàng',
         subtitle: 'Đã thanh toán',
-        count: 0,
+        count: orderCount,
         Icon: OrderSvg,
     },
     {
         id: 'tables',
         title: 'Bàn đang phục vụ',
-        count: 0,
+        count: servingTableCount,
         Icon: ServingTableSvg,
     },
 ];
 
+const initFromDate = startOfDay(new Date());
+const initToDate = endOfDay(new Date());
+
 function DashboardMain() {
-    const resetDateFilter = () => {};
+    const [fromDate, setFromDate] = useState(initFromDate);
+    const [toDate, setToDate] = useState(initToDate);
+
+    const { data } = useGetIndicators({ fromDate, toDate });
+
+    const {
+        revenue = 0,
+        guestCount = 0,
+        orderCount = 0,
+        servingTableCount = 0,
+        revenueByDate = [],
+        dishIndicator = [],
+    } = data?.payload.data ?? {};
+
+    const resetDateFilter = useCallback(() => {
+        setFromDate(initFromDate);
+        setToDate(initToDate);
+    }, []);
 
     const renderDateTimeFilter = (
         <div className="flex flex-wrap gap-2">
@@ -122,6 +158,8 @@ function DashboardMain() {
                     type="datetime-local"
                     placeholder="Từ ngày"
                     className="text-sm"
+                    value={format(fromDate, 'yyyy-MM-dd HH:mm').replace(' ', 'T')}
+                    onChange={(event) => setFromDate(new Date(event.target.value))}
                 />
             </div>
             <div className="flex items-center">
@@ -129,6 +167,8 @@ function DashboardMain() {
                 <Input
                     type="datetime-local"
                     placeholder="Đến ngày"
+                    value={format(toDate, 'yyyy-MM-dd HH:mm').replace(' ', 'T')}
+                    onChange={(event) => setToDate(new Date(event.target.value))}
                 />
             </div>
             <Button
@@ -142,28 +182,30 @@ function DashboardMain() {
 
     const renderDashboardCards = (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {dashboardCards.map(({ id, title, count, subtitle = '', Icon }) => (
-                <Card key={id}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-                        <Icon />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{count}</div>
-                        {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
-                    </CardContent>
-                </Card>
-            ))}
+            {dashboardCards({ revenue, guestCount, orderCount, servingTableCount }).map(
+                ({ id, title, count, subtitle = '', Icon }) => (
+                    <Card key={id}>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">{title}</CardTitle>
+                            <Icon />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{count}</div>
+                            {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+                        </CardContent>
+                    </Card>
+                )
+            )}
         </div>
     );
 
     const renderCharts = (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <div className="lg:col-span-4">
-                <RevenueLineChart />
+                <RevenueLineChart chartData={revenueByDate} />
             </div>
             <div className="lg:col-span-3">
-                <DishBarChart />
+                <DishBarChart chartData={dishIndicator} />
             </div>
         </div>
     );

@@ -6,6 +6,7 @@ export const Prefix = {
     GUEST: '/guest',
     DISHES: '/dishes',
     TABLES: '/tables',
+    INDICATOR_DASHBOARD: '/indicators/dashboard',
 };
 
 export const Suffix = {

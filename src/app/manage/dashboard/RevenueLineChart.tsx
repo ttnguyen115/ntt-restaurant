@@ -8,8 +8,6 @@ import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
-import { chartData } from './mock';
-
 const chartConfig = {
     desktop: {
         label: 'Desktop',
@@ -17,7 +15,7 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-function RevenueLineChart() {
+function RevenueLineChart({ chartData = [] }: { chartData: { date: string; revenue: number }[] }) {
     const renderLineChart = (
         <ChartContainer config={chartConfig}>
             <LineChart
