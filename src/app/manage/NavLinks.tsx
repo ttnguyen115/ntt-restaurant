@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, use } from 'react';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -9,12 +9,16 @@ import { Package2, Settings } from 'lucide-react';
 
 import { cn } from '@/utilities';
 
+import { AuthContext } from '@/contexts';
+
 import { AppNavigationRoutes, manageMenuItems } from '@/constants';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 function NavLinks() {
     const pathname = usePathname();
+
+    const { role } = use(AuthContext);
 
     const settingLinkClassnames = cn(
         'flex h-9 w-9 items-center justify-center rounded-lg  transition-colors hover:text-foreground md:h-8 md:w-8',
@@ -38,6 +42,11 @@ function NavLinks() {
 
                     {manageMenuItems.map((Item, index) => {
                         const isActive = pathname === Item.href;
+
+                        // role can be undefined, but it is fine with general logic.
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-expect-error
+                        if (Item.roles.includes(role)) return null;
 
                         return (
                             <Tooltip key={index}>

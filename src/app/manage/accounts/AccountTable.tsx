@@ -18,7 +18,9 @@ import {
     type VisibilityState,
 } from '@tanstack/react-table';
 
-import { AppNavigationRoutes } from '@/constants';
+import { AuthContext } from '@/contexts';
+
+import { AppNavigationRoutes, Role } from '@/constants';
 
 import { toast, useDeleteAccount, useGetAllAccounts } from '@/hooks';
 
@@ -208,6 +210,8 @@ const AlertDialogDeleteAccount = memo(({ employeeDelete, setEmployeeDelete }: Al
 const ITEMS_PER_PAGE = 10;
 
 function AccountTable() {
+    const { role } = use(AuthContext);
+
     const searchParam = useSearchParams();
     const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1;
     const pageIndex = page - 1;
@@ -276,9 +280,11 @@ function AccountTable() {
                         onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
                         className="max-w-sm"
                     />
-                    <div className="ml-auto flex items-center gap-2">
-                        <AddEmployee />
-                    </div>
+                    {role === Role.Owner && (
+                        <div className="ml-auto flex items-center gap-2">
+                            <AddEmployee />
+                        </div>
+                    )}
                 </div>
                 <div className="rounded-md border">
                     <Table>

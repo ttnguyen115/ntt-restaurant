@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, use } from 'react';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -9,6 +9,8 @@ import { Package2, PanelLeft } from 'lucide-react';
 
 import { cn } from '@/utilities';
 
+import { AuthContext } from '@/contexts';
+
 import { manageMenuItems } from '@/constants';
 
 import { Button } from '@/components/ui/button';
@@ -16,6 +18,8 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 
 function MobileNavLinks() {
     const pathname = usePathname();
+
+    const { role } = use(AuthContext);
 
     return (
         <Sheet>
@@ -47,6 +51,12 @@ function MobileNavLinks() {
                     </Link>
                     {manageMenuItems.map((Item, index) => {
                         const isActive = pathname === Item.href;
+
+                        // role can be undefined, but it is fine with general logic.
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-expect-error
+                        if (Item.roles.includes(role)) return null;
+
                         return (
                             <Link
                                 key={index}

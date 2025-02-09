@@ -6,6 +6,7 @@ import { decodeToken } from './utilities';
 const publicPaths = [AppNavigationRoutes.LOGIN];
 const guestPaths = [AppNavigationRoutes.GUEST];
 const managePaths = [AppNavigationRoutes.MANAGE];
+const ownerOnlyPaths = [AppNavigationRoutes.MANAGE_ACCOUNTS];
 const privatePaths = [...guestPaths, ...managePaths];
 
 export function middleware(request: NextRequest) {
@@ -44,7 +45,9 @@ export function middleware(request: NextRequest) {
         const isGuestAccessManagePaths = role === Role.Guest && managePaths.some((path) => pathname.startsWith(path));
         const isAdminAndEmployeeAccessGuestPaths =
             role !== Role.Guest && guestPaths.some((path) => pathname.startsWith(path));
-        if (isGuestAccessManagePaths || isAdminAndEmployeeAccessGuestPaths) {
+        const isEmployeeAndGuestAccessOwnerPaths =
+            role !== Role.Owner && ownerOnlyPaths.some((path) => pathname.startsWith(path));
+        if (isGuestAccessManagePaths || isAdminAndEmployeeAccessGuestPaths || isEmployeeAndGuestAccessOwnerPaths) {
             return NextResponse.redirect(new URL(AppNavigationRoutes.DEFAULT, request.url));
         }
     }
