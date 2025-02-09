@@ -1,3 +1,5 @@
+import querystring from 'querystring';
+
 import { Prefix, PREFIX_API, Suffix } from '@/constants';
 
 import { http } from '@/lib';
@@ -8,6 +10,10 @@ import type {
     ChangePasswordBodyType,
     ChangePasswordResType,
     CreateEmployeeAccountBodyType,
+    CreateGuestBodyType,
+    CreateGuestResType,
+    GetGuestListQueryParamsType,
+    GetListGuestsResType,
     UpdateEmployeeAccountBodyType,
     UpdateMeBodyType,
 } from '@/schemaValidations';
@@ -21,6 +27,7 @@ const BACKEND_API = {
     ACCOUNT_DETAIL: Prefix.ACCOUNTS + '/detail',
     CHANGE_PASSWORD: Prefix.ACCOUNTS + Suffix.CHANGE_PASSWORD,
     ME: Prefix.ACCOUNTS + Suffix.ME,
+    GUESTS: Prefix.ACCOUNTS + '/guests',
 };
 
 const accountApiRequest = {
@@ -53,7 +60,7 @@ const accountApiRequest = {
         });
     },
 
-    //
+    // internal -------------------
     getAllAccounts: () => {
         return http.get<AccountListResType>(BACKEND_API.ACCOUNTS);
     },
@@ -72,6 +79,20 @@ const accountApiRequest = {
 
     deleteEmployee: (id: number) => {
         return http.delete<AccountResType>(`${BACKEND_API.ACCOUNT_DETAIL}/${id}`);
+    },
+
+    // guest --------------------
+    getAllGuests: (query: GetGuestListQueryParamsType) => {
+        const queryString = querystring.stringify({
+            ...query,
+            fromDate: query.fromDate?.toISOString(),
+            toDate: query.toDate?.toISOString(),
+        });
+        return http.get<GetListGuestsResType>(`${BACKEND_API.GUESTS}?${queryString}`);
+    },
+
+    createGuest: (body: CreateGuestBodyType) => {
+        return http.post<CreateGuestResType>(BACKEND_API.GUESTS, body);
     },
 };
 

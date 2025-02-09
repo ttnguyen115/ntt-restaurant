@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { accountApiRequest } from '@/apiRequests';
 
-import { UpdateEmployeeAccountBodyType } from '@/schemaValidations';
+import { CreateGuestBodyType, GetGuestListQueryParamsType, UpdateEmployeeAccountBodyType } from '@/schemaValidations';
 
 export const useMyAccount = () => {
     return useQuery({
@@ -77,5 +77,18 @@ export const useDeleteAccount = () => {
                 queryKey: ['accounts'],
             });
         },
+    });
+};
+
+export const useGetAllGuests = (query: GetGuestListQueryParamsType) => {
+    return useQuery({
+        queryKey: ['guests', query],
+        queryFn: () => accountApiRequest.getAllGuests(query),
+    });
+};
+
+export const useCreateGuest = () => {
+    return useMutation({
+        mutationFn: accountApiRequest.createGuest,
     });
 };

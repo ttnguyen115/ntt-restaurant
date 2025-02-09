@@ -3,6 +3,8 @@ import querystring from 'querystring';
 import { http } from '@/lib';
 
 import type {
+    CreateOrdersBodyType,
+    CreateOrdersResType,
     GetOrderDetailResType,
     GetOrdersQueryParamsType,
     GetOrdersResType,
@@ -28,6 +30,10 @@ const orderApiRequest = {
 
     getOrderDetail: (id: number) => {
         return http.get<GetOrderDetailResType>(`${BACKEND_API.ORDERS}/${id}`);
+    },
+
+    createOrders: (body: CreateOrdersBodyType) => {
+        return http.post<CreateOrdersResType>(BACKEND_API.ORDERS, body);
     },
 
     updateOrder: (orderId: number, body: UpdateOrderBodyType) => {

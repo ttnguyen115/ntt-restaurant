@@ -19,6 +19,12 @@ export const useGetOrderDetail = ({ id, enabled }: { id: number; enabled: boolea
     });
 };
 
+export const useCreateOrders = () => {
+    return useMutation({
+        mutationFn: orderApiRequest.createOrders,
+    });
+};
+
 type UseUpdateOrderBodyType = UpdateOrderBodyType & { orderId: number };
 
 export const useUpdateOrder = () => {

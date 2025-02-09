@@ -6,7 +6,7 @@ export { useLoginMutation, useLogoutMutation } from './queries/useAuth';
 
 export { useGuestLogin, useGuestLogout, useGetGuestOrders, useUpdateGuestOrder } from './queries/useGuest';
 
-export { useGetAllOrders, useGetOrderDetail, useUpdateOrder, usePayBills } from './queries/useOrder';
+export { useGetAllOrders, useGetOrderDetail, useUpdateOrder, usePayBills, useCreateOrders } from './queries/useOrder';
 
 export {
     useMyAccount,
@@ -17,6 +17,8 @@ export {
     useDeleteAccount,
     useGetAccount,
     useGetAllAccounts,
+    useCreateGuest,
+    useGetAllGuests,
 } from './queries/useAccount';
 
 export { useMediaMutation } from './queries/useMedia';
