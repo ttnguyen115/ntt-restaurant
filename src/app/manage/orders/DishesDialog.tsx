@@ -199,9 +199,15 @@ function DishesDialog({ onChoose }: DishesDialogProps) {
                             </div>
                             <div>
                                 <AutoPagination
+                                    isLink={false}
+                                    onClick={(pageNumber) =>
+                                        table.setPagination({
+                                            pageIndex: pageNumber - 1,
+                                            pageSize: ITEMS_PER_PAGE,
+                                        })
+                                    }
                                     page={table.getState().pagination.pageIndex + 1}
                                     pageSize={table.getPageCount()}
-                                    pathname={AppNavigationRoutes.MANAGE_DISHES}
                                 />
                             </div>
                         </div>
