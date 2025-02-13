@@ -13,6 +13,7 @@ export { default as formatDateTimeToTimeString } from './formatDateTimeToTimeStr
 export { default as decodeAndGetExpirationFromToken } from './decodeAndGetExpirationFromToken';
 export { default as cn } from './cn';
 export { default as initSocketInstance } from './initSocketInstance';
+export { default as wrapServerApi } from './wrapServerApi';
 export {
     getRefreshTokenFromLocalStorage,
     getAccessTokenFromLocalStorage,

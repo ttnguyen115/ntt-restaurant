@@ -16,8 +16,8 @@ import type { ChildrenObject, RoleType } from '@/types';
 interface IAuthContext {
     isAuthenticated: boolean;
     role: RoleType | undefined;
-    setRole: (role?: RoleType | undefined) => void;
     socket: Socket | undefined;
+    setRole: (role?: RoleType | undefined) => void;
     setSocket: (socket?: Socket | undefined) => void;
     disconnectSocket: () => void;
 }
@@ -25,8 +25,8 @@ interface IAuthContext {
 export const AuthContext = createContext<IAuthContext>({
     isAuthenticated: false,
     role: undefined,
-    setRole: () => {},
     socket: undefined as Socket | undefined,
+    setRole: () => {},
     setSocket: () => {},
     disconnectSocket: () => {},
 });
