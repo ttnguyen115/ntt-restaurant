@@ -306,6 +306,16 @@
                         "position": "after"
                     },
                     {
+                        "pattern": "@/messages**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "@/messages/**",
+                        "group": "internal",
+                        "position": "after"
+                    },
+                    {
                         "pattern": "@/prisma**",
                         "group": "internal",
                         "position": "after"

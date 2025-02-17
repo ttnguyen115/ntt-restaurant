@@ -1,6 +1,8 @@
 import { Inter as FontSans } from 'next/font/google';
 
 import type { Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 
 import { cn } from '@/utilities';
 
@@ -25,28 +27,33 @@ export const metadata: Metadata = {
     description: 'The best restaurant in the world',
 };
 
-function RootLayout({ children }: Readonly<ChildrenObject>) {
+async function RootLayout({ children }: Readonly<ChildrenObject>) {
+    const locale = await getLocale();
+    const messages = await getMessages();
+
     return (
         <html
-            lang="en"
+            lang={locale}
             suppressHydrationWarning
         >
             <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-                <AuthProvider>
-                    <ReactQueryProvider>
-                        <ThemeProvider
-                            attribute="class"
-                            defaultTheme="system"
-                            enableSystem
-                            disableTransitionOnChange
-                        >
-                            {children}
-                            <Toaster />
-                        </ThemeProvider>
-                        <RefreshToken />
-                        <ListenLogoutSocket />
-                    </ReactQueryProvider>
-                </AuthProvider>
+                <NextIntlClientProvider messages={messages}>
+                    <AuthProvider>
+                        <ReactQueryProvider>
+                            <ThemeProvider
+                                attribute="class"
+                                defaultTheme="system"
+                                enableSystem
+                                disableTransitionOnChange
+                            >
+                                {children}
+                                <Toaster />
+                            </ThemeProvider>
+                            <RefreshToken />
+                            <ListenLogoutSocket />
+                        </ReactQueryProvider>
+                    </AuthProvider>
+                </NextIntlClientProvider>
             </body>
         </html>
     );
