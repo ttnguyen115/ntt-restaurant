@@ -1,8 +1,9 @@
 import { Inter as FontSans } from 'next/font/google';
+import { notFound } from 'next/navigation';
 
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
+import { getMessages } from 'next-intl/server';
 
 import { cn } from '@/utilities';
 
@@ -13,6 +14,8 @@ import ReactQueryProvider from '@/components/ReactQueryProvider';
 import RefreshToken from '@/components/RefreshToken';
 import ThemeProvider from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
+
+import { routing } from '@/lib/i18n';
 
 import type { ChildrenObject } from '@/types';
 
@@ -27,9 +30,16 @@ export const metadata: Metadata = {
     description: 'The best restaurant in the world',
 };
 
-async function RootLayout({ children }: Readonly<ChildrenObject>) {
-    const locale = await getLocale();
+type LocalLayoutProps = Readonly<ChildrenObject & { params: Promise<{ locale: string }> }>;
+
+async function LocaleLayout({ children, params }: LocalLayoutProps) {
+    const { locale } = await params;
+
     const messages = await getMessages();
+
+    if (!routing.locales.includes(locale as any)) {
+        notFound();
+    }
 
     return (
         <html
@@ -59,4 +69,4 @@ async function RootLayout({ children }: Readonly<ChildrenObject>) {
     );
 }
 
-export default RootLayout;
+export default LocaleLayout;

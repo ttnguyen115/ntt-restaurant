@@ -1,3 +1,5 @@
+'use client';
+
 import { memo, use, useEffect } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';

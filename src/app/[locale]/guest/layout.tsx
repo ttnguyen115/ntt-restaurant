@@ -1,4 +1,4 @@
-import Layout from '@/app/(public)/layout';
+import Layout from '@/app/[locale]/(public)/layout';
 
 import { ChildrenObject } from '@/types';
 

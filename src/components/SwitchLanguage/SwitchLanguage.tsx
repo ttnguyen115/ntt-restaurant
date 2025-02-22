@@ -6,16 +6,25 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { Locale, locales, setUserLocale } from '@/lib/i18n';
+import { Locale, locales, usePathname, useRouter } from '@/lib/i18n';
 
 function SwitchLanguage() {
+    const router = useRouter();
+    const pathname = usePathname();
+
     const i18n = useTranslations('SwitchLanguage');
 
     const locale = useLocale();
 
-    const handleChangeLanguage = useCallback(async (value: Locale) => {
-        await setUserLocale(value);
-    }, []);
+    const handleChangeLanguage = useCallback(
+        (value: Locale) => {
+            router.replace(pathname, {
+                locale: value,
+            });
+            router.refresh();
+        },
+        [pathname, router]
+    );
 
     return (
         <Select
