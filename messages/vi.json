@@ -1,5 +1,10 @@
 {
     "HomePage": {
         "title": "Xin chao the gioi"
+    },
+    "SwitchLanguage": {
+        "title": "Chuyen ngon ngu",
+        "en": "Tieng Anh",
+        "vi": "Tieng Viet"
     }
 }

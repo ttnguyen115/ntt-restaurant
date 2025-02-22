@@ -9,7 +9,7 @@ import { dishApiRequest } from '@/apiRequests';
 import { DishListResType } from '@/schemaValidations';
 
 async function Home() {
-    const t = await getTranslations('HomePage');
+    const i18n = await getTranslations('HomePage');
 
     let dishes: DishListResType['data'] = [];
 
@@ -38,7 +38,7 @@ async function Home() {
                 <div className="z-20 relative py-10 md:py-20 px-4 sm:px-10 md:px-20">
                     <h1 className="text-center text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold">
                         Nhà hàng Big Boy
-                        {t('title')}
+                        {i18n('title')}
                     </h1>
                     <p className="text-center text-sm sm:text-base mt-4">Vị ngon, trọn khoảnh khắc</p>
                 </div>

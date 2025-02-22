@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Menu, Package2 } from 'lucide-react';
 
 import DarkModeToggle from '@/components/DarkModeToggle';
+import SwitchLanguage from '@/components/SwitchLanguage';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
@@ -53,7 +54,8 @@ function Layout({ children }: Readonly<ChildrenObject>) {
                         </nav>
                     </SheetContent>
                 </Sheet>
-                <div className="ml-auto">
+                <div className="ml-auto flex items-center gap-4">
+                    <SwitchLanguage />
                     <DarkModeToggle />
                 </div>
             </header>
