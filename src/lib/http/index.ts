@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+
 import envConfig from '@/config';
 import {
     getAccessTokenFromLocalStorage,
@@ -11,7 +13,7 @@ import { AUTH_ROUTE_HANDLER, GUEST_ROUTE_HANDLER } from '@/apiRequests';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { redirect } from '@/lib/i18n';
+import { defaultLocale, redirect } from '@/lib/i18n';
 
 import { LoginResType } from '@/schemaValidations';
 
@@ -106,7 +108,12 @@ const request = async <Response>(
                 // API calling from Next.js (Route handlers, Server Components) to backend
                 // access token is still valid
                 const accessToken = (options?.headers as any)?.Authorization.split('Bearer ')[1];
-                redirect(`${AppNavigationRoutes.LOGOUT}?accessToken=${accessToken}`);
+                const locale = Cookies.get('NEXT_LOCALE');
+
+                redirect({
+                    href: `${AppNavigationRoutes.LOGIN}?accessToken=${accessToken}`,
+                    locale: locale ?? defaultLocale,
+                });
             }
         } else {
             throw new HttpError(data);

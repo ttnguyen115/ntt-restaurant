@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo, Suspense, useCallback } from 'react';
 
 import { useLocale, useTranslations } from 'next-intl';
 
@@ -50,4 +50,12 @@ function SwitchLanguage() {
     );
 }
 
-export default memo(SwitchLanguage);
+function SwitchLanguageWithSuspense() {
+    return (
+        <Suspense fallback={null}>
+            <SwitchLanguage />
+        </Suspense>
+    );
+}
+
+export default memo(SwitchLanguageWithSuspense);
