@@ -1,5 +1,3 @@
-import { redirect } from 'next/navigation';
-
 import envConfig from '@/config';
 import {
     getAccessTokenFromLocalStorage,
@@ -12,6 +10,8 @@ import {
 import { AUTH_ROUTE_HANDLER, GUEST_ROUTE_HANDLER } from '@/apiRequests';
 
 import { AppNavigationRoutes } from '@/constants';
+
+import { redirect } from '@/lib/i18n';
 
 import { LoginResType } from '@/schemaValidations';
 

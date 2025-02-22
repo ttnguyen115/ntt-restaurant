@@ -4,8 +4,6 @@ import { memo, useCallback, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import Link from 'next/link';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { getTableLink, getVietnameseTableStatus } from '@/utilities';
@@ -24,6 +22,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 
 import { handleErrorApi } from '@/lib';
+
+import { Link } from '@/lib/i18n';
 
 import { UpdateTableBody, type UpdateTableBodyType } from '@/schemaValidations';
 

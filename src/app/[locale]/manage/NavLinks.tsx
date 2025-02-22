@@ -2,9 +2,6 @@
 
 import { memo, use } from 'react';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
 import { Package2, Settings } from 'lucide-react';
 
 import { cn } from '@/utilities';
@@ -14,6 +11,8 @@ import { AuthContext } from '@/contexts';
 import { AppNavigationRoutes, manageMenuItems } from '@/constants';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
+import { Link, usePathname } from '@/lib/i18n';
 
 function NavLinks() {
     const pathname = usePathname();

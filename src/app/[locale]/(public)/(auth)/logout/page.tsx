@@ -2,7 +2,7 @@
 
 import { Suspense, use, useEffect, useRef } from 'react';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import { getAccessTokenFromLocalStorage, getRefreshTokenFromLocalStorage } from '@/utilities';
 
@@ -11,6 +11,8 @@ import { AuthContext } from '@/contexts';
 import { AppNavigationRoutes } from '@/constants';
 
 import { useLogoutMutation } from '@/hooks';
+
+import { useRouter } from '@/lib/i18n';
 
 function Logout() {
     const router = useRouter();

@@ -2,9 +2,6 @@
 
 import { memo, use, useCallback } from 'react';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-
 import { AuthContext } from '@/contexts';
 
 import { AppNavigationRoutes } from '@/constants';
@@ -23,6 +20,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { handleErrorApi } from '@/lib';
+
+import { Link, useRouter } from '@/lib/i18n';
 
 function DropdownAvatar() {
     const router = useRouter();

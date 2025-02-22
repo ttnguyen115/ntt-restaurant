@@ -3,7 +3,6 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 import { clsx } from 'clsx';
 
@@ -17,6 +16,8 @@ import QuantityController from '@/components/QuantityController';
 import { Button } from '@/components/ui/button';
 
 import { handleErrorApi } from '@/lib';
+
+import { useRouter } from '@/lib/i18n';
 
 import type { GuestCreateOrdersBodyType } from '@/schemaValidations';
 

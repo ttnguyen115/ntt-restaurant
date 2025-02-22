@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
-import Link from 'next/link';
-
 import { Beef } from 'lucide-react';
+
+import { Link } from '@/lib/i18n';
 
 function Footer() {
     return (

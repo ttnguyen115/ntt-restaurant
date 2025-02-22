@@ -4,7 +4,7 @@ import { memo, use, useCallback, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -24,11 +24,12 @@ import { Label } from '@/components/ui/label';
 
 import { handleErrorApi } from '@/lib';
 
+import { useRouter } from '@/lib/i18n';
+
 import { GuestLoginBody, GuestLoginBodyType } from '@/schemaValidations';
 
 function GuestLoginForm() {
     const router = useRouter();
-
     const searchParams = useSearchParams();
     const params = useParams();
 

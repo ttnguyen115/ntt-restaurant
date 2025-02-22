@@ -4,7 +4,7 @@ import { memo, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -23,6 +23,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { handleErrorApi } from '@/lib';
+
+import { useRouter } from '@/lib/i18n';
 
 import { LoginBody, type LoginBodyType } from '@/schemaValidations';
 

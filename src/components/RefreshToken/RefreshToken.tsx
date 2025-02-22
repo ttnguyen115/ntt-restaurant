@@ -2,13 +2,13 @@
 
 import { use, useEffect } from 'react';
 
-import { usePathname, useRouter } from 'next/navigation';
-
 import { AuthContext } from '@/contexts';
 
 import { AppNavigationRoutes } from '@/constants';
 
 import { checkAndRefreshToken } from '@/lib';
+
+import { usePathname, useRouter } from '@/lib/i18n';
 
 type IntervalType = string | number | NodeJS.Timeout | undefined;
 

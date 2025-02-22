@@ -1,11 +1,11 @@
-import Link from 'next/link';
-
 import { Menu, Package2 } from 'lucide-react';
 
 import DarkModeToggle from '@/components/DarkModeToggle';
 import SwitchLanguage from '@/components/SwitchLanguage';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+
+import { Link } from '@/lib/i18n';
 
 import { ChildrenObject } from '@/types';
 

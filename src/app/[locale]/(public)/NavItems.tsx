@@ -2,9 +2,6 @@
 
 import { memo, useCallback } from 'react';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-
 import { clsx } from 'clsx';
 
 import { AppNavigationRoutes, homeMenuItems } from '@/constants';
@@ -24,6 +21,8 @@ import {
 } from '@/components/ui/alert-dialog';
 
 import { handleErrorApi } from '@/lib';
+
+import { Link, useRouter } from '@/lib/i18n';
 
 function NavItems({ className }: { className?: string }) {
     const router = useRouter();

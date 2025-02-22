@@ -2,13 +2,15 @@
 
 import { Suspense, useEffect } from 'react';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import { getRefreshTokenFromLocalStorage } from '@/utilities';
 
 import { AppNavigationRoutes } from '@/constants';
 
 import { checkAndRefreshToken } from '@/lib';
+
+import { useRouter } from '@/lib/i18n';
 
 function RefreshTokenPage() {
     const router = useRouter();

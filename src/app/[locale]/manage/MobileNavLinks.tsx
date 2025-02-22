@@ -2,9 +2,6 @@
 
 import { memo, use } from 'react';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
 import { Package2, PanelLeft } from 'lucide-react';
 
 import { cn } from '@/utilities';
@@ -15,6 +12,8 @@ import { manageMenuItems } from '@/constants';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+
+import { Link, usePathname } from '@/lib/i18n';
 
 function MobileNavLinks() {
     const pathname = usePathname();
