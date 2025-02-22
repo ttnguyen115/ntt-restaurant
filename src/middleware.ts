@@ -1,15 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import _flattenDeep from 'lodash/flattenDeep';
+import jwt from 'jsonwebtoken';
 import createMiddleware from 'next-intl/middleware';
 
 import { AppNavigationRoutes, Role } from './constants';
-import { routing } from './lib/i18n';
-import { decodeToken } from './utilities';
+import { defaultLocale, routing } from './lib/i18n';
+import type { TokenPayload } from './types';
 
-function transformI18nForPaths(paths: string[]) {
-    return _flattenDeep(paths.map((path) => [`/vi${path}`, `/en${path}`]));
-}
+const transformI18nForPaths = (paths: string[]) => {
+    const result: string[] = [];
+    paths.forEach((path) => {
+        result.push(`/vi${path}`);
+        result.push(`/en${path}`);
+    });
+    return result;
+};
+
+const decodeToken = (token: string) => {
+    return jwt.decode(token) as TokenPayload;
+};
 
 const publicPaths = transformI18nForPaths([AppNavigationRoutes.LOGIN]);
 const guestPaths = transformI18nForPaths([AppNavigationRoutes.GUEST]);
@@ -25,13 +34,14 @@ export function middleware(request: NextRequest) {
 
     const accessToken = request.cookies.get('accessToken')?.value;
     const refreshToken = request.cookies.get('refreshToken')?.value;
+    const locale = request.cookies.get('NEXT_LOCALE')?.value ?? defaultLocale;
 
     const isInPrivatePaths = privatePaths.some((path) => pathname.startsWith(path));
     const isInPublicPaths = publicPaths.some((path) => pathname.startsWith(path));
 
     // 1. If indeed user has not logged in yet
     if (isInPrivatePaths && !refreshToken) {
-        const url = new URL(AppNavigationRoutes.LOGIN, request.url);
+        const url = new URL(`/${locale}${AppNavigationRoutes.LOGIN}`, request.url);
         url.searchParams.set('clearTokens', 'true');
         return NextResponse.redirect(url);
     }
@@ -42,12 +52,12 @@ export function middleware(request: NextRequest) {
         if (isInPublicPaths) {
             if (searchParams.get('accessToken')) return response;
 
-            return NextResponse.redirect(new URL(AppNavigationRoutes.DEFAULT, request.url));
+            return NextResponse.redirect(new URL(`/${locale}${AppNavigationRoutes.DEFAULT}`, request.url));
         }
 
         // 2.2 Logged-in user but access token is expired, while refresh token is still
         if (isInPrivatePaths && !accessToken) {
-            const url = new URL(AppNavigationRoutes.REFRESH_TOKEN, request.url);
+            const url = new URL(`/${locale}${AppNavigationRoutes.REFRESH_TOKEN}`, request.url);
             url.searchParams.set('refreshToken', refreshToken);
             url.searchParams.set('redirect', pathname);
             return NextResponse.redirect(url);
@@ -62,7 +72,7 @@ export function middleware(request: NextRequest) {
             role !== Role.Owner && ownerOnlyPaths.some((path) => pathname.startsWith(path));
 
         if (isGuestAccessManagePaths || isAdminAndEmployeeAccessGuestPaths || isEmployeeAndGuestAccessOwnerPaths) {
-            return NextResponse.redirect(new URL(AppNavigationRoutes.DEFAULT, request.url));
+            return NextResponse.redirect(new URL(`/${locale}${AppNavigationRoutes.DEFAULT}`, request.url));
         }
 
         return response;
