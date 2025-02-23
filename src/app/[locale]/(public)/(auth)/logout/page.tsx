@@ -12,7 +12,7 @@ import { AppNavigationRoutes } from '@/constants';
 
 import { useLogoutMutation } from '@/hooks';
 
-import { useRouter } from '@/lib/i18n';
+import { useRouter } from '@/lib';
 
 function Logout() {
     const router = useRouter();

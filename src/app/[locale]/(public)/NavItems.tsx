@@ -20,9 +20,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-import { handleErrorApi } from '@/lib';
-
-import { Link, useRouter } from '@/lib/i18n';
+import { handleErrorApi, Link, useRouter } from '@/lib';
 
 function NavItems({ className }: { className?: string }) {
     const router = useRouter();

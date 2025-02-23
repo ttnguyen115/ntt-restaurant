@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon, DotsHorizontalIcon } from '@radix-ui
 
 import { cn } from '@/utilities';
 
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib';
 
 import { type ButtonProps, buttonVariants } from './button';
 

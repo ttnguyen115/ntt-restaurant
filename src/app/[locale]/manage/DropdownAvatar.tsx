@@ -19,9 +19,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { handleErrorApi } from '@/lib';
-
-import { Link, useRouter } from '@/lib/i18n';
+import { handleErrorApi, Link, useRouter } from '@/lib';
 
 function DropdownAvatar() {
     const router = useRouter();

@@ -12,7 +12,7 @@ import { AppNavigationRoutes, manageMenuItems } from '@/constants';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { Link, usePathname } from '@/lib/i18n';
+import { Link, usePathname } from '@/lib';
 
 function NavLinks() {
     const pathname = usePathname();

@@ -21,9 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 
-import { handleErrorApi } from '@/lib';
-
-import { Link } from '@/lib/i18n';
+import { handleErrorApi, Link } from '@/lib';
 
 import { UpdateTableBody, type UpdateTableBodyType } from '@/schemaValidations';
 

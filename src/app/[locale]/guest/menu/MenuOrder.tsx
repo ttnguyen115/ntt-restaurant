@@ -15,9 +15,7 @@ import { useGetAllDishes, useUpdateGuestOrder } from '@/hooks';
 import QuantityController from '@/components/QuantityController';
 import { Button } from '@/components/ui/button';
 
-import { handleErrorApi } from '@/lib';
-
-import { useRouter } from '@/lib/i18n';
+import { handleErrorApi, useRouter } from '@/lib';
 
 import type { GuestCreateOrdersBodyType } from '@/schemaValidations';
 

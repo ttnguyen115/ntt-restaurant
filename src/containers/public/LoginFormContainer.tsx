@@ -22,9 +22,7 @@ import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import { handleErrorApi } from '@/lib';
-
-import { useRouter } from '@/lib/i18n';
+import { handleErrorApi, useRouter } from '@/lib';
 
 import { LoginBody, type LoginBodyType } from '@/schemaValidations';
 

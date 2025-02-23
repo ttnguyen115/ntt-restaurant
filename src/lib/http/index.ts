@@ -13,9 +13,9 @@ import { AUTH_ROUTE_HANDLER, GUEST_ROUTE_HANDLER } from '@/apiRequests';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { defaultLocale, redirect } from '@/lib/i18n';
-
 import { LoginResType } from '@/schemaValidations';
+
+import { defaultLocale, redirect } from '..';
 
 import { EntityError, EntityErrorPayload } from './EntityError';
 import { HttpError } from './HttpError';

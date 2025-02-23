@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { Locale, locales, usePathname, useRouter } from '@/lib/i18n';
+import { type Locale, locales, usePathname, useRouter } from '@/lib';
 
 function SwitchLanguage() {
     const router = useRouter();

@@ -13,7 +13,7 @@ import { manageMenuItems } from '@/constants';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
-import { Link, usePathname } from '@/lib/i18n';
+import { Link, usePathname } from '@/lib';
 
 function MobileNavLinks() {
     const pathname = usePathname();

@@ -8,9 +8,7 @@ import { getRefreshTokenFromLocalStorage } from '@/utilities';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { checkAndRefreshToken } from '@/lib';
-
-import { useRouter } from '@/lib/i18n';
+import { checkAndRefreshToken, useRouter } from '@/lib';
 
 function RefreshTokenPage() {
     const router = useRouter();

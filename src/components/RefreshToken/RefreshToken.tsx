@@ -6,9 +6,7 @@ import { AuthContext } from '@/contexts';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { checkAndRefreshToken } from '@/lib';
-
-import { usePathname, useRouter } from '@/lib/i18n';
+import { checkAndRefreshToken, usePathname, useRouter } from '@/lib';
 
 type IntervalType = string | number | NodeJS.Timeout | undefined;
 

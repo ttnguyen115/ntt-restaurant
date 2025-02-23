@@ -5,7 +5,7 @@ import SwitchLanguage from '@/components/SwitchLanguage';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib';
 
 import { ChildrenObject } from '@/types';
 

@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import { Beef } from 'lucide-react';
 
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib';
 
 function Footer() {
     return (

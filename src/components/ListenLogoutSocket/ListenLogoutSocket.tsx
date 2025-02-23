@@ -8,9 +8,7 @@ import { AppNavigationRoutes } from '@/constants';
 
 import { useLogoutMutation } from '@/hooks';
 
-import { handleErrorApi } from '@/lib';
-
-import { usePathname, useRouter } from '@/lib/i18n';
+import { handleErrorApi, usePathname, useRouter } from '@/lib';
 
 const UNAUTHENTICATED_PATH = [AppNavigationRoutes.LOGIN, AppNavigationRoutes.LOGOUT, AppNavigationRoutes.REFRESH_TOKEN];
 

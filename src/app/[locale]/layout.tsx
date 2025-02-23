@@ -15,7 +15,7 @@ import RefreshToken from '@/components/RefreshToken';
 import ThemeProvider from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 
-import { routing } from '@/lib/i18n';
+import { routing } from '@/lib';
 
 import type { ChildrenObject } from '@/types';
 
