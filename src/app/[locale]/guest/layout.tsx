@@ -5,7 +5,13 @@ import { defaultLocale } from '@/lib';
 import { ChildrenObject } from '@/types';
 
 function GuestLayout({ children }: Readonly<ChildrenObject>) {
-    return <Layout params={{ locale: defaultLocale }}>{children}</Layout>;
+    const localePromise = new Promise<{ locale: string }>((resolve) => {
+        setTimeout(() => {
+            resolve({ locale: defaultLocale });
+        }, 0);
+    });
+
+    return <Layout params={localePromise}>{children}</Layout>;
 }
 
 export default GuestLayout;

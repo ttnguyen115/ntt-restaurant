@@ -14,6 +14,8 @@ export { default as decodeAndGetExpirationFromToken } from './decodeAndGetExpira
 export { default as cn } from './cn';
 export { default as initSocketInstance } from './initSocketInstance';
 export { default as wrapServerApi } from './wrapServerApi';
+export { default as generateSlugUrl } from './generateSlugUrl';
+export { default as getIdFromSlugUrl } from './getIdFromSlugUrl';
 export {
     getRefreshTokenFromLocalStorage,
     getAccessTokenFromLocalStorage,

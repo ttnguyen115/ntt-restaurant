@@ -2,9 +2,13 @@ import Image from 'next/image';
 
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { formatCurrency } from '@/utilities';
+import { formatCurrency, generateSlugUrl } from '@/utilities';
 
 import { dishApiRequest } from '@/apiRequests';
+
+import { Prefix } from '@/constants';
+
+import { Link } from '@/lib';
 
 import type { DishListResType } from '@/schemaValidations';
 
@@ -55,7 +59,8 @@ async function Home({ params }: HomePageProps) {
                 <h2 className="text-center text-2xl font-bold">Đa dạng các món ăn</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     {dishes.map(({ id, image, name, description, price }) => (
-                        <div
+                        <Link
+                            href={Prefix.DISHES + '/' + generateSlugUrl({ name, id })}
                             className="flex gap-4 w"
                             key={id}
                         >
@@ -74,7 +79,7 @@ async function Home({ params }: HomePageProps) {
                                 <p>{description}</p>
                                 <p className="font-semibold">{formatCurrency(price)}</p>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </section>
