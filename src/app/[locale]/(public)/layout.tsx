@@ -1,4 +1,7 @@
 import { Menu, Package2 } from 'lucide-react';
+import { setRequestLocale } from 'next-intl/server';
+
+import { AppNavigationRoutes } from '@/constants';
 
 import DarkModeToggle from '@/components/DarkModeToggle';
 import SwitchLanguage from '@/components/SwitchLanguage';
@@ -7,17 +10,21 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 
 import { Link } from '@/lib';
 
-import { ChildrenObject } from '@/types';
+import type { ChildrenObjectWithLocale } from '@/types';
 
 import NavItems from './NavItems';
 
-function Layout({ children }: Readonly<ChildrenObject>) {
+async function Layout({ children, params }: Readonly<ChildrenObjectWithLocale>) {
+    const { locale } = await params;
+
+    setRequestLocale(locale);
+
     return (
         <div className="flex min-h-screen w-full flex-col relative">
             <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
                 <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
                     <Link
-                        href="#"
+                        href={AppNavigationRoutes.DEFAULT}
                         className="flex items-center gap-2 text-lg font-semibold md:text-base"
                     >
                         <Package2 className="h-6 w-6" />
@@ -43,7 +50,7 @@ function Layout({ children }: Readonly<ChildrenObject>) {
                         </SheetHeader>
                         <nav className="grid gap-6 text-lg font-medium">
                             <Link
-                                href="#"
+                                href={AppNavigationRoutes.DEFAULT}
                                 className="flex items-center gap-2 text-lg font-semibold"
                             >
                                 <Package2 className="h-6 w-6" />

@@ -26,6 +26,16 @@ const AppNavigationRoutes = {
     // guest pages
     GUEST_MENU: `${PREFIX_GUEST}/menu`,
     GUEST_ORDERS: `${PREFIX_GUEST}/orders`,
+
+    // footer
+    TERM_OF_SERVICE: '/term-of-service',
+    PRIVACY_POLICY: '/privacy-policy',
+    ABOUT: '/about',
+
+    // social media
+    FACEBOOK: 'https://www.facebook.com',
+    TIKTOK: 'https://www.youtube.com',
+    YOUTUBE: 'https://www.tiktok.com',
 };
 
 export default AppNavigationRoutes;

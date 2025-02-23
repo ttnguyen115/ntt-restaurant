@@ -1,14 +1,22 @@
 import Image from 'next/image';
 
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { formatCurrency } from '@/utilities';
 
 import { dishApiRequest } from '@/apiRequests';
 
-import { DishListResType } from '@/schemaValidations';
+import type { DishListResType } from '@/schemaValidations';
 
-async function Home() {
+import type { ChildrenObjectWithLocale } from '@/types';
+
+type HomePageProps = Pick<ChildrenObjectWithLocale, 'params'>;
+
+async function Home({ params }: HomePageProps) {
+    const { locale } = await params;
+
+    setRequestLocale(locale);
+
     const i18n = await getTranslations('HomePage');
 
     let dishes: DishListResType['data'] = [];

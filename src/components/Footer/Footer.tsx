@@ -2,6 +2,8 @@ import { memo } from 'react';
 
 import { Beef } from 'lucide-react';
 
+import { AppNavigationRoutes } from '@/constants';
+
 import { Link } from '@/lib';
 
 function Footer() {
@@ -10,7 +12,7 @@ function Footer() {
             <div className=" flex flex-col items-center justify-between gap-4 md:flex-row md:gap-0">
                 <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
                     <Link
-                        href="/client/public"
+                        href={AppNavigationRoutes.DEFAULT}
                         className="flex items-center gap-2"
                         prefetch={false}
                     >
@@ -19,21 +21,21 @@ function Footer() {
                     </Link>
                     <div className="flex flex-col sm:flex-row items-center gap-4 text-sm">
                         <Link
-                            href="/term-of-service"
+                            href={AppNavigationRoutes.TERM_OF_SERVICE}
                             className="hover:underline"
                             prefetch={false}
                         >
                             Điều khoản dịch vụ
                         </Link>
                         <Link
-                            href="/privacy-policy"
+                            href={AppNavigationRoutes.PRIVACY_POLICY}
                             className="hover:underline"
                             prefetch={false}
                         >
                             Chính sách bảo mật
                         </Link>
                         <Link
-                            href="/about"
+                            href={AppNavigationRoutes.ABOUT}
                             className="hover:underline"
                             prefetch={false}
                         >
@@ -43,7 +45,7 @@ function Footer() {
                 </div>
                 <div className="flex items-center gap-4">
                     <Link
-                        href="https://www.facebook.com"
+                        href={AppNavigationRoutes.FACEBOOK}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-foreground"
@@ -61,7 +63,7 @@ function Footer() {
                         <span className="sr-only">Facebook</span>
                     </Link>
                     <Link
-                        href="https://www.youtube.com"
+                        href={AppNavigationRoutes.YOUTUBE}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-foreground"
@@ -79,7 +81,7 @@ function Footer() {
                         <span className="sr-only">YouTube</span>
                     </Link>
                     <Link
-                        href="https://www.tiktok.com"
+                        href={AppNavigationRoutes.TIKTOK}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-foreground"

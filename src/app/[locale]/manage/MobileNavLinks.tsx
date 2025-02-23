@@ -8,7 +8,7 @@ import { cn } from '@/utilities';
 
 import { AuthContext } from '@/contexts';
 
-import { manageMenuItems } from '@/constants';
+import { AppNavigationRoutes, manageMenuItems } from '@/constants';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -42,7 +42,7 @@ function MobileNavLinks() {
                 </SheetHeader>
                 <nav className="grid gap-6 text-lg font-medium">
                     <Link
-                        href="#"
+                        href={AppNavigationRoutes.DEFAULT}
                         className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                     >
                         <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
