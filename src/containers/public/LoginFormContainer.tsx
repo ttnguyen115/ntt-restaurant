@@ -4,18 +4,17 @@ import { memo, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { useSearchParams } from 'next/navigation';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { initSocketInstance } from '@/utilities';
 
 import { AppNavigationRoutes } from '@/constants';
 
-import { toast, useAuth, useLoginMutation } from '@/hooks';
+import { toast, useAuth, useLoginMutation, useSearchParamsLoader } from '@/hooks';
 
 import CardContainer from '@/containers/CardContainer';
 
+import SearchParamsLoader from '@/components/SearchParamsLoader';
 import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -28,8 +27,9 @@ import { LoginBody, type LoginBodyType } from '@/schemaValidations';
 
 function LoginFormContainer() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const clearTokens = searchParams.get('clearTokens');
+
+    const { searchParams, setSearchParams } = useSearchParamsLoader();
+    const clearTokens = searchParams?.get('clearTokens');
 
     const { setRole, setSocket } = useAuth();
 
@@ -71,6 +71,7 @@ function LoginFormContainer() {
             description="Please provide email and password to login"
             titleClassName="text-2xl"
         >
+            <SearchParamsLoader onParamsReceived={setSearchParams} />
             <CardContent>
                 <Form {...form}>
                     <form

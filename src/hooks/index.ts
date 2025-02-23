@@ -1,6 +1,7 @@
 export { useToast, toast } from './useToast';
 export { default as useClientOnly } from './useClientOnly';
 export { default as useAuth } from './useAuth';
+export { default as useSearchParamsLoader } from './useSearchParamsLoader';
 
 export { useLoginMutation, useLogoutMutation } from './queries/useAuth';
 

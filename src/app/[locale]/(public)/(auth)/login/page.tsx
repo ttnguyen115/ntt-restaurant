@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-
 import { setRequestLocale } from 'next-intl/server';
 
 import { LoginFormContainer } from '@/containers';
@@ -15,9 +13,7 @@ async function Login({ params }: LoginProps) {
 
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <Suspense fallback={null}>
-                <LoginFormContainer />
-            </Suspense>
+            <LoginFormContainer />
         </div>
     );
 }
