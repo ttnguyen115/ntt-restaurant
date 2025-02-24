@@ -1,14 +1,11 @@
 import Image from 'next/image';
 
 import _get from 'lodash/get';
+import { setRequestLocale } from 'next-intl/server';
 
 import { formatCurrency, generateSlugUrl, getIdFromSlugUrl, wrapServerApi } from '@/utilities';
 
 import { dishApiRequest } from '@/apiRequests';
-
-interface DishDetailPageProps {
-    params: Promise<{ id: string }>;
-}
 
 export async function generateStaticParams() {
     const data = await wrapServerApi(() => dishApiRequest.getAll());
@@ -22,11 +19,16 @@ export async function generateStaticParams() {
     }));
 }
 
+interface DishDetailPageProps {
+    params: Promise<{ id: string; locale: string }>;
+}
+
 async function DishDetailPage({ params }: DishDetailPageProps) {
-    const { id: slug } = await params;
+    const { id: slug, locale } = await params;
+
+    setRequestLocale(locale);
 
     const id = getIdFromSlugUrl(slug);
-
     const data = await wrapServerApi(() => dishApiRequest.getDish(Number(id)));
     const dish = _get(data, 'payload.data');
 
