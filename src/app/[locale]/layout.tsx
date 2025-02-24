@@ -1,9 +1,8 @@
 import { Inter as FontSans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 
-import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { cn } from '@/utilities';
 
@@ -15,7 +14,7 @@ import RefreshToken from '@/components/RefreshToken';
 import ThemeProvider from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 
-import { locales, routing } from '@/lib';
+import { Locale, locales, routing } from '@/lib';
 
 import type { ChildrenObjectWithLocale } from '@/types';
 
@@ -26,10 +25,14 @@ const fontSans = FontSans({
     variable: '--font-sans',
 });
 
-export const metadata: Metadata = {
-    title: 'Big Boy Restaurant',
-    description: 'The best restaurant in the world',
-};
+export async function generateMetadata({ params: { locale } }: { params: { locale: Locale } }) {
+    const t = await getTranslations({ locale, namespace: 'HomePage' });
+
+    return {
+        title: t('title'),
+        description: t('description'),
+    };
+}
 
 export function generateStaticParams() {
     return locales.map((locale) => ({ locale }));
