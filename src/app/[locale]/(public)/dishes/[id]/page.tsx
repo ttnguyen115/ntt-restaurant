@@ -2,12 +2,24 @@ import Image from 'next/image';
 
 import _get from 'lodash/get';
 
-import { formatCurrency, getIdFromSlugUrl, wrapServerApi } from '@/utilities';
+import { formatCurrency, generateSlugUrl, getIdFromSlugUrl, wrapServerApi } from '@/utilities';
 
 import { dishApiRequest } from '@/apiRequests';
 
 interface DishDetailPageProps {
     params: Promise<{ id: string }>;
+}
+
+export async function generateStaticParams() {
+    const data = await wrapServerApi(() => dishApiRequest.getAll());
+    const dishes = _get(data, 'payload.data') ?? [];
+
+    return dishes.map((dish) => ({
+        id: generateSlugUrl({
+            name: dish.name,
+            id: dish.id,
+        }),
+    }));
 }
 
 async function DishDetailPage({ params }: DishDetailPageProps) {
