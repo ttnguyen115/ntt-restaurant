@@ -14,7 +14,7 @@ import RefreshToken from '@/components/RefreshToken';
 import ThemeProvider from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 
-import { Locale, locales, routing } from '@/lib';
+import { locales, routing } from '@/lib';
 
 import type { ChildrenObjectWithLocale } from '@/types';
 
@@ -25,12 +25,20 @@ const fontSans = FontSans({
     variable: '--font-sans',
 });
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: Locale } }) {
-    const t = await getTranslations({ locale, namespace: 'HomePage' });
+interface IMetadata {
+    params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: IMetadata) {
+    const { locale } = await params;
+
+    const t = await getTranslations({ locale, namespace: 'Brand' });
 
     return {
-        title: t('title'),
-        description: t('description'),
+        title: {
+            template: `%s | ${t('title')}`,
+            default: t('title'),
+        },
     };
 }
 

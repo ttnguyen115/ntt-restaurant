@@ -3,6 +3,7 @@
 import { memo, useCallback } from 'react';
 
 import { clsx } from 'clsx';
+import { useTranslations } from 'next-intl';
 
 import { AppNavigationRoutes, homeMenuItems } from '@/constants';
 
@@ -25,6 +26,8 @@ import { handleErrorApi, Link, useRouter } from '@/lib';
 function NavItems({ className }: { className?: string }) {
     const router = useRouter();
 
+    const t = useTranslations('NavItem');
+
     const { role, setRole, disconnectSocket } = useAuth();
 
     const { mutateAsync: logout, isPending } = useLogoutMutation();
@@ -44,15 +47,15 @@ function NavItems({ className }: { className?: string }) {
     const renderLogoutDialog = (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <div className={clsx(className, 'cursor-pointer')}>Logout</div>
+                <div className={clsx(className, 'cursor-pointer')}>{t('logout')}</div>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Do you want to log out?</AlertDialogTitle>
-                    <AlertDialogDescription>Log out will DELETE ALL your orders</AlertDialogDescription>
+                    <AlertDialogTitle>{t('logoutDialog.logoutQuestion')}</AlertDialogTitle>
+                    <AlertDialogDescription>{t('logoutDialog.logoutConfirm')}</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel>{t('logoutDialog.logoutCancel')}</AlertDialogCancel>
                     <AlertDialogAction onClick={handleLogout}>OK</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
@@ -73,7 +76,7 @@ function NavItems({ className }: { className?: string }) {
                             key={item.href}
                             className={className}
                         >
-                            {item.title}
+                            {t(item.title as any)}
                         </Link>
                     );
                 }

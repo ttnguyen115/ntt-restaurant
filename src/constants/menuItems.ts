@@ -51,25 +51,25 @@ export const homeMenuItems: Array<{
     hideWhenLoggedIn?: boolean | undefined;
 }> = [
     {
-        title: 'Trang chủ',
+        title: 'home',
         href: AppNavigationRoutes.DEFAULT,
     },
     {
-        title: 'Món ăn',
+        title: 'menu',
         href: AppNavigationRoutes.GUEST_MENU,
         role: [Role.Guest],
     },
     {
-        title: 'Đơn hàng',
+        title: 'orders',
         href: AppNavigationRoutes.GUEST_ORDERS,
     },
     {
-        title: 'Đăng nhập',
+        title: 'login',
         href: AppNavigationRoutes.LOGIN,
         hideWhenLoggedIn: true,
     },
     {
-        title: 'Quản lý',
+        title: 'manage',
         href: AppNavigationRoutes.MANAGE_DASHBOARD,
         role: [Role.Owner, Role.Employee],
     },

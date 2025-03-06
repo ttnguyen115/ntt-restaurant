@@ -16,12 +16,22 @@ import type { ChildrenObjectWithLocale } from '@/types';
 
 type HomePageProps = Pick<ChildrenObjectWithLocale, 'params'>;
 
+export async function generateMetadata({ params }: HomePageProps) {
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: 'HomePage' });
+
+    return {
+        title: t('title'),
+        description: t('description'),
+    };
+}
+
 async function Home({ params }: HomePageProps) {
     const { locale } = await params;
 
     setRequestLocale(locale);
 
-    const i18n = await getTranslations('HomePage');
+    const t = await getTranslations('HomePage');
 
     let dishes: DishListResType['data'] = [];
 
@@ -48,15 +58,12 @@ async function Home({ params }: HomePageProps) {
                     className="absolute top-0 left-0 w-full h-full object-cover"
                 />
                 <div className="z-20 relative py-10 md:py-20 px-4 sm:px-10 md:px-20">
-                    <h1 className="text-center text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold">
-                        Nhà hàng Big Boy
-                        {i18n('title')}
-                    </h1>
-                    <p className="text-center text-sm sm:text-base mt-4">Vị ngon, trọn khoảnh khắc</p>
+                    <h1 className="text-center text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold">{t('title')}</h1>
+                    <p className="text-center text-sm sm:text-base mt-4">{t('slogan')}</p>
                 </div>
             </div>
             <section className="space-y-10 py-16">
-                <h2 className="text-center text-2xl font-bold">Đa dạng các món ăn</h2>
+                <h2 className="text-center text-2xl font-bold">{t('h2')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     {dishes.map(({ id, image, name, description, price }) => (
                         <Link

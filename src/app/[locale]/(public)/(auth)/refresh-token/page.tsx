@@ -1,37 +1,18 @@
-'use client';
+import { Suspense } from 'react';
 
-import { Suspense, useEffect } from 'react';
+import { Metadata } from 'next';
 
-import { useSearchParams } from 'next/navigation';
+import RefreshTokenPage from './RefreshTokenPage';
 
-import { getRefreshTokenFromLocalStorage } from '@/utilities';
+export const metadata: Metadata = {
+    title: 'Refresh Token Redirect',
+    description: 'Refresh Token Redirect',
+    robots: {
+        index: false,
+    },
+};
 
-import { AppNavigationRoutes } from '@/constants';
-
-import { checkAndRefreshToken, useRouter } from '@/lib';
-
-function RefreshTokenPage() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const refreshTokenFromUrl = searchParams.get('refreshToken');
-    const redirectPath = searchParams.get('redirect');
-
-    useEffect(() => {
-        if (refreshTokenFromUrl && refreshTokenFromUrl === getRefreshTokenFromLocalStorage()) {
-            checkAndRefreshToken({
-                onSuccess: () => {
-                    router.push(redirectPath || AppNavigationRoutes.DEFAULT);
-                },
-            }).then(() => {});
-        } else {
-            router.push(AppNavigationRoutes.DEFAULT);
-        }
-    }, [router, refreshTokenFromUrl, redirectPath]);
-
-    return null;
-}
-
-function RefreshTokenWithSuspense() {
+function RefreshToken() {
     return (
         <Suspense fallback={null}>
             <RefreshTokenPage />
@@ -39,4 +20,4 @@ function RefreshTokenWithSuspense() {
     );
 }
 
-export default RefreshTokenWithSuspense;
+export default RefreshToken;

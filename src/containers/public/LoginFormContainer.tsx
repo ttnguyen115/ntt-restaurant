@@ -5,6 +5,7 @@ import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 
 import { initSocketInstance } from '@/utilities';
 
@@ -27,6 +28,9 @@ import { LoginBody, type LoginBodyType } from '@/schemaValidations';
 
 function LoginFormContainer() {
     const router = useRouter();
+
+    const t = useTranslations('Login');
+    const errorMessages = useTranslations('ErrorMessage');
 
     const { searchParams, setSearchParams } = useSearchParamsLoader();
     const clearTokens = searchParams?.get('clearTokens');
@@ -67,8 +71,8 @@ function LoginFormContainer() {
     return (
         <CardContainer
             containerClassName="mx-auto max-w-sm"
-            title="Sign In"
-            description="Please provide email and password to login"
+            title={t('title')}
+            description={t('cardDescription')}
             titleClassName="text-2xl"
         >
             <SearchParamsLoader onParamsReceived={setSearchParams} />
@@ -83,7 +87,7 @@ function LoginFormContainer() {
                             <FormField
                                 control={form.control}
                                 name="email"
-                                render={({ field }) => (
+                                render={({ field, formState: { errors } }) => (
                                     <FormItem>
                                         <div className="grid gap-2">
                                             <Label htmlFor="email">Email</Label>
@@ -94,7 +98,9 @@ function LoginFormContainer() {
                                                 required
                                                 {...field}
                                             />
-                                            <FormMessage />
+                                            <FormMessage>
+                                                {!!errors.email?.message && errorMessages(errors.email.message as any)}
+                                            </FormMessage>
                                         </div>
                                     </FormItem>
                                 )}
@@ -102,7 +108,7 @@ function LoginFormContainer() {
                             <FormField
                                 control={form.control}
                                 name="password"
-                                render={({ field }) => (
+                                render={({ field, formState: { errors } }) => (
                                     <FormItem>
                                         <div className="grid gap-2">
                                             <div className="flex items-center">
@@ -114,7 +120,10 @@ function LoginFormContainer() {
                                                 required
                                                 {...field}
                                             />
-                                            <FormMessage />
+                                            <FormMessage>
+                                                {!!errors.password?.message &&
+                                                    errorMessages(errors.password.message as any)}
+                                            </FormMessage>
                                         </div>
                                     </FormItem>
                                 )}
@@ -123,15 +132,16 @@ function LoginFormContainer() {
                                 type="submit"
                                 className="w-full"
                             >
-                                Log In
+                                {t('buttonLogin')}
                             </Button>
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                type="button"
-                            >
-                                Login by Google SSO
-                            </Button>
+                            {/* Temporarily disabled this feature, will implement later */}
+                            {/* <Button */}
+                            {/*     variant="outline" */}
+                            {/*     className="w-full" */}
+                            {/*     type="button" */}
+                            {/* > */}
+                            {/*     {t('loginWithGoogle')} */}
+                            {/* </Button> */}
                         </div>
                     </form>
                 </Form>

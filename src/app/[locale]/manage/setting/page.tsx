@@ -1,6 +1,39 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+
+import envConfig from '@/config';
+
 import { ChangePasswordFormContainer, UpdateProfileFormContainer } from '@/containers';
 
 import { Badge } from '@/components/ui/badge';
+
+import type { Locale } from '@/lib';
+
+type Props = {
+    params: Promise<{ locale: Locale }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { locale } = await params;
+    const t = await getTranslations({
+        locale,
+        namespace: 'Setting',
+    });
+
+    const url = envConfig.NEXT_PUBLIC_URL + `/${locale}/manage/setting`;
+
+    return {
+        title: t('title'),
+        description: t('description'),
+        alternates: {
+            canonical: url,
+        },
+        robots: {
+            index: false,
+        },
+    };
+}
 
 function Setting() {
     return (

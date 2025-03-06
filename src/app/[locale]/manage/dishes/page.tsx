@@ -1,8 +1,41 @@
 import { Suspense } from 'react';
 
+import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+
+import envConfig from '@/config';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+import { Locale } from '@/lib';
+
 import DishTable from './DishTable';
+
+type Props = {
+    params: Promise<{ locale: Locale }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { locale } = await params;
+    const t = await getTranslations({
+        locale,
+        namespace: 'Dishes',
+    });
+
+    const url = envConfig.NEXT_PUBLIC_URL + `/${locale}/manage/dishes`;
+
+    return {
+        title: t('title'),
+        description: t('description'),
+        alternates: {
+            canonical: url,
+        },
+        robots: {
+            index: false,
+        },
+    };
+}
 
 function DishesPage() {
     return (
