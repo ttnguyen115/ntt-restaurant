@@ -5,6 +5,7 @@ import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { LoaderCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { initSocketInstance } from '@/utilities';
@@ -132,6 +133,7 @@ function LoginFormContainer() {
                                 type="submit"
                                 className="w-full"
                             >
+                                {isPending && <LoaderCircle className="w-6 h-6 mr-2 animate-spin" />}
                                 {t('buttonLogin')}
                             </Button>
                             {/* Temporarily disabled this feature, will implement later */}

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
+import NextTopLoader from 'nextjs-toploader';
 
 import { cn } from '@/utilities';
 
@@ -63,6 +64,10 @@ async function LocaleLayout({ children, params }: Readonly<ChildrenObjectWithLoc
             suppressHydrationWarning
         >
             <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
+                <NextTopLoader
+                    color="hsl(var(--muted-foreground))"
+                    showSpinner={false}
+                />
                 <NextIntlClientProvider messages={messages}>
                     <AuthProvider>
                         <ReactQueryProvider>
