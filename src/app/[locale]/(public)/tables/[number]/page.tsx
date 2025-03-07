@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 
 import envConfig from '@/config';
 import { baseOpenGraph } from '@/shard-metadata';
+import { htmlToTextForMetadataDescription } from '@/utilities';
 
 import type { Locale } from '@/lib';
 
@@ -20,11 +21,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
         title: `No ${number} | ${t('title')}`,
-        description: t('description'),
+        description: htmlToTextForMetadataDescription(t('description')),
         openGraph: {
             ...baseOpenGraph,
             title: `No ${number} | ${t('title')}`,
-            description: t('description'),
+            description: htmlToTextForMetadataDescription(t('description')),
             url,
         },
         alternates: {

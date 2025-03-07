@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { formatCurrency, generateSlugUrl } from '@/utilities';
+import { formatCurrency, generateSlugUrl, htmlToTextForMetadataDescription } from '@/utilities';
 
 import { dishApiRequest } from '@/apiRequests';
 
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: HomePageProps) {
 
     return {
         title: t('title'),
-        description: t('description'),
+        description: htmlToTextForMetadataDescription(t('description')),
     };
 }
 

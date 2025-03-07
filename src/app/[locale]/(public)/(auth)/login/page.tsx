@@ -1,5 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { htmlToTextForMetadataDescription } from '@/utilities';
+
 import { LoginFormContainer } from '@/containers';
 
 import type { ChildrenObjectWithLocale } from '@/types';
@@ -12,7 +14,7 @@ export async function generateMetadata({ params }: LoginProps) {
 
     return {
         title: t('title'),
-        description: t('description'),
+        description: htmlToTextForMetadataDescription(t('description')),
     };
 }
 

@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import envConfig from '@/config';
+import { htmlToTextForMetadataDescription } from '@/utilities';
 
 import { accountApiRequest } from '@/apiRequests';
 
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
         title: t('title'),
-        description: t('description'),
+        description: htmlToTextForMetadataDescription(t('description')),
         alternates: {
             canonical: url,
         },

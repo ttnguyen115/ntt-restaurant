@@ -16,6 +16,7 @@ export { default as initSocketInstance } from './initSocketInstance';
 export { default as wrapServerApi } from './wrapServerApi';
 export { default as generateSlugUrl } from './generateSlugUrl';
 export { default as getIdFromSlugUrl } from './getIdFromSlugUrl';
+export { default as htmlToTextForMetadataDescription } from './htmlToTextForMetadataDescription';
 export {
     getRefreshTokenFromLocalStorage,
     getAccessTokenFromLocalStorage,
