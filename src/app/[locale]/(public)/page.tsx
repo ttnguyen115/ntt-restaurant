@@ -1,7 +1,9 @@
 import Image from 'next/image';
 
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import envConfig from '@/config';
 import { formatCurrency, generateSlugUrl, htmlToTextForMetadataDescription } from '@/utilities';
 
 import { dishApiRequest } from '@/apiRequests';
@@ -16,13 +18,17 @@ import type { ChildrenObjectWithLocale } from '@/types';
 
 type HomePageProps = Pick<ChildrenObjectWithLocale, 'params'>;
 
-export async function generateMetadata({ params }: HomePageProps) {
+export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
     const { locale } = await params;
     const t = await getTranslations({ locale, namespace: 'HomePage' });
+    const url = envConfig.NEXT_PUBLIC_URL + `/${locale}`;
 
     return {
         title: t('title'),
         description: htmlToTextForMetadataDescription(t('description')),
+        alternates: {
+            canonical: url,
+        },
     };
 }
 

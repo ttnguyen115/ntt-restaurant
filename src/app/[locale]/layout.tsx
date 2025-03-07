@@ -1,10 +1,12 @@
 import { Inter as FontSans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 
+import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import NextTopLoader from 'nextjs-toploader';
 
+import { baseOpenGraph } from '@/shard-metadata';
 import { cn } from '@/utilities';
 
 import { AuthProvider } from '@/contexts';
@@ -30,7 +32,7 @@ interface IMetadata {
     params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: IMetadata) {
+export async function generateMetadata({ params }: IMetadata): Promise<Metadata> {
     const { locale } = await params;
 
     const t = await getTranslations({ locale, namespace: 'Brand' });
@@ -40,6 +42,7 @@ export async function generateMetadata({ params }: IMetadata) {
             template: `%s | ${t('title')}`,
             default: t('title'),
         },
+        openGraph: { ...baseOpenGraph },
     };
 }
 
