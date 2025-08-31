@@ -125,6 +125,9 @@
                 "tsx": "never"
             }
         ],
+        "import/parsers": {
+            "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
         "@typescript-eslint/no-explicit-any": "off",
         // TODO end here: Refactor these eslint rules above
 
